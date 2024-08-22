@@ -11,8 +11,9 @@ class ResultsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    initVariables(); 
     final results = calculateValues(name, date);
-    
+    final taula= calculsTaula(); 
 
 
     return Scaffold(
@@ -37,7 +38,7 @@ class ResultsPage extends StatelessWidget {
               size: Size(100, 100),
               painter: CirclePainterWithLines(5, 'Resultat', nextCirclePosition: null),
             ),
-            DataTableWidget(tableData: tableData),
+            
 
           ],
         ),

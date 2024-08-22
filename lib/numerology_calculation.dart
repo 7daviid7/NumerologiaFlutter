@@ -1,5 +1,6 @@
 import 'dart:core';
 import 'dart:ffi';
+import 'package:diacritic/diacritic.dart';
 
 // Creem un mapa que assigna un valor a cada lletra
 final Map<String, int> letterValues = {
@@ -7,8 +8,14 @@ final Map<String, int> letterValues = {
   'J': 1, 'K': 2, 'L': 3, 'M': 4, 'N': 5, 'O': 6, 'P': 7, 'Q': 8, 'R': 9,
   'S': 1, 'T': 2, 'U': 3, 'V': 4, 'W': 5, 'X': 6, 'Y': 7, 'Z': 8,
 };
-
 Map<int, int> habitants = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0};
+
+void initVariables()
+{
+  habitants = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0};
+}
+
+
 
 Map<String, int>calculateValues(String name, String data)
 {
@@ -58,7 +65,6 @@ Map<String, int> calculateNameValues(String name)
   int alma = 0;
   int personalitat = 0;
   int equilibri=0; 
-  int expresion=0; 
   
 
   // Dividim el nom complet en paraules (nom i cognoms)
@@ -74,12 +80,11 @@ Map<String, int> calculateNameValues(String name)
       equilibri += letterValues[primeraLletra] ?? 0;
     }
   }
-
+   
   // Iterem sobre els caràcters de la cadena
-  for (var rune in name.toUpperCase().runes) {
+  for (var rune in removeDiacritics(name).replaceAll(' ', '').toUpperCase().runes) {
     var char = String.fromCharCode(rune);
-    expresion+=letterValues[char] ?? 0; 
-    habitants[expresion]= (habitants[expresion] ?? 0) + 1;
+    habitants[letterValues[char]??0]= (habitants[letterValues[char]??0] ?? 0) + 1;
     if (isVowel(char)) {
       alma += letterValues[char] ?? 0;
     } else {
@@ -88,7 +93,7 @@ Map<String, int> calculateNameValues(String name)
   }
 
   return {'Alma': alma, 'Personalidad': personalitat, 'Equilibrio': equilibri, 
-  'Expresión': expresion, };
+  'Expresión': alma+personalitat};
 }
 
 bool isVowel(String char) {
