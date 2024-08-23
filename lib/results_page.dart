@@ -13,7 +13,7 @@ class ResultsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     initVariables(); 
     final results = calculateValues(name, date);
-    final taula= calculsTaula(); 
+    final taula= calculsTaula(name); 
 
 
     return Scaffold(

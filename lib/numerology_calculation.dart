@@ -100,20 +100,25 @@ bool isVowel(String char) {
   return 'AEIOU'.contains(char);
 }
 
- Map<String, List<List<int>>> calculsTaula() 
+ Map<String, List<List<int>>> calculsTaula(String name) 
 {
   //ini taula
   Map<String, List<List<int>>> taula = {
     'Habitants': List.generate(9, (_) => []), // Inicialitza amb 9 llistes buides
-    'Matices': List.generate(9, (_) => []),
+    'MaticesHabitants': List.generate(9, (_) => []),
     'Puentes': List.generate(9, (_) => []),
     'Evolución': List.generate(9, (_) => []),
     'Inconsciente': List.generate(9, (_) => []),
+    'MaticesInconsciente': List.generate(9, (_) => []),
     // Afegiu altres categories si cal
   };
 
   modificarHabitants(taula); 
-  modificarMatices(taula); 
+  modificarMatices(taula, 'Habitants', 'MaticesHabitants');
+  modificarPuentes(taula);
+  modificarEvolucio(taula); 
+  modificarInconsciente(taula, name); 
+  modificarMatices(taula, 'Inconsciente', 'MaticesInconsciente'); 
   
   return taula;
 }
@@ -128,16 +133,16 @@ void modificarHabitants(Map<String, List<List<int>>>taula)
     }
   });
 }
-void modificarMatices(Map<String, List<List<int>>>taula)
+void modificarMatices(Map<String, List<List<int>>>taula, String iteracio, String matices)
 {
-  for(int i=0; i<taula['Habitants']!.length; i++)
+  for(int i=0; i<taula[iteracio]!.length; i++)
   {
-    int valor1 = taula['Habitants']![i][0];
-    int valor2= taula['Habitants']![valor1][0];
-    int valor3= taula['Habitants']![valor2][0];
-    int valor4= taula['Habitants']![valor3][0]; 
+    int valor1 = taula[iteracio]![i][0];
+    int valor2= taula[iteracio]![valor1][0];
+    int valor3= taula[iteracio]![valor2][0];
+    int valor4= taula[iteracio]![valor3][0]; 
     
-    taula['Matices']![i] = [valor2, valor3, valor4];
+    taula[matices]![i] = [valor2, valor3, valor4];
 
   }
 }
@@ -149,4 +154,30 @@ void modificarPuentes(Map<String, List<List<int>>>taula)
       taula['Puentes']![i] = [valor];
    }
 }
+
+void modificarEvolucio(Map<String, List<List<int>>>taula)
+{
+  for(int i=0; i<taula['Habitants']!.length; i++)
+   {
+      int evolucio=0; 
+      for(int j=1; j<=habitants.length; j++)
+      {
+        if(habitants[j]==i+1)evolucio++; 
+      }
+      int valor=evolucio + taula['Habitants']![i][0];  
+      taula['Evolución']![i] = [valor];
+   }
+}
+
+void modificarInconsciente(Map<String, List<List<int>>>taula, String name)
+{
+  String modName= removeDiacritics(name).replaceAll(' ', '').toUpperCase(); 
+   for(int i=0; i<taula['Habitants']!.length; i++)
+   {
+      String lletra= modName[(taula['Habitants']![i][0])-1]; 
+      int valor=letterValues[lletra]??0; 
+      taula['Inconsciente']![i] = [valor];
+   }
+}
+
 
