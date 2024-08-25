@@ -51,7 +51,6 @@ class NameWithValuesWidget extends StatelessWidget {
         consonant = 0;
         continue;
       }
-      
 
       int value = letterValues[char] ?? 0;
 
@@ -114,28 +113,30 @@ class NameWithValuesWidget extends StatelessWidget {
       );
     }
     return Column(
-      children: [
-        // Mostrar els totals a dalt
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: totalRows,
-        ),
-        // Espai entre les files
-        SizedBox(height: 20), // Ajusta la mida segons les teves necessitats
-        // Mostrar les files de noms i valors
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: valueRowsAbove,
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: nameRows,
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: valueRowsBelow,
-        ),
-      ],
-    );
+  children: [
+    // Mostrar els totals a dalt
+    Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: totalRows,
+    ),
+    // Espai entre les files
+    SizedBox(height: 20), // Ajusta la mida segons les teves necessitats
+    // Mostrar les files de noms i valors
+    Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: valueRowsAbove,
+    ),
+    Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: nameRows,
+    ),
+    Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: valueRowsBelow,
+    ),
+  ],
+);
+
+
   }
 }
