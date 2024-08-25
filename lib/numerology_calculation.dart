@@ -1,5 +1,4 @@
 import 'dart:core';
-import 'dart:ffi';
 import 'package:diacritic/diacritic.dart';
 
 // Creem un mapa que assigna un valor a cada lletra
@@ -22,15 +21,15 @@ Map<String, int>calculateValues(String name, String data)
   Map<String, int>Data= calculateDataValues(data); 
   Map<String, int>Name=calculateNameValues(name); 
   
+
   Map<String, int> results = {};
   results.addAll(Data);
   results.addAll(Name); 
   int mision= (results['Camino de Vida']??0) + (results['Expresión']??0); 
   results['Mision'] = mision; 
-  int iniciacio=(results['Misio']??0) + (results['Alma']??0) + (results['Camino de Vida']??0); 
+  int iniciacio=((results['Mision']??0)+(results['Alma']??0)+(results['Dia']??0)); 
   results['Iniciacio'] = iniciacio;
   return results;  
-
 }
 
 Map<String, int>calculateDataValues(String data)
@@ -55,8 +54,8 @@ Map<String, int>calculateDataValues(String data)
   int fuerza = dia + mes;
   int caminoVida= fuerza+any; 
 
-  return {'Fuerza': fuerza, 'Camino de Vida': caminoVida, 
-  'Formación': mes, 'Producción':dia, 'Cosecha': Cosecha,
+  return {'Fuerza': fuerza, 'Camino de Vida': caminoVida, 'Dia':dia, 'Mes': mes, 
+  'Any': any, 'Formación': mes, 'Producción':dia, 'Cosecha': Cosecha,
   'Realizacion1': dia+any,'Realizacion2': fuerza+dia+any,'Realizacion3': mes+any};
 }
 
@@ -122,6 +121,14 @@ bool isVowel(String char) {
   
   return taula;
 }
+int reduceToSingleDigit(int number) {
+
+  while (number > 9) {
+    number = number.toString().split('').map(int.parse).reduce((a, b) => a + b);
+  }
+  return number;
+}
+
 
 void modificarHabitants(Map<String, List<List<int>>>taula)
 {
@@ -135,13 +142,25 @@ void modificarHabitants(Map<String, List<List<int>>>taula)
 }
 void modificarMatices(Map<String, List<List<int>>>taula, String iteracio, String matices)
 {
+  int valor1; 
+  int valor2; 
+  int valor3; 
+  int valor4; 
   for(int i=0; i<taula[iteracio]!.length; i++)
   {
-    int valor1 = taula[iteracio]![i][0];
-    int valor2= taula[iteracio]![valor1][0];
-    int valor3= taula[iteracio]![valor2][0];
-    int valor4= taula[iteracio]![valor3][0]; 
-    
+    valor1 = reduceToSingleDigit(taula[iteracio]![i][0]);
+    if(valor1!=0)
+    {
+      valor2= reduceToSingleDigit(taula[iteracio]![valor1-1][0]);
+      valor3= reduceToSingleDigit(taula[iteracio]![valor2-1][0]);
+      valor4= reduceToSingleDigit(taula[iteracio]![valor3-1][0]); 
+    }
+    else 
+    {
+      valor2=0;
+      valor3=0; 
+      valor4=0; 
+    }
     taula[matices]![i] = [valor2, valor3, valor4];
 
   }
@@ -171,13 +190,22 @@ void modificarEvolucio(Map<String, List<List<int>>>taula)
 
 void modificarInconsciente(Map<String, List<List<int>>>taula, String name)
 {
+  int valor=0; 
   String modName= removeDiacritics(name).replaceAll(' ', '').toUpperCase(); 
-   for(int i=0; i<taula['Habitants']!.length; i++)
-   {
-      String lletra= modName[(taula['Habitants']![i][0])-1]; 
-      int valor=letterValues[lletra]??0; 
-      taula['Inconsciente']![i] = [valor];
-   }
+  for(int i=0; i<taula['Habitants']!.length; i++)
+  {
+    if(taula['Habitants']![i][0]==0)
+    {
+      valor=i+1; 
+    }
+    else 
+    {
+       valor=(taula['Habitants']![i][0]); 
+    }
+    String lletra= modName[valor-1]; 
+    int result=letterValues[lletra]??0; 
+    taula['Inconsciente']![i] = [result];
+  }
 }
 
 

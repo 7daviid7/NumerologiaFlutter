@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:numerologia/diagram_results.dart';
 import 'package:numerologia/numerology_calculation.dart';
-import 'circle_painter_with_lines.dart';
 import 'data_table.dart';
+import 'name_with_values_widget.dart'; // Importar el nuevo archivo
 
 class ResultsPage extends StatelessWidget {
   final String name;
@@ -11,35 +12,23 @@ class ResultsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    initVariables(); 
+    initVariables();
     final results = calculateValues(name, date);
-    final taula= calculsTaula(name); 
-
+    final taula = calculsTaula(name);
+    
 
     return Scaffold(
       appBar: AppBar(title: Text('Resultats')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            CustomPaint(
-              size: Size(100, 100),
-              painter: CirclePainterWithLines(results['vowelSum'] ?? 0, 'Vocals'),
+            NameWithValuesWidget(name: name), // Utilitzem el nou widget
+            SizedBox(height: 20),
+            Expanded(
+              child: DataTableWidget(tableData: taula), // Aquí s'integra la taula
             ),
-            CustomPaint(
-              size: Size(100, 100),
-              painter: CirclePainterWithLines(
-                results['consonantSum'] ?? 0,
-                'Consonants',
-                nextCirclePosition: Offset(50, 100),
-              ),
-            ),
-            CustomPaint(
-              size: Size(100, 100),
-              painter: CirclePainterWithLines(5, 'Resultat', nextCirclePosition: null),
-            ),
-            
-
           ],
         ),
       ),
