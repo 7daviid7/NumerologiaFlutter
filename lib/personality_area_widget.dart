@@ -46,7 +46,7 @@ class PersonalityAreaWidget extends StatelessWidget {
                         _buildPersonalityCircle('Personalitat', personalityValues['Personalidad'] ?? 0),
                       ],
                     ),
-                    SizedBox(height: 40),
+                    SizedBox(height: 80),
                     // Equilibri, Fuerza i Iniciació
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -76,7 +76,7 @@ class PersonalityAreaWidget extends StatelessWidget {
 
   Widget _buildPersonalitySquare(String label, int value) {
     return Container(
-      width: 80,
+      width: 100,
       height: 80,
       decoration: BoxDecoration(
         color: Colors.blue[100],
@@ -127,8 +127,8 @@ class _ConnectorPainter extends CustomPainter {
 
     // Coordenades relatives per als elements
     final Offset expOffset = Offset(size.width / 2, 40); // Expresió
-    final Offset almaOffset = Offset(size.width / 3, size.height / 2); // Alma
-    final Offset personalitatOffset = Offset(2 * size.width / 3, size.height / 2); // Personalitat
+    final Offset almaOffset = Offset(size.width / 3, size.height / 2 -100); // Alma
+    final Offset personalitatOffset = Offset(2 * size.width / 3, size.height / 2 -110); // Personalitat
     final Offset missioOffset = Offset(size.width / 2, size.height - 40); // Missió
 
     // Dibuixar línies connectores

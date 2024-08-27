@@ -8,6 +8,7 @@ final Map<String, int> letterValues = {
   'S': 1, 'T': 2, 'U': 3, 'V': 4, 'W': 5, 'X': 6, 'Y': 7, 'Z': 8,
 };
 Map<int, int> habitants = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0};
+int totalLletres=0; 
 
 void initVariables()
 {
@@ -20,16 +21,39 @@ Map<String, int>calculateValues(String name, String data)
 {
   Map<String, int>dataMap= calculateDataValues(data); 
   Map<String, int>nameMap=calculateNameValues(name); 
-  
+  Map<String, int>herenciesMap=calculateHerencies();
 
   Map<String, int> results = {};
   results.addAll(dataMap);
   results.addAll(nameMap); 
+  results.addAll(herenciesMap); 
   int mision= (results['Camino de Vida']??0) + (results['Expresión']??0); 
   results['Misión'] = mision; 
   int iniciacio=((results['Misión']??0)+(results['Alma']??0)+(results['Dia']??0)); 
   results['Iniciacio'] = iniciacio;
   return results;  
+}
+
+int recorrerHabitants(int valor)
+{
+  int result=0; 
+  for(int i=valor;i<=valor+3; i++)
+  {
+    result+=habitants[i]??0; 
+  }
+  return result; 
+}
+
+Map<String,int>calculateHerencies()
+{
+  int HPP= recorrerHabitants(1); 
+  int NCS= recorrerHabitants(6); 
+  int MF= totalLletres+HPP; 
+  int MS= totalLletres+NCS; 
+
+  return{'HHP': HPP, 'NCS': NCS, 'DM': HPP+NCS, 'EJE': habitants[5]??0, 
+    'MF': MF, 'MS': MS, 'MFE': MF+MS};
+
 }
 
 Map<String, int>calculateDataValues(String data)
@@ -49,14 +73,16 @@ Map<String, int>calculateDataValues(String data)
     cosecha1+= digit;
   }
 
-
   // Sumem el dia i el mes
   int fuerza = dia + mes;
   int caminoVida= fuerza+any; 
-
+  int desafio1= reduceToSingleDigit((dia-mes).abs()); 
+  int desafio2= reduceToSingleDigit((dia-any).abs());
   return {'Fuerza': fuerza, 'Camino de Vida': caminoVida, 'Dia':dia, 'Mes': mes, 
   'Any': any, 'Formación': mes, 'Producción':dia, 'Cosecha': cosecha1,
-  'Realizacion1': dia+any,'Realizacion2': fuerza+dia+any,'Realizacion3': mes+any};
+  'Realizacion1': dia+any,'Realizacion2': fuerza+dia+any,'Realizacion3': mes+any, 
+  'Desafio1': desafio1,'Desafio2': desafio2, 
+  'Desafio3': (desafio1-desafio2).abs(), };
 }
 
 Map<String, int> calculateNameValues(String name) 
@@ -83,6 +109,7 @@ Map<String, int> calculateNameValues(String name)
   // Iterem sobre els caràcters de la cadena
   for (var rune in removeDiacritics(name).replaceAll(' ', '').toUpperCase().runes) {
     var char = String.fromCharCode(rune);
+    totalLletres++; 
     habitants[letterValues[char]??0]= (habitants[letterValues[char]??0] ?? 0) + 1;
     if (isVowel(char)) {
       alma += letterValues[char] ?? 0;
