@@ -18,16 +18,16 @@ void initVariables()
 
 Map<String, int>calculateValues(String name, String data)
 {
-  Map<String, int>Data= calculateDataValues(data); 
-  Map<String, int>Name=calculateNameValues(name); 
+  Map<String, int>dataMap= calculateDataValues(data); 
+  Map<String, int>nameMap=calculateNameValues(name); 
   
 
   Map<String, int> results = {};
-  results.addAll(Data);
-  results.addAll(Name); 
+  results.addAll(dataMap);
+  results.addAll(nameMap); 
   int mision= (results['Camino de Vida']??0) + (results['Expresión']??0); 
-  results['Mision'] = mision; 
-  int iniciacio=((results['Mision']??0)+(results['Alma']??0)+(results['Dia']??0)); 
+  results['Misión'] = mision; 
+  int iniciacio=((results['Misión']??0)+(results['Alma']??0)+(results['Dia']??0)); 
   results['Iniciacio'] = iniciacio;
   return results;  
 }
@@ -42,11 +42,11 @@ Map<String, int>calculateDataValues(String data)
   int dia = int.parse(parts[2]);
 
   String cosecha= any.toString(); 
-  int Cosecha=0; 
+  int cosecha1=0; 
   for (var char in cosecha.runes) {
     // Converteix el caràcter en un enter
     int digit = int.parse(String.fromCharCode(char));
-    Cosecha+= digit;
+    cosecha1+= digit;
   }
 
 
@@ -55,7 +55,7 @@ Map<String, int>calculateDataValues(String data)
   int caminoVida= fuerza+any; 
 
   return {'Fuerza': fuerza, 'Camino de Vida': caminoVida, 'Dia':dia, 'Mes': mes, 
-  'Any': any, 'Formación': mes, 'Producción':dia, 'Cosecha': Cosecha,
+  'Any': any, 'Formación': mes, 'Producción':dia, 'Cosecha': cosecha1,
   'Realizacion1': dia+any,'Realizacion2': fuerza+dia+any,'Realizacion3': mes+any};
 }
 

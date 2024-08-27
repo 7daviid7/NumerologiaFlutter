@@ -3,12 +3,19 @@ import 'results_page.dart';
 
 class InputPage extends StatefulWidget {
   @override
-  _InputPageState createState() => _InputPageState();
+  InputPageState createState() => InputPageState();
 }
 
-class _InputPageState extends State<InputPage> {
+class InputPageState extends State<InputPage> {
   final _nameController = TextEditingController();
   final _dateController = TextEditingController();
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _dateController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
