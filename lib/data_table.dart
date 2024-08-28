@@ -15,73 +15,73 @@ class DataTableWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    TextStyle smallTextStyle = TextStyle(fontSize: 11); // Mida de la font reduïda
+
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: DataTable(
-        columns: _buildColumns(),
-        rows: _buildRows(),
+        columnSpacing: 10, // Redueix l’espai entre columnes
+        dataRowHeight: 40, // Ajusta l’alçada de les files
+        columns: _buildColumns(smallTextStyle),
+        rows: _buildRows(smallTextStyle),
       ),
     );
   }
 
-  List<DataColumn> _buildColumns() {
-    // La primera columna es para los títulos de las filas
+  List<DataColumn> _buildColumns(TextStyle textStyle) {
     List<DataColumn> columns = [
-      DataColumn(label: Text('')), // Columna vacía para los títulos de las filas
+      DataColumn(label: Text('', style: textStyle)), // Columna vacía per a títols
     ];
 
-    // Determinamos el número máximo de columnas necesarias
     int maxColumns = tableData.values.map((listOfLists) => listOfLists.length).reduce((a, b) => a > b ? a : b);
 
-    // Creamos las columnas con los títulos "Casa 1", "Casa 2", etc.
     for (int i = 0; i < maxColumns; i++) {
-      columns.add(DataColumn(label: Text('Casa ${i + 1}')));
+      columns.add(DataColumn(label: Text('Casa ${i + 1}', style: textStyle)));
     }
 
     return columns;
   }
 
-  List<DataRow> _buildRows() {
-    // Generamos las filas de la tabla basándonos en las claves del mapa
+  List<DataRow> _buildRows(TextStyle textStyle) {
     return tableData.entries.map((entry) {
-      String rowTitle = entry.key; // Título de la fila (clave del mapa)
+      String rowTitle = entry.key;
       List<List<int>> rowValues = entry.value;
 
-      // Creamos la primera celda con el título de la fila
-      List<DataCell> cells = [DataCell(Text(rowTitle, style: TextStyle(fontWeight: FontWeight.bold)))];
+      List<DataCell> cells = [
+        DataCell(Text(rowTitle, style: textStyle.copyWith(fontWeight: FontWeight.bold)))
+      ];
 
-      // Creamos las celdas para cada valor en las columnas
       cells.addAll(rowValues.map((valueList) {
-        // Generamos el texto para cada valor
         String cellContent = valueList.isEmpty
-            ? '☀' // Si no hay valor, mostramos el símbolo del sol
+            ? '☀'
             : valueList.map((value) {
                 if (rowTitle == 'Puentes') {
-                  // Para la fila 'Puentes', mostramos '-' si el valor es cero
                   if (value == 0) {
                     return '-';
                   } else if (value > 9) {
-                    // Reducimos el valor si es mayor que 9
                     int reducedValue = reduceToSingleDigit(value);
-                    return '$value / $reducedValue'; // Mostramos el valor original y el reducido con un separador
+                    return '$value / $reducedValue';
                   } else {
-                    return value.toString(); // Si no es mayor que 9, mostramos el valor original
+                    return value.toString();
                   }
                 } else {
-                  // Para otras filas, mostramos el símbolo del sol para el valor 0
                   if (value == 0) {
                     return '☀';
                   } else if (value > 9) {
-                    // Reducimos el valor si es mayor que 9
                     int reducedValue = reduceToSingleDigit(value);
-                    return '$value / $reducedValue'; // Mostramos el valor original y el reducido con un separador
+                    return '$value / $reducedValue';
                   } else {
-                    return value.toString(); // Si no es mayor que 9, mostramos el valor original
+                    return value.toString();
                   }
                 }
-              }).join(', '); // Unimos los valores con coma
+              }).join(', ');
 
-        return DataCell(Text(cellContent));
+        return DataCell(
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0), // Redueix el padding
+            child: Text(cellContent, style: textStyle),
+          ),
+        );
       }).toList());
 
       return DataRow(cells: cells);

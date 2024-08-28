@@ -69,22 +69,73 @@ class ResultsPageState extends State<ResultsPage> {
       ),
       body: RepaintBoundary(
         key: _globalKey,
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                NameWithValuesWidget(name: widget.name),
-                SizedBox(height: 20),
-                DataTableWidget(tableData: taula),
-                SizedBox(height: 20),
-                PersonalityAreaWidget(personalityValues: mapPersonalidad),
-                LifePathWidget(values: mapVida, date: widget.date),
-                ChallengesWidget(challenges: mapDesafio),
-                FamilyHeritageWidget(values: mapHerencies),
-              ],
-            ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              // Primer element centrat
+              Center(
+                child: NameWithValuesWidget(name: widget.name),
+              ),
+              SizedBox(height: 20),
+
+              // Disseny en tres columnes amb flex ajustats
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      flex: 3, // Primer columna amb més espai
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            flex: 2, // Primer element de la columna amb més espai
+                            child: DataTableWidget(tableData: taula),
+                          ),
+                          SizedBox(height: 20),
+                          // Dividir l'espai restant en dues columnes amb una fila
+                          Expanded(
+                            flex: 1, // Segon element de la columna amb més espai
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  flex: 1, // Espai per ChallengesWidget
+                                  child: ChallengesWidget(challenges: mapDesafio),
+                                ),
+                                SizedBox(width: 20), // Espai entre els dos widgets
+                                Expanded(
+                                  flex: 3, // Espai per FamilyHeritageWidget
+                                  child: FamilyHeritageWidget(values: mapHerencies),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    SizedBox(width: 20),
+                    Expanded(
+                      flex: 2, // Segona columna amb menys espai
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(child: PersonalityAreaWidget(personalityValues: mapPersonalidad)),
+                          SizedBox(height: 20),
+                          Expanded(child: LifePathWidget(values: mapVida, date: widget.date)),
+                        ],
+                      ),
+                    ),
+                    SizedBox(width: 20),
+                    Expanded(
+                      flex: 1, // Tercera columna amb el menor espai
+                      child: FamilyHeritageWidget(values: mapHerencies),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ),

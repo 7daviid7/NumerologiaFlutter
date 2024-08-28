@@ -131,20 +131,20 @@ bool isVowel(String char) {
   //ini taula
   Map<String, List<List<int>>> taula = {
     'Habitants': List.generate(9, (_) => []), // Inicialitza amb 9 llistes buides
-    'MaticesHabitants': List.generate(9, (_) => []),
+    'Matices': List.generate(9, (_) => []),
     'Puentes': List.generate(9, (_) => []),
     'Evolución': List.generate(9, (_) => []),
     'Inconsciente': List.generate(9, (_) => []),
-    'MaticesInconsciente': List.generate(9, (_) => []),
+    'Matices ': List.generate(9, (_) => []),
     // Afegiu altres categories si cal
   };
 
   modificarHabitants(taula); 
-  modificarMatices(taula, 'Habitants', 'MaticesHabitants');
+  modificarMatices(taula, 'Habitants', 'Matices');
   modificarPuentes(taula);
   modificarEvolucio(taula); 
   modificarInconsciente(taula, name); 
-  modificarMatices(taula, 'Inconsciente', 'MaticesInconsciente'); 
+  modificarMatices(taula, 'Inconsciente', 'Matices '); 
   
   return taula;
 }

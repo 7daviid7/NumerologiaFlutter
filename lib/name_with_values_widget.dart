@@ -16,7 +16,7 @@ class NameWithValuesWidget extends StatelessWidget {
     List<Widget> currentRow = [];
 
     // Ajusta el tamany de la lletra segons el teu disseny
-    double fontSize = 24;
+    double fontSize = 14; // Reduït de 24 a 18
     double valueFontSize = fontSize * 0.7; // Tamany per als valors
 
     int vocal = 0;
@@ -42,10 +42,10 @@ class NameWithValuesWidget extends StatelessWidget {
         );
 
         // Afegir espais visuals i netejar les variables per al següent segment
-        nameRows.add(SizedBox(width: fontSize * 1.5));
-        valueRowsAbove.add(SizedBox(width: fontSize * 1.5));
-        valueRowsBelow.add(SizedBox(width: fontSize * 1.5));
-        currentRow.add(SizedBox(width: fontSize * 1.5)); // Afegir espai per a l'alineació
+        nameRows.add(SizedBox(width: fontSize * 4)); // Reduït a 0.5
+        valueRowsAbove.add(SizedBox(width: fontSize * 4)); // Reduït a 0.5
+        valueRowsBelow.add(SizedBox(width: fontSize * 4)); // Reduït a 0.5
+        currentRow.add(SizedBox(width: fontSize * 4)); // Reduït a 0.5
 
         vocal = 0;
         consonant = 0;
@@ -112,31 +112,29 @@ class NameWithValuesWidget extends StatelessWidget {
         ),
       );
     }
+
     return Column(
-  children: [
-    // Mostrar els totals a dalt
-    Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: totalRows,
-    ),
-    // Espai entre les files
-    SizedBox(height: 20), // Ajusta la mida segons les teves necessitats
-    // Mostrar les files de noms i valors
-    Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: valueRowsAbove,
-    ),
-    Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: nameRows,
-    ),
-    Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: valueRowsBelow,
-    ),
-  ],
-);
-
-
+      children: [
+        // Mostrar els totals a dalt
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: totalRows,
+        ),
+        SizedBox(height: 10), // Reduït de 20 a 10
+        // Mostrar les files de noms i valors
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: valueRowsAbove,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: nameRows,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: valueRowsBelow,
+        ),
+      ],
+    );
   }
 }

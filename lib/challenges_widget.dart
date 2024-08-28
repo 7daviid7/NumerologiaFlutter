@@ -7,11 +7,15 @@ class ChallengesWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Ajusta el textStyle segons el teu disseny
+    TextStyle smallTextStyle = TextStyle(fontSize: 10); // Mida de font reduïda
+    TextStyle smallValueTextStyle = TextStyle(fontSize: 10, color: Colors.blue[900]); // Mida i color del valor
+
     return Container(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(6.0), // Reduïr padding
       decoration: BoxDecoration(
         border: Border.all(color: Colors.black),
-        borderRadius: BorderRadius.circular(8.0),
+        borderRadius: BorderRadius.circular(4.0), // Reduïr radi del bord
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -19,13 +23,13 @@ class ChallengesWidget extends StatelessWidget {
           // Títol General
           Text(
             'Desafiaments',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14), // Mida del font reduïda
           ),
-          SizedBox(height: 20),
+          SizedBox(height: 8), // Reduïr l’espai entre el títol i la llista
           // Llista de desafiaments
           Column(
             children: challenges.entries.map((entry) {
-              return _buildChallengeItem(entry.key, entry.value);
+              return _buildChallengeItem(entry.key, entry.value, smallTextStyle, smallValueTextStyle);
             }).toList(),
           ),
         ],
@@ -33,35 +37,36 @@ class ChallengesWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildChallengeItem(String challenge, int value) {
+  Widget _buildChallengeItem(String challenge, int value, TextStyle textStyle, TextStyle valueTextStyle) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 8.0),
-      padding: EdgeInsets.all(12.0),
+      margin: EdgeInsets.symmetric(vertical: 2.0), // Reduïr margin
+      padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0), // Reduïr padding
       decoration: BoxDecoration(
         color: Colors.blue[50], // Ajusta el fons al mateix blau clar
-        borderRadius: BorderRadius.circular(8.0),
-        border: Border.all(color: Colors.blue, width: 2), // Ajusta el color del borde al blau
+        borderRadius: BorderRadius.circular(4.0), // Reduïr radi del bord
+        border: Border.all(color: Colors.blue, width: 1), // Ajusta el color del borde al blau
       ),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween, // Ajusta l'espai entre text i valor
         children: [
           // Icona o símbol opcional per a cada desafiament
           Icon(
             Icons.warning_amber_rounded,
             color: Colors.blue[300], // Ajusta el color de la icona
-            size: 30,
+            size: 20, // Reduïr mida de la icona
           ),
-          SizedBox(width: 16),
+          SizedBox(width: 4), // Reduïr espai entre icona i text
           // Nom del desafiament
           Expanded(
             child: Text(
               challenge,
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              style: textStyle.copyWith(fontWeight: FontWeight.bold), // Aplicar estil reduït
             ),
           ),
           // Valor del desafiament
           Text(
             value.toString(),
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.blue[900]), // Color blau més fosc per al text
+            style: valueTextStyle.copyWith(fontWeight: FontWeight.bold), // Aplicar estil reduït
           ),
         ],
       ),
