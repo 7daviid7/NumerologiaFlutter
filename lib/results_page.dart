@@ -6,9 +6,8 @@ import 'data_table.dart';
 import 'name_with_values_widget.dart';
 import 'personality_area_widget.dart';
 import 'life_path_widget.dart';
-import 'print_service.dart'; // Importa el servei d'impressió
+import 'print_preview_dialog.dart'; // Importa el diàleg de vista prèvia // Importa el servei d'impressió
 
-// Assegura't que les classes utilitzades aquí són públiques
 class ResultsPage extends StatefulWidget {
   final String name;
   final String date;
@@ -21,13 +20,13 @@ class ResultsPage extends StatefulWidget {
 
 class ResultsPageState extends State<ResultsPage> {
   late Map<String, int> mapPersonalidad;
-  late Map<String, int> mapVida; 
-  late Map<String, int> mapDesafio; 
+  late Map<String, int> mapVida;
+  late Map<String, int> mapDesafio;
   late Map<String, int> mapHerencies;
   late Map<String, List<List<int>>> taula;
 
   final GlobalKey _globalKey = GlobalKey();
-  final PrintService _printService = PrintService();
+  final PrintPreviewDialog _printPreviewDialog = PrintPreviewDialog();
 
   @override
   void initState() {
@@ -37,22 +36,33 @@ class ResultsPageState extends State<ResultsPage> {
     initVariables();
     final results = calculateValues(widget.name, widget.date);
     taula = calculsTaula(widget.name);
-    List<String> personalidad = ['Alma', 'Expresión', 'Personalidad', 'Equilibrio',
-      'Misión', 'Iniciacio', 'Fuerza'];
-    List<String> camiDeVida = ['Camino de Vida', 'Formación', 'Producción', 'Cosecha',
-    'Fuerza', 'Realizacion1', 'Realizacion2', 'Realizacion3'];
+    List<String> personalidad = [
+      'Alma',
+      'Expresión',
+      'Personalidad',
+      'Equilibrio',
+      'Misión',
+      'Iniciacio',
+      'Fuerza'
+    ];
+    List<String> camiDeVida = [
+      'Camino de Vida',
+      'Formación',
+      'Producción',
+      'Cosecha',
+      'Fuerza',
+      'Realizacion1',
+      'Realizacion2',
+      'Realizacion3'
+    ];
     List<String> desafio = ['Desafio1', 'Desafio2', 'Desafio3'];
 
     List<String> herencies = ['HHP', 'NCS', 'DM', 'EJE', 'MF', 'MS', 'MFE'];
 
     mapPersonalidad = valors(results, personalidad);
-    mapVida = valors(results, camiDeVida); 
+    mapVida = valors(results, camiDeVida);
     mapDesafio = valors(results, desafio);
-    mapHerencies = valors(results, herencies); 
-  }
-
-  Future<void> _printPage() async {
-    await _printService.printWidget(_globalKey, 'Resultats de Numerologia');
+    mapHerencies = valors(results, herencies);
   }
 
   @override
@@ -63,7 +73,8 @@ class ResultsPageState extends State<ResultsPage> {
         actions: [
           IconButton(
             icon: Icon(Icons.print),
-            onPressed: _printPage,
+            onPressed: () => _printPreviewDialog.showPreviewAndPrint(
+              context, _globalKey, 'Resultats de Numerologia'), // Crida al diàleg de vista prèvia
           ),
         ],
       ),

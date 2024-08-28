@@ -21,7 +21,7 @@ class DataTableWidget extends StatelessWidget {
       scrollDirection: Axis.horizontal,
       child: DataTable(
         columnSpacing: 10, // Redueix l’espai entre columnes
-        dataRowHeight: 40, // Ajusta l’alçada de les files
+        dataRowMinHeight: 40, // Ajusta l’alçada de les files
         columns: _buildColumns(smallTextStyle),
         rows: _buildRows(smallTextStyle),
       ),
