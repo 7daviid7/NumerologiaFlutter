@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:numerologia/arc_widget.dart';
 import 'package:numerologia/challenges_widget.dart';
 import 'package:numerologia/family_legacies_widget.dart';
 import 'package:numerologia/numerology_calculation.dart';
@@ -126,14 +127,14 @@ class ResultsPageState extends State<ResultsPage> {
                       ),
                     ),
 
-                    SizedBox(width: 20),
+                    SizedBox(width: 10),
                     Expanded(
                       flex: 2, // Segona columna amb menys espai
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(child: PersonalityAreaWidget(personalityValues: mapPersonalidad)),
-                          SizedBox(height: 20),
+                          SizedBox(height: 5),
                           Expanded(child: LifePathWidget(values: mapVida, date: widget.date)),
                         ],
                       ),
@@ -141,7 +142,7 @@ class ResultsPageState extends State<ResultsPage> {
                     SizedBox(width: 20),
                     Expanded(
                       flex: 1, // Tercera columna amb el menor espai
-                      child: FamilyHeritageWidget(values: mapHerencies),
+                      child: ArcWidget(values: mapHerencies),
                     ),
                   ],
                 ),

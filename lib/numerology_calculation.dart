@@ -236,3 +236,4 @@ void modificarInconsciente(Map<String, List<List<int>>>taula, String name)
 }
 
 
+

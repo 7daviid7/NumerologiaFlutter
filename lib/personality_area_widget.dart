@@ -30,6 +30,9 @@ class PersonalityAreaWidget extends StatelessWidget {
                 return Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    Column(
+                      
+                    ),
                     // Expresió
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -37,7 +40,7 @@ class PersonalityAreaWidget extends StatelessWidget {
                         _buildPersonalityCircle('Expresió', personalityValues['Expresión'] ?? 0),
                       ],
                     ),
-                    SizedBox(height: 12), // Redueix l'espai vertical
+                    SizedBox(height: 0), // Redueix l'espai vertical
                     // Alma i Personalitat
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -46,8 +49,16 @@ class PersonalityAreaWidget extends StatelessWidget {
                         _buildPersonalityCircle('Personalitat', personalityValues['Personalidad'] ?? 0),
                       ],
                     ),
-                    SizedBox(height: 24), // Redueix l'espai vertical
+                    SizedBox(height: 0), // Redueix l'espai vertical
                     // Equilibri, Fuerza i Iniciació
+                  
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _buildPersonalityCircle('Missió', personalityValues['Misión'] ?? 0),
+                      ],
+                    ),
+                    SizedBox(height: 10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
@@ -56,14 +67,7 @@ class PersonalityAreaWidget extends StatelessWidget {
                         _buildPersonalitySquare('Iniciació', personalityValues['Iniciacio'] ?? 0),
                       ],
                     ),
-                    SizedBox(height: 12), // Redueix l'espai vertical
-                    // Missió
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _buildPersonalityCircle('Missió', personalityValues['Misión'] ?? 0),
-                      ],
-                    ),
+                    SizedBox(height: 0), // Redueix l'espai vertical
                   ],
                 );
               },
@@ -76,8 +80,8 @@ class PersonalityAreaWidget extends StatelessWidget {
 
   Widget _buildPersonalitySquare(String label, int value) {
     return Container(
-      width: 60, // Redueix l'amplada del quadrat
-      height: 50, // Redueix l'alçada del quadrat
+      width: 55, // Redueix l'amplada del quadrat
+      height: 40, // Redueix l'alçada del quadrat
       decoration: BoxDecoration(
         color: Colors.blue[100],
         borderRadius: BorderRadius.circular(4.0), // Redueix la curvatura
@@ -87,37 +91,53 @@ class PersonalityAreaWidget extends StatelessWidget {
         children: [
           Text(
             label,
-            style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold), // Redueix la mida del text
+            style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold), // Redueix la mida del text
           ),
-          SizedBox(height: 4),
+          SizedBox(height: 2),
           Text(
             value.toString(),
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold), // Redueix la mida del text
+            style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold), // Redueix la mida del text
           ),
         ],
       ),
     );
   }
 
-  Widget _buildPersonalityCircle(String label, int value) {
-    return Column(
-      children: [
-        CircleAvatar(
-          radius: 20, // Redueix el radi del cercle
-          backgroundColor: Colors.blue[100],
-          child: Text(
-            value.toString(),
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold), // Redueix la mida del text
-          ),
-        ),
-        SizedBox(height: 4), // Redueix l'espai entre el cercle i el text
+ Widget _buildPersonalityCircle(String label, int value) {
+  return Column(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      // Si l'etiqueta és 'Missió', col·loca el text a sobre del cercle
+      if (label == 'Missió')
         Text(
           label,
-          style: TextStyle(fontSize: 10), // Redueix la mida del text
+          style: TextStyle(fontSize: 10),
+         
         ),
-      ],
-    );
-  }
+        SizedBox(height: 3),
+      CircleAvatar(
+        radius: 20,
+        backgroundColor: Colors.blue[100],
+        child: Text(
+          value.toString(),
+          style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+        ),
+      ),
+      // Espai fix si l'etiqueta és 'Missió' per evitar que el text es superposi
+      if (label != 'Missió')
+        Column(
+          children: [
+            SizedBox(height: 2),
+            Text(
+              label,
+              style: TextStyle(fontSize: 10),
+            ),
+          ],
+        ),
+    ],
+  );
+}
+
 }
 
 class _ConnectorPainter extends CustomPainter {
@@ -129,18 +149,18 @@ class _ConnectorPainter extends CustomPainter {
       ..style = PaintingStyle.stroke;
 
     // Coordenades relatives per als elements
-    final Offset expOffset = Offset(size.width / 2, 24); // Expresió
-    final Offset almaOffset = Offset(size.width / 3, size.height / 2 - 30); // Alma
-    final Offset personalitatOffset = Offset(2 * size.width / 3, size.height / 2 - 40); // Personalitat
-    final Offset missioOffset = Offset(size.width / 2, size.height - 24); // Missió
+    final Offset expOffset = Offset(size.width / 2, 20); // Expresió
+    final Offset almaOffset = Offset(size.width / 3, size.height / 2 - 25); // Alma
+    final Offset personalitatOffset = Offset(2 * size.width / 3, size.height / 2 - 30); // Personalitat
+    final Offset missioOffset = Offset(size.width / 2, size.height - 55); // Missió
 
     // Dibuixar línies connectores
     canvas.drawLine(expOffset, almaOffset, paint);
     canvas.drawLine(expOffset, personalitatOffset, paint);
-    canvas.drawLine(almaOffset, missioOffset, paint);
-    canvas.drawLine(personalitatOffset, missioOffset, paint);
+    canvas.drawLine(expOffset, missioOffset, paint);
   }
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
+

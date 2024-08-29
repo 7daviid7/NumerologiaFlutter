@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 
 class LifePathWidget extends StatelessWidget {
   final Map<String, int> values;
-  final String date; // Afegeix una variable per a la data
+  final String date;
 
   LifePathWidget({required this.values, required this.date});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(8.0), // Reduïm el padding
       decoration: BoxDecoration(
         border: Border.all(color: Colors.black),
         borderRadius: BorderRadius.circular(8.0),
@@ -20,13 +20,11 @@ class LifePathWidget extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // Títol General
                 Text(
                   'Camí de vida',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16), // Reduïm la mida del text
                 ),
-                SizedBox(height: 20),
-                // CustomPaint per les línies
+                SizedBox(height: 12), // Reduïm l'alçada entre els elements
                 CustomPaint(
                   painter: _LifePathPainter(),
                   child: LayoutBuilder(
@@ -34,15 +32,13 @@ class LifePathWidget extends StatelessWidget {
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          // Camí de Vida
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               _buildPersonalityBox('Camí de Vida', values['Camino de Vida'] ?? 0),
                             ],
                           ),
-                          SizedBox(height: 40),
-                          // Cicles
+                          SizedBox(height: 20), // Reduïm l'alçada entre els elements
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
@@ -51,8 +47,7 @@ class LifePathWidget extends StatelessWidget {
                               _buildPersonalityBox('Cosecha', values['Cosecha'] ?? 0),
                             ],
                           ),
-                          SizedBox(height: 40),
-                          // Realitzacions
+                          SizedBox(height: 20), // Reduïm l'alçada entre els elements
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
@@ -70,37 +65,35 @@ class LifePathWidget extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(width: 40), // Augmenta l'espai entre el gràfic i la columna de la dreta
+          SizedBox(width: 20), // Reduïm l'amplada entre el gràfic i la columna de la dreta
           Padding(
-            padding: const EdgeInsets.only(right: 50.0), // Afegeix un marge addicional a la dreta
+            padding: const EdgeInsets.only(right: 20.0), // Reduïm el padding dret
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Títol Data
                 Text(
                   'Data:',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14), // Reduïm la mida del text
                 ),
-                SizedBox(height: 8),
-                // Data
+                SizedBox(height: 4), // Reduïm l'alçada entre els elements
                 Container(
-                  padding: EdgeInsets.all(8.0),
+                  padding: EdgeInsets.all(6.0), // Reduïm el padding
                   decoration: BoxDecoration(
                     color: Colors.blue[50],
-                    borderRadius: BorderRadius.circular(8.0),
+                    borderRadius: BorderRadius.circular(6.0), // Reduïm la curvatura
                     boxShadow: [
                       BoxShadow(
                         color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 2,
-                        blurRadius: 5,
-                        offset: Offset(0, 3), // Canvia la posició de l'ombra
+                        spreadRadius: 1,
+                        blurRadius: 3,
+                        offset: Offset(0, 2), // Reduïm l'ombra
                       ),
                     ],
                   ),
-                  child: Center( // Centrar el text de la data
+                  child: Center(
                     child: Text(
                       date,
-                      style: TextStyle(fontSize: 16),
+                      style: TextStyle(fontSize: 14), // Reduïm la mida del text
                     ),
                   ),
                 ),
@@ -114,24 +107,24 @@ class LifePathWidget extends StatelessWidget {
 
   Widget _buildPersonalityBox(String label, int value) {
     return Container(
-      width: 120,
-      height: 100,
+      width: 80, // Reduïm l'amplada
+      height: 60, // Reduïm l'alçada
       decoration: BoxDecoration(
         color: Colors.blue[100],
-        borderRadius: BorderRadius.circular(8.0),
+        borderRadius: BorderRadius.circular(6.0), // Reduïm la curvatura
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
             label,
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold), // Reduïm la mida del text
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 8),
+          SizedBox(height: 4), // Reduïm l'alçada entre el text i el valor
           Text(
             value.toString(),
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold), // Reduïm la mida del text
           ),
         ],
       ),
@@ -144,27 +137,23 @@ class _LifePathPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final Paint paint = Paint()
       ..color = Colors.black
-      ..strokeWidth = 2
+      ..strokeWidth = 1.5 // Reduïm l'amplada de les línies
       ..style = PaintingStyle.stroke;
 
     // Coordenades relatives per als elements
-    final Offset camiDeVidaOffset = Offset(size.width / 2, 40); // Camí de Vida
-    final Offset formacioOffset = Offset(size.width / 4, size.height / 2); // Formació
-    final Offset produccioOffset = Offset(size.width / 2, size.height / 2); // Producció
-    final Offset cosechaOffset = Offset(3 * size.width / 4, size.height / 2); // Cosecha
-
-    final Offset forzaOffset = Offset(size.width / 4 - 80, size.height - 80); // Força
-
-    final Offset realitzacio1Offset = Offset(size.width / 2.5, size.height - 80); // Realització 1
-    final Offset realitzacio2Offset = Offset(size.width / 1.6, size.height - 80); // Realització 2
-    final Offset realitzacio3Offset = Offset(size.width / 1.2, size.height - 80); // Realització 3
+    final Offset camiDeVidaOffset = Offset(size.width / 2, 20); // Ajustem la posició
+    final Offset formacioOffset = Offset(size.width / 4, size.height / 2 - 20); // Ajustem la posició
+    final Offset produccioOffset = Offset(size.width / 2, size.height / 2 - 20); // Ajustem la posició
+    final Offset cosechaOffset = Offset(3 * size.width / 4, size.height / 2 - 20); // Ajustem la posició
+    final Offset forzaOffset = Offset(size.width / 4 - 40, size.height - 40); // Ajustem la posició
+    final Offset realitzacio1Offset = Offset(size.width / 2.5, size.height - 40); // Ajustem la posició
+    final Offset realitzacio2Offset = Offset(size.width / 1.6, size.height - 40); // Ajustem la posició
+    final Offset realitzacio3Offset = Offset(size.width / 1.2, size.height - 40); // Ajustem la posició
 
     // Dibuixar línies connectores
     canvas.drawLine(camiDeVidaOffset, formacioOffset, paint);
     canvas.drawLine(camiDeVidaOffset, produccioOffset, paint);
     canvas.drawLine(camiDeVidaOffset, cosechaOffset, paint);
-
-    // Connexions per a realitzacions
     canvas.drawLine(formacioOffset, forzaOffset, paint);
     canvas.drawLine(produccioOffset, realitzacio1Offset, paint);
     canvas.drawLine(produccioOffset, realitzacio2Offset, paint);
