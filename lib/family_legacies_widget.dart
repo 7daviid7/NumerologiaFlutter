@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'numerology_calculation.dart'; // Importa la funció de reducció
+import 'numerology_calculation.dart';
 
 class FamilyHeritageWidget extends StatelessWidget {
-  final Map<String, int> values; // Map que conté els valors (HHP, NCS, etc.)
+  final Map<String, int> values;
 
   FamilyHeritageWidget({required this.values});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(8.0),
       decoration: BoxDecoration(
         border: Border.all(color: Colors.black),
         borderRadius: BorderRadius.circular(8.0),
@@ -17,91 +17,99 @@ class FamilyHeritageWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Títol General
           Text(
             'Herències Familiars',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
           ),
-          SizedBox(height: 20),
-          // Dues columnes amb les cartes
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Primera columna
-              Expanded(
-                child: Column(
-                  children: _buildColumnItems(0),
-                ),
-              ),
-              SizedBox(width: 16), // Espai entre les columnes
-              // Segona columna
-              Expanded(
-                child: Column(
-                  children: _buildColumnItems(1),
-                ),
-              ),
-            ],
+          SizedBox(height: 8),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              if (constraints.maxWidth > 600) {
+                return _buildGridLayout(3); // 3 Columnes i 2 Files
+              } else {
+                return _buildGridLayout(4); // 4 Columnes i 2 Files
+              }
+            },
           ),
         ],
       ),
     );
   }
 
-  List<Widget> _buildColumnItems(int columnIndex) {
-    List<Widget> items = [];
+  Widget _buildGridLayout(int columns) {
+    int itemsPerColumn = (values.length / columns).ceil();
+
+    List<Widget> columnWidgets = [];
     List<MapEntry<String, int>> entries = values.entries.toList();
 
-    for (int i = columnIndex; i < entries.length; i += 2) {
-      String label = entries[i].key;
-      int value = entries[i].value;
-      int reducedValue = reduceToSingleDigit(value); // Redueix el valor
+    for (int col = 0; col < columns; col++) {
+      int startIndex = col * itemsPerColumn;
+      int endIndex = startIndex + itemsPerColumn;
 
-      items.add(_buildHeritageCard(label, value, reducedValue));
+      if (endIndex > entries.length) endIndex = entries.length;
+
+      List<Widget> columnItems = [];
+      for (int i = startIndex; i < endIndex; i++) {
+        String label = entries[i].key;
+        int value = entries[i].value;
+        int reducedValue = reduceToSingleDigit(value);
+
+        columnItems.add(_buildHeritageCard(label, value, reducedValue));
+      }
+
+      columnWidgets.add(
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: columnItems,
+          ),
+        ),
+      );
+
+      if (col < columns - 1) {
+        columnWidgets.add(SizedBox(width: 4)); // Redueix l'espai entre columnes
+      }
     }
 
-    return items;
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: columnWidgets,
+    );
   }
 
   Widget _buildHeritageCard(String label, int value, int reducedValue) {
     return Card(
-      margin: EdgeInsets.symmetric(vertical: 8.0),
-      elevation: 4,
+      margin: EdgeInsets.symmetric(vertical: 2.0), // Redueix l'espai vertical
+      elevation: 1, // Redueix l'elevació per un aspecte més pla
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12.0),
+        borderRadius: BorderRadius.circular(6.0), // Redueix la curvatura de les cantonades
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(6.0), // Redueix el padding intern
         child: Row(
           children: [
             Icon(
               Icons.family_restroom,
               color: Colors.blue[300],
-              size: 40,
+              size: 22, // Redueix la mida de la icona
             ),
-            SizedBox(width: 16),
+            SizedBox(width: 6), // Redueix l'espai entre la icona i el text
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Etiqueta del valor (HHP, NCS, etc.)
                   Text(
                     label,
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 8),
-                  // Mostra del valor original i reduït de manera destacada
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        '$value/$reducedValue',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.blue[900],
-                        ),
-                      ),
-                    ],
+                  SizedBox(height: 2),
+                  Text(
+                    '$value/$reducedValue',
+                    style: TextStyle(
+                      fontSize: 16, // Redueix la mida del text
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blue[900],
+                    ),
                   ),
                 ],
               ),
