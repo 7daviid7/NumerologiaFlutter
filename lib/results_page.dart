@@ -7,7 +7,8 @@ import 'data_table.dart';
 import 'name_with_values_widget.dart';
 import 'personality_area_widget.dart';
 import 'life_path_widget.dart';
-import 'print_preview_dialog.dart'; // Importa el diàleg de vista prèvia // Importa el servei d'impressió
+import 'print_preview_dialog.dart'; 
+
 
 class ResultsPage extends StatefulWidget {
   final String name;
@@ -24,6 +25,8 @@ class ResultsPageState extends State<ResultsPage> {
   late Map<String, int> mapVida;
   late Map<String, int> mapDesafio;
   late Map<String, int> mapHerencies;
+  late Map<String, int> mapPrimerArc;
+  late Map<String, int> mapSegonArc;
   late Map<String, List<List<int>>> taula;
 
   final GlobalKey _globalKey = GlobalKey();
@@ -37,6 +40,7 @@ class ResultsPageState extends State<ResultsPage> {
     initVariables();
     final results = calculateValues(widget.name, widget.date);
     taula = calculsTaula(widget.name);
+    
     List<String> personalidad = [
       'Alma',
       'Expresión',
@@ -60,10 +64,15 @@ class ResultsPageState extends State<ResultsPage> {
 
     List<String> herencies = ['HHP', 'NCS', 'DM', 'EJE', 'MF', 'MS', 'MFE'];
 
+    List<String> primerArc = ['NL', 'Expresión', 'Desarrollar', 'Apertura'];
+    List<String> segonArc = ['NL', 'Alma', 'Evolutivo', 'Renacer'];
+
     mapPersonalidad = valors(results, personalidad);
     mapVida = valors(results, camiDeVida);
     mapDesafio = valors(results, desafio);
     mapHerencies = valors(results, herencies);
+    mapPrimerArc = valors(results, primerArc);
+    mapSegonArc= valors(results, segonArc);
   }
 
   @override
@@ -142,7 +151,14 @@ class ResultsPageState extends State<ResultsPage> {
                     SizedBox(width: 20),
                     Expanded(
                       flex: 1, // Tercera columna amb el menor espai
-                      child: ArcWidget(values: mapHerencies),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ArcWidget(values: mapPrimerArc),
+                          SizedBox(height: 5),
+                          //ArcWidget(values: mapSegonArc),
+                        ],
+                      ),
                     ),
                   ],
                 ),

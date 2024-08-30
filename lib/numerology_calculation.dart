@@ -31,8 +31,124 @@ Map<String, int>calculateValues(String name, String data)
   results['Misión'] = mision; 
   int iniciacio=((results['Misión']??0)+(results['Alma']??0)+(results['Dia']??0)); 
   results['Iniciacio'] = iniciacio;
+  int valorNl= nl(); 
+  results ['NL'] =  valorNl;
+  int desarrollar= valorNl+(results['Expresión']??0);
+  results ['Desarrollar'] =  desarrollar;
+  results ['Apertura'] = desarrollar + desarrollar; 
+
+  int evolutivo= valorNl+(results['Alma']??0);
+   results ['Evolutivo'] =  evolutivo;
+  results ['Renacer'] = evolutivo + evolutivo; 
   return results;  
 }
+
+int nl() 
+{
+  int nl = nlKarmics();
+  if (nl != 0) {
+    return nl;
+  }
+
+  int sobresurt = nlSobresurt();
+  if (sobresurt != 0) {
+    return sobresurt;
+  }
+
+  int repetits= nlRepetits(); 
+  if(repetits!=0)
+  {
+    return repetits; 
+  }
+
+  return nlNoSobresurt();
+
+}
+
+int nlKarmics()
+{
+  int karmic=0; 
+  for(int i=1; i<=habitants.length; i++)
+  {
+    if(habitants[i]==0)
+    {
+      karmic+=i; 
+    }
+  }
+  return karmic; 
+  
+}
+List<int>habitantsOrdenats(Map<int,int>habitants)
+{
+  // Obtenim els valors del mapa i els ordenem en ordre descendent.
+  List<int> values = habitants.values.toList();
+  values.sort((a, b) => b.compareTo(a));
+  return values; 
+}
+
+int nlSobresurt()
+{
+  List<int>values=habitantsOrdenats(habitants); 
+  int maxValue = values[0];
+  int secondMaxValue = values[1];
+  if (maxValue-2>=secondMaxValue)
+  {
+    return maxValue; 
+  }
+  else 
+  {
+    return 0; 
+  }
+}
+
+int nlNoSobresurt()
+{
+  List<int>values=habitantsOrdenats(habitants); 
+  int maxValue = values[0];
+  int secondMaxValue = values[1];
+  return maxValue+secondMaxValue; 
+}
+
+int nlRepetits() {
+  // Crear un mapa per comptar les aparicions de cada valor.
+  Map<int, int> comptatges = {};
+
+  // Recorrem els valors del mapa 'habitants'.
+  for (int valor in habitants.values) {
+    // Si el valor ja existeix en el mapa de comptatge, l'incrementem.
+    // Si no, l'afegim al mapa amb un comptatge inicial de 1.
+    if (comptatges.containsKey(valor)) {
+      comptatges[valor] = comptatges[valor]! + 1;
+    } else {
+      comptatges[valor] = 1;
+    }
+  }
+
+  // Trobar el valor més repetit i el seu comptatge.
+  int valorMesRepetit = 0;
+  int maxComptatge = 0;
+  comptatges.forEach((valor, comptatge) {
+    if (comptatge > maxComptatge) {
+      maxComptatge = comptatge;
+      valorMesRepetit = valor;
+    }
+  });
+
+  // Si el valor més repetit es repeteix més de tres cops, tornem a recórrer 'habitants' per sumar les claus.
+  if (maxComptatge >=3) {
+    int sumaKeys = 0;
+    habitants.forEach((key, value) {
+      if (value == valorMesRepetit) {
+        sumaKeys += key;
+      }
+    });
+    return sumaKeys;
+  }
+
+  // Si no hi ha cap valor que es repeteixi més de tres cops, retornem 0.
+  return 0;
+}
+
 
 int recorrerHabitants(int valor)
 {
