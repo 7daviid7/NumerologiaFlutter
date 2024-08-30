@@ -105,7 +105,7 @@ class ResultsPageState extends State<ResultsPage> {
                             flex: 2, // Primer element de la columna amb més espai
                             child: DataTableWidget(tableData: taula),
                           ),
-                          SizedBox(height: 20),
+                          SizedBox(height: 10),
                           // Dividir l'espai restant en dues columnes amb una fila
                           Expanded(
                             flex: 1, // Segon element de la columna amb més espai

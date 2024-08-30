@@ -8,123 +8,180 @@ class LifePathWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(8.0), // Reduïm el padding
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.black),
-        borderRadius: BorderRadius.circular(8.0),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  'Camí de vida',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16), // Reduïm la mida del text
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        double availableWidth = constraints.maxWidth;
+        double availableHeight = constraints.maxHeight;
+
+        double boxWidth = availableWidth * 0.17; // Amplada de les caixes
+        double boxHeight = availableHeight * 0.2; // Alçada de les caixes
+        double spacing = availableHeight * 0.02; // Espai entre els elements
+        double textFontSizeTitle = availableWidth * 0.03; // Mida del text del títol
+        double textFontSizeDate = availableWidth * 0.03; // Mida del text de la data
+
+        return Container(
+          padding: EdgeInsets.all(spacing),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.black),
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Camí de vida',
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: textFontSizeTitle),
+                    ),
+                    SizedBox(height: spacing * 2),
+                    CustomPaint(
+                      size: Size(availableWidth, availableHeight * 0.7),
+                      painter: _LifePathPainter(),
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  _buildPersonalityBox(
+                                    'Camí de Vida',
+                                    values['Camino de Vida'] ?? 0,
+                                    boxWidth,
+                                    boxHeight,
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: spacing * 2),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  _buildPersonalityBox(
+                                    'Formació',
+                                    values['Formación'] ?? 0,
+                                    boxWidth,
+                                    boxHeight,
+                                  ),
+                                  _buildPersonalityBox(
+                                    'Producció',
+                                    values['Producción'] ?? 0,
+                                    boxWidth,
+                                    boxHeight,
+                                  ),
+                                  _buildPersonalityBox(
+                                    'Cosecha',
+                                    values['Cosecha'] ?? 0,
+                                    boxWidth,
+                                    boxHeight,
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: spacing * 2),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  _buildPersonalityBox(
+                                    'Realització 1',
+                                    values['Fuerza'] ?? 0,
+                                    boxWidth,
+                                    boxHeight,
+                                  ),
+                                  _buildPersonalityBox(
+                                    'Realització 2',
+                                    values['Realizacion1'] ?? 0,
+                                    boxWidth,
+                                    boxHeight,
+                                  ),
+                                  _buildPersonalityBox(
+                                    'Realització 3',
+                                    values['Realizacion2'] ?? 0,
+                                    boxWidth,
+                                    boxHeight,
+                                  ),
+                                  _buildPersonalityBox(
+                                    'Realització 4',
+                                    values['Realizacion3'] ?? 0,
+                                    boxWidth,
+                                    boxHeight,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                  ],
                 ),
-                SizedBox(height: 12), // Reduïm l'alçada entre els elements
-                CustomPaint(
-                  painter: _LifePathPainter(),
-                  child: LayoutBuilder(
-                    builder: (context, constraints) {
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              _buildPersonalityBox('Camí de Vida', values['Camino de Vida'] ?? 0),
-                            ],
-                          ),
-                          SizedBox(height: 20), // Reduïm l'alçada entre els elements
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              _buildPersonalityBox('Formació', values['Formación'] ?? 0),
-                              _buildPersonalityBox('Producció', values['Producción'] ?? 0),
-                              _buildPersonalityBox('Cosecha', values['Cosecha'] ?? 0),
-                            ],
-                          ),
-                          SizedBox(height: 20), // Reduïm l'alçada entre els elements
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              _buildPersonalityBox('Realització 1', values['Fuerza'] ?? 0),
-                              _buildPersonalityBox('Realització 2', values['Realizacion1'] ?? 0),
-                              _buildPersonalityBox('Realització 3', values['Realizacion2'] ?? 0),
-                              _buildPersonalityBox('Realització 4', values['Realizacion3'] ?? 0),
-                            ],
+              ),
+              SizedBox(width: spacing * 2),
+              Padding(
+                padding: EdgeInsets.only(right: spacing * 2),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Data:',
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: textFontSizeDate),
+                    ),
+                    SizedBox(height: spacing / 2),
+                    Container(
+                      padding: EdgeInsets.all(spacing / 2),
+                      decoration: BoxDecoration(
+                        color: Colors.blue[50],
+                        borderRadius: BorderRadius.circular(6.0),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 1,
+                            blurRadius: 3,
+                            offset: Offset(0, 2),
                           ),
                         ],
-                      );
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(width: 20), // Reduïm l'amplada entre el gràfic i la columna de la dreta
-          Padding(
-            padding: const EdgeInsets.only(right: 20.0), // Reduïm el padding dret
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Data:',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14), // Reduïm la mida del text
-                ),
-                SizedBox(height: 4), // Reduïm l'alçada entre els elements
-                Container(
-                  padding: EdgeInsets.all(6.0), // Reduïm el padding
-                  decoration: BoxDecoration(
-                    color: Colors.blue[50],
-                    borderRadius: BorderRadius.circular(6.0), // Reduïm la curvatura
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 1,
-                        blurRadius: 3,
-                        offset: Offset(0, 2), // Reduïm l'ombra
                       ),
-                    ],
-                  ),
-                  child: Center(
-                    child: Text(
-                      date,
-                      style: TextStyle(fontSize: 14), // Reduïm la mida del text
+                      child: Center(
+                        child: Text(
+                          date,
+                          style: TextStyle(fontSize: textFontSizeDate),
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
-  Widget _buildPersonalityBox(String label, int value) {
+  Widget _buildPersonalityBox(String label, int value, double width, double height) {
+    double textSizeLabel = width * 0.12; // Mida del text del label
+    double textSizeValue = width * 0.17; // Mida del text del valor
+
     return Container(
-      width: 80, // Reduïm l'amplada
-      height: 60, // Reduïm l'alçada
+      width: width,
+      height: height,
       decoration: BoxDecoration(
         color: Colors.blue[100],
-        borderRadius: BorderRadius.circular(6.0), // Reduïm la curvatura
+        borderRadius: BorderRadius.circular(6.0),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
             label,
-            style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold), // Reduïm la mida del text
+            style: TextStyle(fontSize: textSizeLabel, fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 4), // Reduïm l'alçada entre el text i el valor
+          SizedBox(height: 4),
           Text(
             value.toString(),
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold), // Reduïm la mida del text
+            style: TextStyle(fontSize: textSizeValue, fontWeight: FontWeight.bold),
           ),
         ],
       ),
@@ -137,18 +194,18 @@ class _LifePathPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final Paint paint = Paint()
       ..color = Colors.black
-      ..strokeWidth = 1.5 // Reduïm l'amplada de les línies
+      ..strokeWidth = 1.5
       ..style = PaintingStyle.stroke;
 
     // Coordenades relatives per als elements
-    final Offset camiDeVidaOffset = Offset(size.width / 2, 20); // Ajustem la posició
-    final Offset formacioOffset = Offset(size.width / 4, size.height / 2 - 20); // Ajustem la posició
-    final Offset produccioOffset = Offset(size.width / 2, size.height / 2 - 20); // Ajustem la posició
-    final Offset cosechaOffset = Offset(3 * size.width / 4, size.height / 2 - 20); // Ajustem la posició
-    final Offset forzaOffset = Offset(size.width / 4 - 40, size.height - 40); // Ajustem la posició
-    final Offset realitzacio1Offset = Offset(size.width / 2.5, size.height - 40); // Ajustem la posició
-    final Offset realitzacio2Offset = Offset(size.width / 1.6, size.height - 40); // Ajustem la posició
-    final Offset realitzacio3Offset = Offset(size.width / 1.2, size.height - 40); // Ajustem la posició
+    final Offset camiDeVidaOffset = Offset(size.width / 2, 20);
+    final Offset formacioOffset = Offset(size.width / 4, size.height / 2 - 20);
+    final Offset produccioOffset = Offset(size.width / 2, size.height / 2 - 20);
+    final Offset cosechaOffset = Offset(3 * size.width / 4, size.height / 2 - 20);
+    final Offset forzaOffset = Offset(size.width / 4 - 40, size.height - 40);
+    final Offset realitzacio1Offset = Offset(size.width / 2.5, size.height - 40);
+    final Offset realitzacio2Offset = Offset(size.width / 1.6, size.height - 40);
+    final Offset realitzacio3Offset = Offset(size.width / 1.2, size.height - 40);
 
     // Dibuixar línies connectores
     canvas.drawLine(camiDeVidaOffset, formacioOffset, paint);

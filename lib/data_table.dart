@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-// Funció per reduir un valor a un sol dígit
 int reduceToSingleDigit(int number) {
   while (number > 9) {
     number = number.toString().split('').map(int.parse).reduce((a, b) => a + b);
@@ -15,22 +14,39 @@ class DataTableWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TextStyle smallTextStyle = TextStyle(fontSize: 11); // Mida de la font reduïda
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        double availableWidth = constraints.maxWidth;
+        double availableHeight = constraints.maxHeight;
 
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: DataTable(
-        columnSpacing: 10, // Redueix l’espai entre columnes
-        dataRowMinHeight: 40, // Ajusta l’alçada de les files
-        columns: _buildColumns(smallTextStyle),
-        rows: _buildRows(smallTextStyle),
-      ),
+        // Ajustem la mida del text segons l'amplada disponible
+        double fontSize = availableWidth / 52;
+
+        // Creem l'estil del text
+        TextStyle smallTextStyle = TextStyle(fontSize: fontSize);
+
+        return SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minWidth: availableWidth),
+            child: Container(
+              width: availableWidth,
+              child: DataTable(
+                columnSpacing: availableWidth / 200, // Espai entre columnes proporcional
+                dataRowMinHeight: availableHeight / 20, // Alçada de les files proporcional
+                columns: _buildColumns(smallTextStyle),
+                rows: _buildRows(smallTextStyle),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 
   List<DataColumn> _buildColumns(TextStyle textStyle) {
     List<DataColumn> columns = [
-      DataColumn(label: Text('', style: textStyle)), // Columna vacía per a títols
+      DataColumn(label: Text('', style: textStyle)),
     ];
 
     int maxColumns = tableData.values.map((listOfLists) => listOfLists.length).reduce((a, b) => a > b ? a : b);
@@ -78,7 +94,10 @@ class DataTableWidget extends StatelessWidget {
 
         return DataCell(
           Container(
-            padding: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0), // Redueix el padding
+            padding: EdgeInsets.symmetric(
+              vertical: textStyle.fontSize! * 0.6, // Ajustament dinàmic del padding
+              horizontal: textStyle.fontSize! * 0.5, // Ajustament dinàmic del padding
+            ),
             child: Text(cellContent, style: textStyle),
           ),
         );
