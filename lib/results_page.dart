@@ -155,8 +155,8 @@ class ResultsPageState extends State<ResultsPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           ArcWidget(values: mapPrimerArc),
-                          SizedBox(height: 5),
-                          //ArcWidget(values: mapSegonArc),
+                          SizedBox(height: 20),
+                          ArcWidget(values: mapSegonArc),
                         ],
                       ),
                     ),

@@ -15,7 +15,7 @@ class NameWithValuesWidget extends StatelessWidget {
 
         // Ajusta les mides i espais segons l'espai disponible
         double fontSize = availableWidth/14 * 0.2; // Tamany de la lletra
-        double valueFontSize = fontSize * 0.5; // Tamany per als valors
+        double valueFontSize = fontSize * 0.8; // Tamany per als valors
         double letterSpacing = fontSize * 0.3; // Espai entre lletres
         double wordSpacing = fontSize * 2.3; // Espai entre paraules
         double rowSpacing = fontSize * 0.5; // Espai entre files

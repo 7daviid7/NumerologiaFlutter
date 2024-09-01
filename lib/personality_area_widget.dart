@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'numerology_calculation.dart';
 
 class PersonalityAreaWidget extends StatelessWidget {
   final Map<String, int> personalityValues;
@@ -16,14 +17,14 @@ class PersonalityAreaWidget extends StatelessWidget {
         double baseWidth = availableWidth;
         double baseHeight = availableHeight;
 
-        double circleRadius = baseWidth * 0.05; // Radi del cercle
+        double circleRadius = baseWidth * 0.055; // Radi del cercle
         double squareWidth = baseWidth * 0.15; // Amplada del quadrat
         double squareHeight = baseHeight * 0.2; // Alçada del quadrat
         double textFontSize = baseWidth * 0.02; // Mida de la lletra
         double spacing = baseHeight * 0.02; // Espai entre els elements
 
         return Container(
-          padding: EdgeInsets.all(spacing*2),
+          padding: EdgeInsets.all(spacing*1.5),
           decoration: BoxDecoration(
             border: Border.all(color: Colors.black),
             borderRadius: BorderRadius.circular(4.0),
@@ -52,7 +53,7 @@ class PersonalityAreaWidget extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(width: spacing),
+              SizedBox(width: 0),
               // Contingut central
               Expanded(
                 child: Column(
@@ -66,7 +67,7 @@ class PersonalityAreaWidget extends StatelessWidget {
                         fontSize: textFontSize * 1.5, // Mida del títol
                       ),
                     ),
-                    SizedBox(height: spacing),
+                    SizedBox(height: 1),
                     // CustomPaint per les línies
                     CustomPaint(
                       size: Size(availableWidth, availableHeight),
@@ -86,7 +87,7 @@ class PersonalityAreaWidget extends StatelessWidget {
                               ),
                             ],
                           ),
-                          SizedBox(height: spacing),
+                          SizedBox(height: 0),
                           // Alma i Personalitat
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -124,7 +125,7 @@ class PersonalityAreaWidget extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(width: spacing),
+              SizedBox(width: 0),
               // Columna dreta
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -146,63 +147,110 @@ class PersonalityAreaWidget extends StatelessWidget {
   }
 
   Widget _buildPersonalitySquare(String label, int value, double width, double height, double fontSize) {
-    return Container(
-      width: width,
-      height: height,
-      decoration: BoxDecoration(
-        color: Colors.blue[100],
-        borderRadius: BorderRadius.circular(4.0),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            label,
-            style: TextStyle(fontSize: fontSize * 1, fontWeight: FontWeight.bold), // Mida del text ajustada
-          ),
-          SizedBox(height: 2),
-          Text(
-            value.toString(),
-            style: TextStyle(fontSize: fontSize * 1.2, fontWeight: FontWeight.bold), // Mida del text ajustada
-          ),
-        ],
-      ),
-    );
-  }
+  int reducedValue= reduceToSingleDigit(value); 
+  bool masterNumber = isMasterNumber(reducedValue);
+  
 
-  Widget _buildPersonalityCircle(String label, int value, double radius, double fontSize) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
+
+  return Container(
+    width: width,
+    height: height,
+    decoration: BoxDecoration(
+      color: Colors.blue[100],
+      borderRadius: BorderRadius.circular(4.0),
+    ),
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        // Si l'etiqueta és 'Missió', col·loca el text a sobre del cercle
-        if (label == 'Expresió')
-          Text(
-            label,
-            style: TextStyle(fontSize: fontSize * 1),
-          ),
-        SizedBox(height: 3),
-        CircleAvatar(
-          radius: radius,
-          backgroundColor: Colors.blue[100],
-          child: Text(
-            value.toString(),
-            style: TextStyle(fontSize: fontSize * 1.4, fontWeight: FontWeight.bold),
-          ),
+        Text(
+          label,
+          style: TextStyle(fontSize: fontSize * 1, fontWeight: FontWeight.bold), // Mida del text ajustada
         ),
-        // Espai fix si l'etiqueta és 'Missió' per evitar que el text es superposi
-        if (label != 'Expresió')
-          Column(
+        SizedBox(height: 2),
+        RichText(
+          text: TextSpan(
             children: [
-              SizedBox(height: 2),
-              Text(
-                label,
-                style: TextStyle(fontSize: fontSize * 1),
+              TextSpan(
+                text: '$value/$reducedValue',
+                style: TextStyle(
+                  fontSize: fontSize * 2, // Mida del text ajustada
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black, // Color del text
+                ),
               ),
+              if (masterNumber)
+                TextSpan(
+                  text: '(${reduceToSingleDigitResult(reducedValue)})',
+                  style: TextStyle(
+                    fontSize: fontSize * 1.2, // Mida del text ajustada
+                    fontWeight: FontWeight.bold,
+                    color: Colors.red, // Color del text reduït
+                    backgroundColor: Colors.yellow, // Fons per ressaltar
+                  ),
+                ),
             ],
           ),
+        ),
       ],
-    );
-  }
+    ),
+  );
+}
+
+Widget _buildPersonalityCircle(String label, int value, double radius, double fontSize) {
+  int reducedValue= reduceToSingleDigit(value); 
+  bool masterNumber = isMasterNumber(reducedValue);
+
+  return Column(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      if (label == 'Expresió')
+        Text(
+          label,
+          style: TextStyle(fontSize: fontSize * 1),
+        ),
+      SizedBox(height: 3),
+      CircleAvatar(
+        radius: radius,
+        backgroundColor: Colors.blue[100],
+        child: RichText(
+          textAlign: TextAlign.center,
+          text: TextSpan(
+            children: [
+              TextSpan(
+                text: '$value/$reducedValue',
+                style: TextStyle(
+                  fontSize: fontSize * 1.6, // Mida del text ajustada
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black, // Color del text
+                ),
+              ),
+              if (masterNumber)
+                TextSpan(
+                  text: ' (${reduceToSingleDigitResult(reducedValue)})',
+                  style: TextStyle(
+                    fontSize: fontSize * 1.6, // Mida del text reduït ajustada
+                    fontWeight: FontWeight.bold,
+                    color: Colors.red, // Color del text reduït
+                    backgroundColor: Colors.yellow, // Fons per ressaltar
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+      if (label != 'Expresió')
+        Column(
+          children: [
+            SizedBox(height: 2),
+            Text(
+              label,
+              style: TextStyle(fontSize: fontSize * 1),
+            ),
+          ],
+        ),
+    ],
+  );
+}
 }
 
 class _ConnectorPainter extends CustomPainter {

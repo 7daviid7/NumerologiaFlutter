@@ -17,7 +17,7 @@ class ChallengesWidget extends StatelessWidget {
         double itemFontSize = availableWidth * 0.06;  // Mida del text per als elements com a proporció de l'amplada
         double iconSize = availableWidth * 0.1;      // Mida de la icona com a proporció de l'amplada
         double spacing = availableWidth * 0.02;        // Espai entre elements com a proporció de l'amplada
-        double padding = availableWidth * 0.04;        // Padding com a proporció de l'amplada
+        double padding = availableWidth * 0.02;        // Padding com a proporció de l'amplada
 
         TextStyle titleTextStyle = TextStyle(
           fontWeight: FontWeight.bold,
@@ -29,7 +29,7 @@ class ChallengesWidget extends StatelessWidget {
         );
 
         TextStyle valueTextStyle = TextStyle(
-          fontSize: itemFontSize,
+          fontSize: itemFontSize*1.9,
           color: Colors.blue[900],
         );
 

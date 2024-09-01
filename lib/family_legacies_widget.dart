@@ -17,7 +17,7 @@ class FamilyHeritageWidget extends StatelessWidget {
         double cardMargin = availableHeight * 0.01; // Margin de les targetes
         double cardElevation = availableHeight * 0.005; // Elevació de les targetes
         double iconSize = availableWidth * 0.05; // Mida de la icona
-        double textFontSize = availableWidth * 0.028; // Mida del text
+        double textFontSize = availableWidth * 0.034; // Mida del text
         double spacing = availableWidth * 0.01; // Espai entre columnes
 
         return Container(
@@ -104,59 +104,79 @@ class FamilyHeritageWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildHeritageCard(
-    String label,
-    int value,
-    int reducedValue,
-    double cardMargin,
-    double cardElevation,
-    double iconSize,
-    double textFontSize,
-  ) {
-    return Card(
-      margin: EdgeInsets.symmetric(vertical: cardMargin), // Margin vertical
-      elevation: cardElevation, // Elevació de la targeta
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(6.0), // Radius de les cantonades
-      ),
-      color: Colors.blue[100], // Color blau suau per a la targeta
-      child: Padding(
-        padding: const EdgeInsets.all(6.0), // Padding intern
-        child: Row(
-          children: [
-            Icon(
-              Icons.family_restroom,
-              color: const Color.fromARGB(255, 8, 9, 9), // Color de la icona
-              size: iconSize, // Mida de la icona
-            ),
-            SizedBox(width: 6), // Espai entre icona i text
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    label,
-                    style: TextStyle(
-                      fontSize: textFontSize * 0.6, // Mida del text de l'etiqueta
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blue[600], // Color del text
-                    ),
+ Widget _buildHeritageCard(
+  String label,
+  int value,
+  int reducedValue,
+  double cardMargin,
+  double cardElevation,
+  double iconSize,
+  double textFontSize,
+) {
+  bool masterNumber = isMasterNumber(reducedValue);
+  int finalReducedValue = masterNumber ? reduceToSingleDigitResult(reducedValue) : reducedValue;
+
+  return Card(
+    margin: EdgeInsets.symmetric(vertical: cardMargin), // Màrgen vertical
+    elevation: cardElevation, // Elevació de la targeta
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(6.0), // Radius de les cantonades
+    ),
+    color: Colors.blue[100], // Color blau suau per a la targeta
+    child: Padding(
+      padding: const EdgeInsets.all(6.0), // Padding intern
+      child: Row(
+        children: [
+          Icon(
+            Icons.family_restroom,
+            color: const Color.fromARGB(255, 8, 9, 9), // Color de la icona
+            size: iconSize, // Mida de la icona
+          ),
+          SizedBox(width: 6), // Espai entre icona i text
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: textFontSize * 0.6, // Mida del text de l'etiqueta
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue[600], // Color del text
                   ),
-                  SizedBox(height: 2),
-                  Text(
-                    '$value/$reducedValue',
-                    style: TextStyle(
-                      fontSize: textFontSize, // Mida del text del valor
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blue[900], // Color del text
-                    ),
+                ),
+                SizedBox(height: 2),
+                RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: '$value/$reducedValue ',
+                        style: TextStyle(
+                          fontSize: textFontSize, // Mida del text del valor
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blue[900], // Color del text
+                        ),
+                      ),
+                      if (masterNumber)
+                        TextSpan(
+                          text: '($finalReducedValue)',
+                          style: TextStyle(
+                            fontSize: textFontSize, // Mida del text del valor reduït
+                            fontWeight: FontWeight.bold,
+                            color: Colors.red, // Color del text reduït
+                            backgroundColor: Colors.yellow, // Color de fons per encerclar
+                          ),
+                        ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
-    );
-  }
+    ),
+  );
+}
+
 }

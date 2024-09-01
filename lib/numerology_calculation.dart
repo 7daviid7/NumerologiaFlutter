@@ -4,7 +4,7 @@ import 'package:diacritic/diacritic.dart';
 // Creem un mapa que assigna un valor a cada lletra
 final Map<String, int> letterValues = {
   'A': 1, 'B': 2, 'C': 3, 'D': 4, 'E': 5, 'F': 6, 'G': 7, 'H': 8, 'I': 9,
-  'J': 1, 'K': 2, 'L': 3, 'M': 4, 'N': 5, 'O': 6, 'P': 7, 'Q': 8, 'R': 9,
+  'J': 1, 'K': 2, 'L': 3, 'M': 4, 'N': 5, 'Ñ': 5, 'O': 6, 'P': 7, 'Q': 8, 'R': 9,
   'S': 1, 'T': 2, 'U': 3, 'V': 4, 'W': 5, 'X': 6, 'Y': 7, 'Z': 8,
 };
 Map<int, int> habitants = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0};
@@ -13,6 +13,7 @@ int totalLletres=0;
 void initVariables()
 {
   habitants = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0};
+  totalLletres=0; 
 }
 
 
@@ -164,8 +165,10 @@ Map<String,int>calculateHerencies()
 {
   int HPP= recorrerHabitants(1); 
   int NCS= recorrerHabitants(6); 
-  int MF= totalLletres+HPP; 
-  int MS= totalLletres+NCS; 
+  int MF= 0; 
+  int MS= 0; 
+  MF=totalLletres+HPP; 
+  MS= totalLletres+NCS; 
 
   return{'HHP': HPP, 'NCS': NCS, 'DM': HPP+NCS, 'EJE': habitants[5]??0, 
     'MF': MF, 'MS': MS, 'MFE': MF+MS};
@@ -264,13 +267,40 @@ bool isVowel(String char) {
   
   return taula;
 }
-int reduceToSingleDigit(int number) {
 
+bool isMasterNumber(int number) {
+  // Convertir el número en una cadena de caràcters
+  if(number<10  )return false; 
+  String numStr = number.toString();
+
+  // Comprovar si totes les xifres són iguals
+  return numStr.split('').every((digit) => digit == numStr[0]);
+}
+
+int reduceToSingleDigit(int number) {
+  // Continuar fins que el número tingui només una xifra o sigui un número mestre
+  while (number > 9) {
+    // Comprovar si el número és mestre
+    if (isMasterNumber(number)) {
+      return number;
+    }
+    
+    // Reduir el número sumant les seves xifres
+    number = number.toString().split('').map(int.parse).reduce((a, b) => a + b);
+  }
+  
+  return number;
+}
+
+int reduceToSingleDigitResult(int number) 
+{
   while (number > 9) {
     number = number.toString().split('').map(int.parse).reduce((a, b) => a + b);
   }
   return number;
 }
+
+
 
 
 void modificarHabitants(Map<String, List<List<int>>>taula)
@@ -295,8 +325,25 @@ void modificarMatices(Map<String, List<List<int>>>taula, String iteracio, String
     if(valor1!=0)
     {
       valor2= reduceToSingleDigit(taula[iteracio]![valor1-1][0]);
-      valor3= reduceToSingleDigit(taula[iteracio]![valor2-1][0]);
-      valor4= reduceToSingleDigit(taula[iteracio]![valor3-1][0]); 
+      if(valor2!=0)
+      {
+        valor3= reduceToSingleDigit(taula[iteracio]![valor2-1][0]);
+        if(valor3!=0)
+        {
+          valor4= reduceToSingleDigit(taula[iteracio]![valor3-1][0]); 
+        }
+        else 
+        {
+          valor4=0; 
+        }
+        
+      }
+      else 
+      {
+        valor3=0; 
+        valor4=0; 
+      }
+     
     }
     else 
     {
@@ -305,7 +352,6 @@ void modificarMatices(Map<String, List<List<int>>>taula, String iteracio, String
       valor4=0; 
     }
     taula[matices]![i] = [valor2, valor3, valor4];
-
   }
 }
 void modificarPuentes(Map<String, List<List<int>>>taula)

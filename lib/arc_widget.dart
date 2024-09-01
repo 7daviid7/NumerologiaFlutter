@@ -31,7 +31,7 @@ class ArcPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final Paint paint = Paint()
       ..color = Colors.black
-      ..strokeWidth = 2
+      ..strokeWidth = 3
       ..style = PaintingStyle.stroke;
 
     // Defineix el centre de la fletxa
@@ -62,12 +62,12 @@ class ArcPainter extends CustomPainter {
       // Primers i segons valors per als extrems del semicercle
       final arcLeft = Offset(arcCenter.dx - arcRadius, arcCenter.dy);
       final arcRight = Offset(arcCenter.dx + arcRadius, arcCenter.dy);
-      _drawText(canvas, "${values.keys.elementAt(0)}", values.values.elementAt(0), arcLeft + Offset(-30, 20));
-      _drawText(canvas, "${values.keys.elementAt(1)}", values.values.elementAt(1), arcRight + Offset(30, 20));
+      _drawText(canvas, "${values.keys.elementAt(0)}", values.values.elementAt(0), arcLeft + Offset(0, 20));
+      _drawText(canvas, "${values.keys.elementAt(1)}", values.values.elementAt(1), arcRight + Offset(1, 20));
 
       // Tercer i quart valors per als extrems de la fletxa
       _drawText(canvas, "${values.keys.elementAt(2)}", values.values.elementAt(2), arrowEnd + Offset(0, -30));
-      _drawText(canvas, "${values.keys.elementAt(3)}", values.values.elementAt(3), arrowStart + Offset(0, 10));
+      _drawText(canvas, "${values.keys.elementAt(3)}", values.values.elementAt(3), arrowStart + Offset(0, 20));
     }
   }
 
