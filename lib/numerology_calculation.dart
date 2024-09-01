@@ -193,15 +193,19 @@ Map<String, int>calculateDataValues(String data)
   }
 
   // Sumem el dia i el mes
-  int fuerza = dia + mes;
-  int caminoVida= fuerza+any; 
-  int desafio1= reduceToSingleDigit((dia-mes).abs()); 
-  int desafio2= reduceToSingleDigit((dia-any).abs());
-  return {'Fuerza': fuerza, 'Camino de Vida': caminoVida, 'Dia':dia, 'Mes': mes, 
+  int fuerza = dia+mes;
+  int anyReduit=reduceToSingleDigitResult(any);
+  int diaReduit=reduceToSingleDigitResult(dia); 
+  int mesReduit=reduceToSingleDigitResult(mes);
+  int forzaReduit= reduceToSingleDigitResult(fuerza);
+  int total= fuerza+any; 
+  int desafio1= (diaReduit-mesReduit).abs(); 
+  int desafio2= (diaReduit-anyReduit).abs(); 
+  return {'Fuerza': fuerza, 'Camino de Vida': cosecha1+diaReduit+mesReduit, 'Dia':dia, 'Mes': mes, 
   'Any': any, 'Formación': mes, 'Producción':dia, 'Cosecha': cosecha1,
-  'Realizacion1': dia+any,'Realizacion2': fuerza+dia+any,'Realizacion3': mes+any, 
+  'Realizacion1': diaReduit+anyReduit,'Realizacion2': forzaReduit+diaReduit+anyReduit,'Realizacion3': mesReduit+anyReduit, 
   'Desafio1': desafio1,'Desafio2': desafio2, 
-  'Desafio3': (desafio1-desafio2).abs(), };
+  'Desafio3': (desafio1-desafio2).abs(),'Total': total };
 }
 
 Map<String, int> calculateNameValues(String name) 
@@ -277,20 +281,18 @@ bool isMasterNumber(int number) {
   return numStr.split('').every((digit) => digit == numStr[0]);
 }
 
-int reduceToSingleDigit(int number) {
-  // Continuar fins que el número tingui només una xifra o sigui un número mestre
-  while (number > 9) {
-    // Comprovar si el número és mestre
-    if (isMasterNumber(number)) {
-      return number;
+  int reduceToSingleDigit(int number) {
+    // Continuar fins que el número tingui només una xifra o sigui un número mestre
+    while (number > 9) {
+      // Comprovar si el número és mestre
+      if (isMasterNumber(number)) {
+        return number;
+      }
+      // Reduir el número sumant les seves xifres
+      number = number.toString().split('').map(int.parse).reduce((a, b) => a + b);
     }
-    
-    // Reduir el número sumant les seves xifres
-    number = number.toString().split('').map(int.parse).reduce((a, b) => a + b);
+    return number;
   }
-  
-  return number;
-}
 
 int reduceToSingleDigitResult(int number) 
 {

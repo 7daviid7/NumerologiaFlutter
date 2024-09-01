@@ -58,6 +58,7 @@ class ResultsPageState extends State<ResultsPage> {
       'Fuerza',
       'Realizacion1',
       'Realizacion2',
+      'Total',
       'Realizacion3'
     ];
     List<String> desafio = ['Desafio1', 'Desafio2', 'Desafio3'];

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:numerologia/numerology_calculation.dart';
 
 class LifePathWidget extends StatelessWidget {
   final Map<String, int> values;
@@ -14,7 +15,7 @@ class LifePathWidget extends StatelessWidget {
         double availableHeight = constraints.maxHeight;
 
         double boxWidth = availableWidth * 0.17; // Amplada de les caixes
-        double boxHeight = availableHeight * 0.2; // Alçada de les caixes
+        double boxHeight = availableHeight * 0.23; // Alçada de les caixes
         double spacing = availableHeight * 0.02; // Espai entre els elements
         double textFontSizeTitle = availableWidth * 0.03; // Mida del text del títol
         double textFontSizeDate = availableWidth * 0.03; // Mida del text de la data
@@ -149,6 +150,34 @@ class LifePathWidget extends StatelessWidget {
                         ),
                       ),
                     ),
+                    SizedBox(height: spacing / 2),
+                    // Nou text per mostrar el total
+                   Text(
+                      'Total:',
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: textFontSizeDate),
+                    ),
+                    SizedBox(height: spacing / 2),
+                    Container(
+                      padding: EdgeInsets.all(spacing / 2),
+                      decoration: BoxDecoration(
+                        color: Colors.blue[50],
+                        borderRadius: BorderRadius.circular(6.0),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 1,
+                            blurRadius: 3,
+                            offset: Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: Center(
+                        child: Text(
+                          '${values['Total'] ?? 0}',
+                          style: TextStyle(fontSize: textFontSizeDate),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -161,7 +190,11 @@ class LifePathWidget extends StatelessWidget {
 
   Widget _buildPersonalityBox(String label, int value, double width, double height) {
     double textSizeLabel = width * 0.12; // Mida del text del label
-    double textSizeValue = width * 0.17; // Mida del text del valor
+    double textSizeValue = width * 0.24; // Mida del text del valor
+
+    int reducedValue = reduceToSingleDigit(value);
+    bool masterNumber = isMasterNumber(reducedValue); // Números mestres
+    bool reduce = reducedValue == value; // Comprovació si el valor reduït és igual al valor original
 
     return Container(
       width: width,
@@ -178,10 +211,25 @@ class LifePathWidget extends StatelessWidget {
             style: TextStyle(fontSize: textSizeLabel, fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 4),
-          Text(
-            value.toString(),
-            style: TextStyle(fontSize: textSizeValue, fontWeight: FontWeight.bold),
+          SizedBox(height: 0),
+          RichText(
+            text: TextSpan(
+              text: reduce ? '$value   ' : '$value/$reducedValue  ',
+              style: TextStyle(fontSize: textSizeValue, fontWeight: FontWeight.bold, color: Colors.black),
+              children: masterNumber
+                  ? [
+                      TextSpan(
+                        text: '(${reduceToSingleDigitResult(reducedValue)})',
+                        style: TextStyle(
+                          fontSize: textSizeValue * 1, // Mida del text reduït ajustada
+                          fontWeight: FontWeight.bold,
+                          color: Colors.red, // Color del text reduït
+                          backgroundColor: Colors.yellow, // Fons per ressaltar
+                        ),
+                      ),
+                    ]
+                  : [],
+            ),
           ),
         ],
       ),
