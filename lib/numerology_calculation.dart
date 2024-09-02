@@ -28,7 +28,7 @@ Map<String, int>calculateValues(String name, String data)
   results.addAll(dataMap);
   results.addAll(nameMap); 
   results.addAll(herenciesMap); 
-  int mision= (results['Camino de Vida']??0) + (results['Expresión']??0); 
+  int mision= (results['Total']??0) + (results['Expresión']??0); 
   results['Misión'] = mision; 
   int iniciacio=((results['Misión']??0)+(results['Alma']??0)+(results['Dia']??0)); 
   results['Iniciacio'] = iniciacio;

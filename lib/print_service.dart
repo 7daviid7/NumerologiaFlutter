@@ -19,7 +19,13 @@ class PrintService {
   Future<void> printImage(Uint8List imageBytes, String title) async {
     final pdf = pw.Document();
     // Definir el format de pàgina A4 en horitzontal
-    final pageFormat = PdfPageFormat.a4.landscape;
+    final pageFormat = PdfPageFormat.a4.landscape.copyWith(
+    marginLeft: 0.2,
+    marginTop: 0,
+    marginRight: 0,
+    marginBottom: 0,
+  );
+
 
     pdf.addPage(
       pw.Page(

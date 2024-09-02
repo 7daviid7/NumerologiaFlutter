@@ -17,7 +17,7 @@ class PersonalityAreaWidget extends StatelessWidget {
         double baseWidth = availableWidth;
         double baseHeight = availableHeight;
 
-        double circleRadius = baseWidth * 0.055; // Radi del cercle
+        double circleRadius = baseWidth * 0.063; // Radi del cercle
         double squareWidth = baseWidth * 0.15; // Amplada del quadrat
         double squareHeight = baseHeight * 0.2; // Alçada del quadrat
         double textFontSize = baseWidth * 0.02; // Mida de la lletra
