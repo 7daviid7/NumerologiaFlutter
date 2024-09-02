@@ -22,6 +22,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
         ),
         home: InputPage(), // Canvia el widget d'inici
+        debugShowCheckedModeBanner: false,
       ),
     );
   }
