@@ -72,8 +72,8 @@ class ArcPainter extends CustomPainter {
       // Primers i segons valors per als extrems del semicercle
       final arcLeft = Offset(arcCenter.dx - arcRadius, arcCenter.dy);
       final arcRight = Offset(arcCenter.dx + arcRadius, arcCenter.dy);
-      _drawText(canvas, values.keys.elementAt(0), values.values.elementAt(0), arcLeft + Offset(0, 20), titleStyle, valueStyle);
-      _drawText(canvas, values.keys.elementAt(1), values.values.elementAt(1), arcRight + Offset(10, 20), titleStyle, valueStyle);
+      _drawText(canvas, values.keys.elementAt(0), values.values.elementAt(0), arcLeft + Offset(5, 20), titleStyle, valueStyle);
+      _drawText(canvas, values.keys.elementAt(1), values.values.elementAt(1), arcRight + Offset(15, 20), titleStyle, valueStyle);
 
       // Tercer i quart valors per als extrems de la fletxa
       _drawText(canvas, values.keys.elementAt(2), values.values.elementAt(2), arrowEnd + Offset(0, -30), titleStyle, valueStyle);
@@ -108,14 +108,14 @@ class ArcPainter extends CustomPainter {
     valuePainter.layout();
 
     // Calcular l'offset per centrar el text
-    final double xOffset = offset.dx - max(titlePainter.width, valuePainter.width) / 2;
+    final double xOffset = offset.dx - max(titlePainter.width/2, valuePainter.width) / 2;
     final double yOffset = offset.dy;
 
     // Dibuixar el text títol
-    titlePainter.paint(canvas, Offset(xOffset, yOffset - (titlePainter.height / 2) - (valuePainter.height / 2) + 10));
+    titlePainter.paint(canvas, Offset(xOffset-10, yOffset - (titlePainter.height / 2) - (valuePainter.height / 2) + 10));
 
     // Dibuixar el text del valor centrat amb el text títol
-    valuePainter.paint(canvas, Offset(xOffset+7, yOffset + (titlePainter.height / 2) - 25));
+    valuePainter.paint(canvas, Offset(xOffset-2, yOffset + (titlePainter.height / 2) - 25));
   }
 
   @override
