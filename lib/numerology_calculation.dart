@@ -163,9 +163,13 @@ int recorrerHabitants(int valor)
 
 Map<String,int>calculateHerencies()
 {
+  // ignore: non_constant_identifier_names
   int HPP= recorrerHabitants(1); 
+  // ignore: non_constant_identifier_names
   int NCS= recorrerHabitants(6); 
+  // ignore: non_constant_identifier_names
   int MF= 0; 
+  // ignore: non_constant_identifier_names
   int MS= 0; 
   MF=totalLletres+HPP; 
   MS= totalLletres+NCS; 

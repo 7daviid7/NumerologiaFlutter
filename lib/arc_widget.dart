@@ -11,7 +11,7 @@ class ArcWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        return Container(
+        return SizedBox(
           width: constraints.maxWidth,
           height: constraints.maxWidth, // Mantenim un widget quadrat
           child: CustomPaint(
@@ -72,12 +72,12 @@ class ArcPainter extends CustomPainter {
       // Primers i segons valors per als extrems del semicercle
       final arcLeft = Offset(arcCenter.dx - arcRadius, arcCenter.dy);
       final arcRight = Offset(arcCenter.dx + arcRadius, arcCenter.dy);
-      _drawText(canvas, "${values.keys.elementAt(0)}", values.values.elementAt(0), arcLeft + Offset(0, 20), titleStyle, valueStyle);
-      _drawText(canvas, "${values.keys.elementAt(1)}", values.values.elementAt(1), arcRight + Offset(10, 20), titleStyle, valueStyle);
+      _drawText(canvas, values.keys.elementAt(0), values.values.elementAt(0), arcLeft + Offset(0, 20), titleStyle, valueStyle);
+      _drawText(canvas, values.keys.elementAt(1), values.values.elementAt(1), arcRight + Offset(10, 20), titleStyle, valueStyle);
 
       // Tercer i quart valors per als extrems de la fletxa
-      _drawText(canvas, "${values.keys.elementAt(2)}", values.values.elementAt(2), arrowEnd + Offset(0, -30), titleStyle, valueStyle);
-      _drawText(canvas, "${values.keys.elementAt(3)}", values.values.elementAt(3), arrowStart + Offset(0, 20), titleStyle, valueStyle);
+      _drawText(canvas, values.keys.elementAt(2), values.values.elementAt(2), arrowEnd + Offset(0, -30), titleStyle, valueStyle);
+      _drawText(canvas, values.keys.elementAt(3), values.values.elementAt(3), arrowStart + Offset(0, 20), titleStyle, valueStyle);
     }
   }
 

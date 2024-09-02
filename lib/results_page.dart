@@ -65,8 +65,8 @@ class ResultsPageState extends State<ResultsPage> {
 
     List<String> herencies = ['HHP', 'NCS', 'DM', 'EJE', 'MF', 'MS', 'MFE'];
 
-    List<String> primerArc = ['NL', 'Expresión', 'Desarrollar', 'Apertura'];
-    List<String> segonArc = ['NL', 'Alma', 'Evolutivo', 'Renacer'];
+    List<String> primerArc = ['NL', 'Expresión', 'Apertura', 'Desarrollar', ];
+    List<String> segonArc = ['NL', 'Alma', 'Renacer','Evolutivo', ];
 
     mapPersonalidad = valors(results, personalidad);
     mapVida = valors(results, camiDeVida);

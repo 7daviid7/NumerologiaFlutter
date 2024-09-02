@@ -27,7 +27,7 @@ class DataTableWidget extends StatelessWidget {
           scrollDirection: Axis.vertical,
           child: ConstrainedBox(
             constraints: BoxConstraints(minWidth: availableWidth),
-            child: Container(
+            child: SizedBox(
               width: availableWidth,
               child: DataTable(
                 columnSpacing: availableWidth / 200, // Espai entre columnes proporcional
