@@ -24,14 +24,14 @@ class DataTableWidget extends StatelessWidget {
         TextStyle sunSymbolStyle = TextStyle(fontSize: fontSize * 0.5); // Mida més petita per al símbol del sol
 
         return SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: ConstrainedBox(
-            constraints: BoxConstraints(minWidth: availableWidth),
-            child: SizedBox(
-              width: availableWidth,
+          scrollDirection: Axis.horizontal,
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minWidth: availableWidth),
               child: DataTable(
-                columnSpacing: availableWidth / 200, // Espai entre columnes proporcional
-                dataRowMinHeight: availableHeight / 20, // Alçada de les files proporcional
+                columnSpacing: availableWidth / 200,
+                dataRowMinHeight: availableHeight / 20,
                 columns: _buildColumns(titleTextStyle),
                 rows: _buildRows(smallTextStyle, darkNumberTextStyle, sunSymbolStyle),
               ),
