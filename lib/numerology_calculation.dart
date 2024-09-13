@@ -2,7 +2,9 @@ import 'dart:core';
 import 'package:diacritic/diacritic.dart';
 
 //CONSTANTS 
+// ignore: constant_identifier_names
 const ANY= 9; 
+// ignore: constant_identifier_names
 const REALITZACIO=36; 
 // Creem un mapa que assigna un valor a cada lletra
 final Map<String, int> letterValues = {
@@ -18,8 +20,6 @@ void initVariables()
   habitants = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0};
   totalLletres=0; 
 }
-
-
 
 Map<String, int>calculateValues(String name, String data)
 {
