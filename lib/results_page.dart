@@ -41,30 +41,12 @@ class ResultsPageState extends State<ResultsPage> {
     final results = calculateValues(widget.name, widget.date);
     taula = calculsTaula(widget.name);
     
-    List<String> personalidad = [
-      'Alma',
-      'Expresión',
-      'Personalidad',
-      'Equilibrio',
-      'Misión',
-      'Iniciacio',
-      'Fuerza'
-    ];
-    List<String> camiDeVida = [
-      'Camino de Vida',
-      'Formación',
-      'Producción',
-      'Cosecha',
-      'Fuerza',
-      'Realizacion1',
-      'Realizacion2',
-      'Total',
-      'Realizacion3'
-    ];
+    List<String> personalidad = ['Alma','Expresión','Personalidad','Equilibrio',
+      'Misión','Iniciacio','Fuerza'];
+    List<String> camiDeVida = ['Camino de Vida','Formación','Producción','Cosecha',
+      'Fuerza','Realizacion1','Realizacion2','Total','Realizacion3','Any Personal', 'Any1', 'Any2','Any3'];
     List<String> desafio = ['Desafio1', 'Desafio2', 'Desafio3'];
-
     List<String> herencies = ['HHP', 'NCS', 'DM', 'EJE', 'MF', 'MS', 'MFE'];
-
     List<String> primerArc = ['NL', 'Expresión', 'Apertura', 'Desarrollar', ];
     List<String> segonArc = ['NL', 'Alma', 'Renacer','Evolutivo', ];
 

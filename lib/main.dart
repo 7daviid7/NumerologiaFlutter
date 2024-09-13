@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Numerologia',
         theme: ThemeData(
-          useMaterial3: true,
+          useMaterial3: true, 
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
         ),
         home: InputPage(), // Canvia el widget d'inici

@@ -1,6 +1,9 @@
 import 'dart:core';
 import 'package:diacritic/diacritic.dart';
 
+//CONSTANTS 
+const ANY= 9; 
+const REALITZACIO=36; 
 // Creem un mapa que assigna un valor a cada lletra
 final Map<String, int> letterValues = {
   'A': 1, 'B': 2, 'C': 3, 'D': 4, 'E': 5, 'F': 6, 'G': 7, 'H': 8, 'I': 9,
@@ -196,17 +199,28 @@ Map<String, int>calculateDataValues(String data)
     cosecha1+= digit;
   }
 
+  DateTime now = DateTime.now();
+  int nowAny= now.year; 
+  int anyPersonal=reduceToSingleDigit(nowAny); 
+
   // Sumem el dia i el mes
   int fuerza = dia+mes;
   int anyReduit=reduceToSingleDigitResult(any);
   int diaReduit=reduceToSingleDigitResult(dia); 
   int mesReduit=reduceToSingleDigitResult(mes);
   int forzaReduit= reduceToSingleDigitResult(fuerza);
+
+  int reducedLifePath= reduceToSingleDigitResult(anyReduit+diaReduit+mesReduit); 
+  int any1= REALITZACIO-reducedLifePath; 
+  int any2= any1+ANY; 
+  int any3= any2+ANY; 
+
+
   int total= fuerza+any; 
   int desafio1= (diaReduit-mesReduit).abs(); 
   int desafio2= (diaReduit-anyReduit).abs(); 
-  return {'Fuerza': fuerza, 'Camino de Vida': cosecha1+diaReduit+mesReduit, 'Dia':dia, 'Mes': mes, 
-  'Any': any, 'Formación': mes, 'Producción':dia, 'Cosecha': cosecha1,
+  return {'Fuerza': fuerza, 'Camino de Vida': cosecha1+diaReduit+mesReduit, 'Any Personal': reduceToSingleDigitResult(anyPersonal+diaReduit+mesReduit),  
+  'Any': any, 'Formación': mes, 'Producción':dia, 'Cosecha': cosecha1,'Dia':dia, 'Mes': mes, 'Any1': any1, 'Any2': any2, 'Any3': any3,
   'Realizacion1': diaReduit+anyReduit,'Realizacion2': forzaReduit+diaReduit+anyReduit,'Realizacion3': mesReduit+anyReduit, 
   'Desafio1': desafio1,'Desafio2': desafio2, 
   'Desafio3': (desafio1-desafio2).abs(),'Total': total };
@@ -305,9 +319,6 @@ int reduceToSingleDigitResult(int number)
   }
   return number;
 }
-
-
-
 
 void modificarHabitants(Map<String, List<List<int>>>taula)
 {

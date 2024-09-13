@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:numerologia/numerology_calculation.dart';
-
 class LifePathWidget extends StatelessWidget {
+
   final Map<String, int> values;
   final String date;
 
@@ -15,7 +15,7 @@ class LifePathWidget extends StatelessWidget {
         double availableHeight = constraints.maxHeight;
 
         double boxWidth = availableWidth * 0.17; // Amplada de les caixes
-        double boxHeight = availableHeight * 0.23; // Alçada de les caixes
+        double boxHeight = availableHeight * 0.22; // Alçada de les caixes
         double spacing = availableHeight * 0.02; // Espai entre els elements
         double textFontSizeTitle = availableWidth * 0.03; // Mida del text del títol
         double textFontSizeDate = availableWidth * 0.03; // Mida del text de la data
@@ -36,7 +36,7 @@ class LifePathWidget extends StatelessWidget {
                       'Camí de vida',
                       style: TextStyle(fontWeight: FontWeight.bold, fontSize: textFontSizeTitle),
                     ),
-                    SizedBox(height: spacing * 2),
+                    SizedBox(height: spacing ),
                     CustomPaint(
                       size: Size(availableWidth, availableHeight * 0.7),
                       painter: _LifePathPainter(),
@@ -44,7 +44,7 @@ class LifePathWidget extends StatelessWidget {
                         builder: (context, constraints) {
                           return Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
+                            children: <Widget>[
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -110,6 +110,14 @@ class LifePathWidget extends StatelessWidget {
                                   ),
                                 ],
                               ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  _buildSmallBox(values['Any1'], spacing, textFontSizeDate), 
+                                  _buildSmallBox(values['Any2'], spacing, textFontSizeDate),
+                                  _buildSmallBox(values['Any3'], spacing, textFontSizeDate),
+                                ]
+                              )
                             ],
                           );
                         },
@@ -129,55 +137,22 @@ class LifePathWidget extends StatelessWidget {
                       style: TextStyle(fontWeight: FontWeight.bold, fontSize: textFontSizeDate),
                     ),
                     SizedBox(height: spacing / 2),
-                    Container(
-                      padding: EdgeInsets.all(spacing / 2),
-                      decoration: BoxDecoration(
-                        color: Colors.blue[50],
-                        borderRadius: BorderRadius.circular(6.0),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            spreadRadius: 1,
-                            blurRadius: 3,
-                            offset: Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: Center(
-                        child: Text(
-                          date,
-                          style: TextStyle(fontSize: textFontSizeDate),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: spacing / 2),
+                    _buildSmallBox(date, spacing, textFontSizeDate),
+                    SizedBox(height: spacing/2),
                     // Nou text per mostrar el total
                    Text(
                       'Total:',
                       style: TextStyle(fontWeight: FontWeight.bold, fontSize: textFontSizeDate),
                     ),
                     SizedBox(height: spacing / 2),
-                    Container(
-                      padding: EdgeInsets.all(spacing / 2),
-                      decoration: BoxDecoration(
-                        color: Colors.blue[50],
-                        borderRadius: BorderRadius.circular(6.0),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            spreadRadius: 1,
-                            blurRadius: 3,
-                            offset: Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: Center(
-                        child: Text(
-                          '${values['Total'] ?? 0}',
-                          style: TextStyle(fontSize: textFontSizeDate),
-                        ),
-                      ),
+                    _buildSmallBox(values['Total'] ?? 0, spacing, textFontSizeDate),
+                    SizedBox(height: spacing / 2),
+                    Text(
+                      'Any Personal:',
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: textFontSizeDate),
                     ),
+                    SizedBox(height: spacing / 2),
+                    _buildSmallBox(values['Any Personal'] ?? 0, spacing, textFontSizeDate)
                   ],
                 ),
               ),
@@ -236,6 +211,34 @@ class LifePathWidget extends StatelessWidget {
     );
   }
 }
+
+Widget _buildSmallBox(dynamic value, double spacing, double textFontSizeDate)
+{
+  return Container(
+    padding: EdgeInsets.all(spacing / 2),
+    decoration: BoxDecoration(
+      color: Colors.blue[50],
+      borderRadius: BorderRadius.circular(6.0),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.grey.withOpacity(0.5),
+          spreadRadius: 1,
+          blurRadius: 3,
+          offset: Offset(0, 2),
+        ),
+      ],
+    ),
+    child: Center(
+      child: Text(
+        '$value anys',
+        style: TextStyle(fontSize: textFontSizeDate),
+      ),
+    ),
+                     
+  );
+  
+}
+
 
 class _LifePathPainter extends CustomPainter {
   @override

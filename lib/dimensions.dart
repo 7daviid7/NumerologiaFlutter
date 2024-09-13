@@ -1,0 +1,1 @@
+//set common devices dimensions here for desktop. 
