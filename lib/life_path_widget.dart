@@ -113,9 +113,9 @@ class LifePathWidget extends StatelessWidget {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children: [
-                                  _buildSmallBox(values['Any1'], spacing, textFontSizeDate), 
-                                  _buildSmallBox(values['Any2'], spacing, textFontSizeDate),
-                                  _buildSmallBox(values['Any3'], spacing, textFontSizeDate),
+                                  _buildSmallBox('${values['Any1']} anys', spacing, textFontSizeDate), 
+                                  _buildSmallBox('${values['Any2']} anys', spacing, textFontSizeDate),
+                                  _buildSmallBox('${values['Any3']} anys', spacing, textFontSizeDate),
                                 ]
                               )
                             ],
@@ -230,7 +230,7 @@ Widget _buildSmallBox(dynamic value, double spacing, double textFontSizeDate)
     ),
     child: Center(
       child: Text(
-        '$value anys',
+        '$value',
         style: TextStyle(fontSize: textFontSizeDate),
       ),
     ),
