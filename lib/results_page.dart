@@ -103,6 +103,7 @@ class ResultsPageState extends State<ResultsPage> {
                             flex: 1, // Segon element de la columna amb més espai
                             child: Row(
                               children: [
+                                SizedBox(width: 10),
                                 Expanded(
                                   flex: 1, // Espai per ChallengesWidget
                                   child: ChallengesWidget(challenges: mapDesafio),
