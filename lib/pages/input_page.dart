@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'results_page.dart';
+import 'results_navegation_page.dart';
 import '../models/data_model.dart';
 import 'package:provider/provider.dart'; 
 class InputPage extends StatefulWidget {
@@ -50,7 +50,7 @@ class InputPageState extends State<InputPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ResultsPage(),
+                    builder: (context) => ResultsNavigatorPage()
                   ),
                 );
               },
