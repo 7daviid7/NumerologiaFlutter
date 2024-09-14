@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
 import 'pages/input_page.dart';
+import 'package:provider/provider.dart';
+import 'models/data_model.dart'; 
+
+
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => DataModel(),
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

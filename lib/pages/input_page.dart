@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'results_page.dart';
-
+import '../models/data_model.dart';
+import 'package:provider/provider.dart'; 
 class InputPage extends StatefulWidget {
   @override
   InputPageState createState() => InputPageState();
@@ -43,10 +44,13 @@ class InputPageState extends State<InputPage> {
               onPressed: () {
                 final name = _nameController.text;
                 final date = _dateController.text;
+                //import del model provider
+                final dataModel = Provider.of<DataModel>(context, listen: false);
+                dataModel.setData(name, date);
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ResultsPage(name: name, date: date),
+                    builder: (context) => ResultsPage(),
                   ),
                 );
               },
