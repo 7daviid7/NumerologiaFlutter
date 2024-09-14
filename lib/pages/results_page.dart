@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:numerologia/arc_widget.dart';
-import 'package:numerologia/challenges_widget.dart';
-import 'package:numerologia/family_legacies_widget.dart';
-import 'package:numerologia/numerology_calculation.dart';
-import 'data_table.dart';
-import 'name_with_values_widget.dart';
-import 'personality_area_widget.dart';
-import 'life_path_widget.dart';
-import 'print_preview_dialog.dart'; 
+import 'package:numerologia/ui_widgets/arc_widget.dart';
+import 'package:numerologia/ui_widgets/challenges_widget.dart';
+import 'package:numerologia/ui_widgets/family_legacies_widget.dart';
+import 'package:numerologia/services/numerology_calculation_service.dart';
+import '../ui_widgets/data_table_widget.dart';
+import '../ui_widgets/name_with_values_widget.dart';
+import '../ui_widgets/personality_area_widget.dart';
+import '../ui_widgets/life_path_widget.dart';
+import '../services/print_preview_dialog.dart'; 
 
 
 class ResultsPage extends StatefulWidget {

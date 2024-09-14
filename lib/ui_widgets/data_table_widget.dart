@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'numerology_calculation.dart';
+import '../services/numerology_calculation_service.dart';
 
 class DataTableWidget extends StatelessWidget {
   final Map<String, List<List<int>>> tableData;

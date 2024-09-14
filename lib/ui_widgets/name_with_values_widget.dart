@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:numerologia/numerology_calculation.dart';
+import 'package:numerologia/services/numerology_calculation_service.dart';
 
 class NameWithValuesWidget extends StatelessWidget {
   final String name;

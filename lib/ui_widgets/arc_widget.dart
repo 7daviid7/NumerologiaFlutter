@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
-import 'numerology_calculation.dart';
+import '../services/numerology_calculation_service.dart';
 
 class ArcWidget extends StatelessWidget {
   final Map<String, int> values;
