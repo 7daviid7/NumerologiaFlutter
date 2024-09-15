@@ -21,6 +21,11 @@ void initVariables()
   totalLletres=0; 
 }
 
+Map<int,int>getHabitants()
+{
+  return habitants; 
+}
+
 Map<String, int>calculateValues(String name, String data)
 {
   Map<String, int>dataMap= calculateDataValues(data); 

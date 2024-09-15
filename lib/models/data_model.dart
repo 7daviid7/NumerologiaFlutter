@@ -11,6 +11,8 @@ class DataModel with ChangeNotifier {
   late Map<String, int> mapPrimerArc;
   late Map<String, int> mapSegonArc;
   late Map<String, List<List<int>>> taula;
+  late Map<int,int>habitants; 
+  late int reduceLife; 
 
   void setData(String name, String date) {
     this.name = name;
@@ -23,7 +25,9 @@ class DataModel with ChangeNotifier {
     initVariables();
     final results = calculateValues(name, date);
     taula = calculsTaula(name);
-
+    habitants=getHabitants();
+    habitants[10]=habitants[1]??0; 
+    reduceLife= reduceToSingleDigitResult(results['Camino de Vida']??0);
     List<String> personalidad = ['Alma','Expresión','Personalidad','Equilibrio',
       'Misión','Iniciacio','Fuerza'];
     List<String> camiDeVida = ['Camino de Vida','Formación','Producción','Cosecha',
