@@ -13,6 +13,10 @@ class DataModel with ChangeNotifier {
   late Map<String, List<List<int>>> taula;
   late Map<int,int>habitants; 
   late int reduceLife; 
+  late int reduceAny; 
+  late int reduceMes; 
+  late int reduceDia; 
+  late Map<int, int>mapFigura; 
 
   void setData(String name, String date) {
     this.name = name;
@@ -28,6 +32,11 @@ class DataModel with ChangeNotifier {
     habitants=getHabitants();
     habitants[10]=habitants[1]??0; 
     reduceLife= reduceToSingleDigitResult(results['Camino de Vida']??0);
+    reduceAny= reduceToSingleDigitResult(results['Any']??0);
+    reduceMes= reduceToSingleDigitResult(results['Mes']??0);
+    reduceDia= reduceToSingleDigitResult(results['Dia']??0);
+    valorsFigura();
+
     List<String> personalidad = ['Alma','Expresión','Personalidad','Equilibrio',
       'Misión','Iniciacio','Fuerza'];
     List<String> camiDeVida = ['Camino de Vida','Formación','Producción','Cosecha',
@@ -45,6 +54,17 @@ class DataModel with ChangeNotifier {
     mapSegonArc = valors(results, segonArc);
   }
 
+
+  void valorsFigura()
+  {
+    mapFigura={};
+    int keyValue = reduceLife;
+    for (int i = 1; i <= 9; i++) 
+    {
+      mapFigura[i] = keyValue;
+      keyValue = (keyValue % 9) + 1; // increment and wrap around to 1 if it reaches 10
+    }
+  }
   // Assegura't que aquesta funció és pública
   Map<String, int> valors(Map<String, int> results, List<String> keysToTransfer) {
     Map<String, int> valors = {};

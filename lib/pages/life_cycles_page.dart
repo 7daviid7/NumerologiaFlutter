@@ -38,7 +38,6 @@ class LifeCyclesPage extends StatelessWidget {
               child: MapTableWidget(
                 dataMap: dataModel.habitants,
                 vida: dataModel.reduceLife,
-                name: dataModel.name,
                 date: dataModel.date,
               ), // Usa el mapa de cicles de vida
             ),

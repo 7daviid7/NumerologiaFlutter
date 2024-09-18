@@ -4,14 +4,12 @@ class MapTableWidget extends StatelessWidget {
   final Map<int, int> dataMap;
   final int vida;
   final String date;
-  final String name;
   final int any;
 
   // Constructor per rebre el mapa
   MapTableWidget(
       {required this.dataMap,
       required this.vida,
-      required this.name,
       required this.date})
       : any = int.parse(date.split('-')[0]);
 
