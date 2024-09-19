@@ -11,7 +11,7 @@ class SvgDynamicRenderer extends StatefulWidget {
   final int mes;
   final int any;
   final int vida;
-  final Map<int,int>mapFigura; 
+  final Map<int, int> mapFigura;
 
   SvgDynamicRenderer({
     required this.width,
@@ -21,7 +21,7 @@ class SvgDynamicRenderer extends StatefulWidget {
     required this.mes,
     required this.any,
     required this.vida,
-    required this.mapFigura
+    required this.mapFigura,
   });
 
   @override
@@ -74,6 +74,7 @@ class _SvgDynamicRendererState extends State<SvgDynamicRenderer> {
         : CircularProgressIndicator();
   }
 }
+
 extension IterableExtensions<E> on Iterable<E> {
   E? firstWhereOrNull(bool Function(E element) test) {
     for (E element in this) {
@@ -82,4 +83,3 @@ extension IterableExtensions<E> on Iterable<E> {
     return null;
   }
 }
-

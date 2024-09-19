@@ -27,6 +27,7 @@ class MyApp extends StatelessWidget {
       ),
       home: InputPage(), // Canvia el widget d'inici
       debugShowCheckedModeBanner: false,
+      
     );
   }
 }
