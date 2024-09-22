@@ -26,17 +26,43 @@ class SpiritualFigurePage extends StatelessWidget {
               dataModel.date,
               style: TextStyle(fontSize: 18, color: Colors.grey),
             ),
-            SizedBox(height: 50), // Espacio entre el texto y el SVG
-            // Mostrar el SVG
-            SvgDynamicRenderer(
-              width: size.width, // Usamos el ancho de la pantalla disponible
-              height: size.height * 0.7, // Usamos el 70% del alto de la pantalla disponible
-              svgName: svgName,
-              dia: dataModel.reduceDia,
-              mes: dataModel.reduceMes,
-              any: dataModel.reduceAny,
-              vida: dataModel.reduceLife,
-              mapFigura: dataModel.mapFigura,
+            SizedBox(height: 20), // Espacio entre el texto y el Row
+            // Mostrar el Row con los valores de yin, el SVG y yang
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Mostrar el valor de yin
+                Column(
+                  children: [
+                    Text(
+                      'Yang: ${dataModel.yang}',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ],
+                ),
+                SizedBox(width: 20), // Espacio entre yin y el SVG
+                // Mostrar el SVG
+                SvgDynamicRenderer(
+                  width: size.width * 0.3, // Ajusta el ancho según tus necesidades
+                  height: size.height * 0.75, // Ajusta la altura según tus necesidades
+                  svgName: svgName,
+                  dia: dataModel.dia,
+                  mes: dataModel.mes,
+                  any: dataModel.any,
+                  vida: dataModel.reduceLife,
+                  mapFigura: dataModel.mapFigura,
+                ),
+                SizedBox(width: 20), // Espacio entre el SVG y yang
+                // Mostrar el valor de yang
+                Column(
+                  children: [
+                    Text(
+                      'Yin: ${dataModel.yin}',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ],
         ),

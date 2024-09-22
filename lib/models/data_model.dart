@@ -13,10 +13,12 @@ class DataModel with ChangeNotifier {
   late Map<String, List<List<int>>> taula;
   late Map<int,int>habitants; 
   late int reduceLife; 
-  late int reduceAny; 
-  late int reduceMes; 
-  late int reduceDia; 
+  late int any; 
+  late int mes; 
+  late int dia; 
   late Map<int, int>mapFigura; 
+  late double yin; 
+  late double yang; 
 
   void setData(String name, String date) {
     this.name = name;
@@ -32,10 +34,11 @@ class DataModel with ChangeNotifier {
     habitants=getHabitants();
     habitants[10]=habitants[1]??0; 
     reduceLife= reduceToSingleDigitResult(results['Camino de Vida']??0);
-    reduceAny= reduceToSingleDigitResult(results['Any']??0);
-    reduceMes= reduceToSingleDigitResult(results['Mes']??0);
-    reduceDia= reduceToSingleDigitResult(results['Dia']??0);
+    any= (results['Any']??0)%100;
+    mes= (results['Mes']??0);
+    dia= (results['Dia']??0);
     valorsFigura();
+    yinYang();
 
     List<String> personalidad = ['Alma','Expresión','Personalidad','Equilibrio',
       'Misión','Iniciacio','Fuerza'];
@@ -54,7 +57,65 @@ class DataModel with ChangeNotifier {
     mapSegonArc = valors(results, segonArc);
   }
 
+  void yinYang()
+  {
+    int any0=any ~/ 10;
+    int any1=  any %10; 
+    int dia0 = dia ~/ 10;  // Obtenir la primera xifra del dia
+    int dia1 = dia % 10;    // Obtenir la segona xifra del dia
+    int mes0 = mes ~/ 10;  // Obtenir la primera xifra del mes
+    int mes1 = mes % 10;  
+    yin=0; 
+    yang=0; 
 
+    Set<int> setYin={2, 9, 8, 7};
+    Set<int> setYang={1, 3, 4,5};
+
+    mapFigura.forEach((key, value) 
+    {
+      if(key==dia0 || key==dia1 || key==mes0 || key==mes1 || key==any0 ||key==any1)
+      {
+        if(setYin.contains(key))
+        {
+          yin+=_valors(key, dia0, dia1, mes0, mes1, any0, any1);
+        }
+        else if(setYang.contains(key))
+        {
+          yang+=_valors(key, dia0, dia1, mes0, mes1, any0, any1);
+        }
+      }
+
+      if(value== dia0 || value== dia1 || value==mes0 || value==mes1 || value==any0 || value==any1)
+      {
+        if(setYin.contains(key))
+        {
+          yin+=_valors(value, dia0, dia1, mes0, mes1, any0, any1)/2;
+        }
+        else if(setYang.contains(key))
+        {
+          yang+=_valors(value, dia0, dia1, mes0, mes1, any0, any1)/2;
+        }
+      }
+
+    });
+
+
+  }
+
+  int _valors(int key, int dia0, int dia1, int mes0, int mes1, int any0, int any1)
+  {
+    
+    int conditionsMet = 0;
+    // Comprova quantes condicions es compleixen
+    if (key == dia0) conditionsMet++;
+    if (key == dia1) conditionsMet++;
+    if (key == mes0) conditionsMet++;
+    if (key == mes1) conditionsMet++; 
+    if (key == any0) conditionsMet++; 
+    if (key == any1) conditionsMet++; 
+
+    return conditionsMet; 
+  }
   void valorsFigura()
   {
     mapFigura={};
