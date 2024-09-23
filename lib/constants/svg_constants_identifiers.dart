@@ -22,14 +22,4 @@ class SvgIdentifiers {
   static int camaDretaCounter = 0;
   static int camaEsquerreCounter = 0;
 
-  // Comptadors addicionals per les "meitats"
-  static int meitatCapDretCounter = 0;
-  static int meitatCapEsquerreCounter = 0;
-  static int meitatBracDretCounter = 0;
-  static int meitatBracEsquerreCounter = 0;
-  static int meitatPanxaDretaCounter = 0;
-  static int meitatPanxaEsquerreCounter = 0;
-  static int meitatCaderaCounter = 0;
-  static int meitatCamaDretaCounter = 0;
-  static int meitatCamaEsquerreCounter = 0;
 }
