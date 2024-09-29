@@ -10,7 +10,7 @@ class LifeCyclesPage extends StatelessWidget {
 
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.all(16.0), // Afegeix espai al voltant
+        padding: const EdgeInsets.all(20.0), // Afegeix espai al voltant
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -31,7 +31,7 @@ class LifeCyclesPage extends StatelessWidget {
                 color: Colors.grey[600], // Text més petit i subtil per a la data
               ),
             ),
-            SizedBox(height: 10), // Espai entre el bloc de nom/data i la taula
+            // Espai entre el bloc de nom/data i la taula
 
             // Aquí afegim el MapTableWidget amb Expanded perquè ocupi tot l'espai disponible
             Expanded(

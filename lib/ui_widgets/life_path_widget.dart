@@ -53,6 +53,7 @@ class LifePathWidget extends StatelessWidget {
                                     values['Camino de Vida'] ?? 0,
                                     boxWidth,
                                     boxHeight,
+                                    spacing
                                   ),
                                 ],
                               ),
@@ -65,18 +66,21 @@ class LifePathWidget extends StatelessWidget {
                                     values['Formación'] ?? 0,
                                     boxWidth,
                                     boxHeight,
+                                    spacing
                                   ),
                                   _buildPersonalityBox(
                                     'Producció',
                                     values['Producción'] ?? 0,
                                     boxWidth,
                                     boxHeight,
+                                    spacing
                                   ),
                                   _buildPersonalityBox(
                                     'Cosecha',
                                     values['Cosecha'] ?? 0,
                                     boxWidth,
                                     boxHeight,
+                                    spacing
                                   ),
                                 ],
                               ),
@@ -89,24 +93,28 @@ class LifePathWidget extends StatelessWidget {
                                     values['Fuerza'] ?? 0,
                                     boxWidth,
                                     boxHeight,
+                                    spacing
                                   ),
                                   _buildPersonalityBox(
                                     'Realització 2',
                                     values['Realizacion1'] ?? 0,
                                     boxWidth,
                                     boxHeight,
+                                    spacing
                                   ),
                                   _buildPersonalityBox(
                                     'Realització 3',
                                     values['Realizacion2'] ?? 0,
                                     boxWidth,
                                     boxHeight,
+                                    spacing
                                   ),
                                   _buildPersonalityBox(
                                     'Realització 4',
                                     values['Realizacion3'] ?? 0,
                                     boxWidth,
                                     boxHeight,
+                                    spacing
                                   ),
                                 ],
                               ),
@@ -163,7 +171,7 @@ class LifePathWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildPersonalityBox(String label, int value, double width, double height) {
+  Widget _buildPersonalityBox(String label, int value, double width, double height, double spacing) {
     double textSizeLabel = width * 0.12; // Mida del text del label
     double textSizeValue = width * 0.24; // Mida del text del valor
 
@@ -172,6 +180,7 @@ class LifePathWidget extends StatelessWidget {
     bool reduce = reducedValue == value; // Comprovació si el valor reduït és igual al valor original
 
     return Container(
+      padding: EdgeInsets.all(spacing/2),
       width: width,
       height: height,
       decoration: BoxDecoration(
@@ -181,29 +190,33 @@ class LifePathWidget extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            label,
-            style: TextStyle(fontSize: textSizeLabel, fontWeight: FontWeight.bold),
-            textAlign: TextAlign.center,
+          FittedBox(
+            child: Text(
+              label,
+              style: TextStyle(fontSize: textSizeLabel, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
           ),
           SizedBox(height: 0),
-          RichText(
-            text: TextSpan(
-              text: reduce ? '$value   ' : '$value/$reducedValue  ',
-              style: TextStyle(fontSize: textSizeValue, fontWeight: FontWeight.bold, color: Colors.black),
-              children: masterNumber
-                  ? [
-                      TextSpan(
-                        text: '(${reduceToSingleDigitResult(reducedValue)})',
-                        style: TextStyle(
-                          fontSize: textSizeValue * 1, // Mida del text reduït ajustada
-                          fontWeight: FontWeight.bold,
-                          color: Colors.red, // Color del text reduït
-                          backgroundColor: Colors.yellow, // Fons per ressaltar
+          FittedBox(
+            child: RichText(
+              text: TextSpan(
+                text: reduce ? '$value   ' : '$value/$reducedValue  ',
+                style: TextStyle(fontSize: textSizeValue, fontWeight: FontWeight.bold, color: Colors.black),
+                children: masterNumber
+                    ? [
+                        TextSpan(
+                          text: '(${reduceToSingleDigitResult(reducedValue)})',
+                          style: TextStyle(
+                            fontSize: textSizeValue * 1, // Mida del text reduït ajustada
+                            fontWeight: FontWeight.bold,
+                            color: Colors.red, // Color del text reduït
+                            backgroundColor: Colors.yellow, // Fons per ressaltar
+                          ),
                         ),
-                      ),
-                    ]
-                  : [],
+                      ]
+                    : [],
+              ),
             ),
           ),
         ],

@@ -21,9 +21,9 @@ class PrintService {
     // Definir el format de pàgina A4 en horitzontal
     final pageFormat = PdfPageFormat.a4.landscape.copyWith(
     marginLeft: 0,
-    marginTop: 0,
+    marginTop: 40,
     marginRight: 0,
-    marginBottom: 0,
+    marginBottom: 40,
   );
 
 

@@ -74,7 +74,7 @@ class DataTableWidget extends StatelessWidget {
                   if (value == 0) {
                     return '-';
                   } else if (value > 9) {
-                    int reducedValue = reduceToSingleDigit(value);
+                    int reducedValue = reduceToSingleDigitResult(value);
                     return '$value / $reducedValue';
                   } else {
                     return value.toString();
@@ -83,7 +83,7 @@ class DataTableWidget extends StatelessWidget {
                   if (value == 0) {
                     return '☀';
                   } else if (value > 9) {
-                    int reducedValue = reduceToSingleDigit(value);
+                    int reducedValue = reduceToSingleDigitResult(value);
                     return '$value / $reducedValue';
                   } else {
                     return value.toString();

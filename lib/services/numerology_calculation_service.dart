@@ -220,11 +220,14 @@ Map<String, int>calculateDataValues(String data)
   int any2= any1+ANY; 
   int any3= any2+ANY; 
 
+  int amagat= cosecha1+diaReduit+mesReduit; 
+  int normal= reduceToSingleDigit(dia+mes+any); 
 
+  int vida= isMasterNumber(amagat)? amagat :normal;  
   int total= fuerza+any; 
   int desafio1= (diaReduit-mesReduit).abs(); 
   int desafio2= (diaReduit-anyReduit).abs(); 
-  return {'Fuerza': fuerza, 'Camino de Vida': cosecha1+diaReduit+mesReduit, 'Any Personal': reduceToSingleDigitResult(anyPersonal+diaReduit+mesReduit),  
+  return {'Fuerza': fuerza, 'Camino de Vida': vida, 'Any Personal': reduceToSingleDigitResult(anyPersonal+diaReduit+mesReduit),  
   'Any': any, 'Formación': mes, 'Producción':dia, 'Cosecha': cosecha1,'Dia':dia, 'Mes': mes, 'Any1': any1, 'Any2': any2, 'Any3': any3,
   'Realizacion1': diaReduit+anyReduit,'Realizacion2': forzaReduit+diaReduit+anyReduit,'Realizacion3': mesReduit+anyReduit, 
   'Desafio1': desafio1,'Desafio2': desafio2, 
@@ -343,16 +346,16 @@ void modificarMatices(Map<String, List<List<int>>>taula, String iteracio, String
   int valor4; 
   for(int i=0; i<taula[iteracio]!.length; i++)
   {
-    valor1 = reduceToSingleDigit(taula[iteracio]![i][0]);
+    valor1 = reduceToSingleDigitResult(taula[iteracio]![i][0]);
     if(valor1!=0)
     {
-      valor2= reduceToSingleDigit(taula[iteracio]![valor1-1][0]);
+      valor2= reduceToSingleDigitResult(taula[iteracio]![valor1-1][0]);
       if(valor2!=0)
       {
-        valor3= reduceToSingleDigit(taula[iteracio]![valor2-1][0]);
+        valor3= reduceToSingleDigitResult(taula[iteracio]![valor2-1][0]);
         if(valor3!=0)
         {
-          valor4= reduceToSingleDigit(taula[iteracio]![valor3-1][0]); 
+          valor4= reduceToSingleDigitResult(taula[iteracio]![valor3-1][0]); 
         }
         else 
         {

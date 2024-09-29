@@ -41,9 +41,10 @@ class MapTableWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // Taula centrada dins d'una pàgina amb espai disponible
-            SizedBox(
-              width: double.infinity, // Ocupa tot l'ample de la pàgina
+            FittedBox(
+              fit: BoxFit.contain,// Ocupa tot l'ample de la pàgina
               child: DataTable(
+                columnSpacing: 100, 
                 columns: [
                   DataColumn(label: SizedBox.shrink()), // Primera columna buida
                   ...List.generate(originalKeys.length + 1, (index) => DataColumn(label: SizedBox.shrink())),
@@ -51,7 +52,7 @@ class MapTableWidget extends StatelessWidget {
                 rows: [
                   DataRow(
                     cells: [
-                      DataCell(Text('Cicles                       ')),
+                      DataCell(Text('Cicles     ')),
                       DataCell(SizedBox.shrink()), // Primera cel·la amb títol "Cicles"
                       ...originalKeys.map((key) => DataCell(
                         Text(
@@ -66,11 +67,12 @@ class MapTableWidget extends StatelessWidget {
                   ),
                   DataRow(
                     cells: [
-                      DataCell(Text('Habitants                    ')),
+                      DataCell(Text('Habitants     ')),
                       DataCell(SizedBox.shrink()), // Primera cel·la amb títol "Habitants"
                       ...originalValues.map((value) => DataCell(
                         Text(
-                          value == 0 ? '\u2600' : value.toString(), // Mostra el símbol del sol si el valor és 0
+                          value == 0 ? '\u2600' : value.toString(),
+                          style: TextStyle(fontSize: 17) // Mostra el símbol del sol si el valor és 0
                         ),
                       )).toList(), // Valors
                     ],
@@ -78,8 +80,8 @@ class MapTableWidget extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(
-              width: double.infinity, // Ocupa tot l'ample de la pàgina
+            FittedBox(
+             fit: BoxFit.contain,// Ocupa tot l'ample de la pàgina
               child: DataTable(
                 columns: [
                   DataColumn(label: Text('Habitants')),
@@ -149,20 +151,23 @@ class MapTableWidget extends StatelessWidget {
                           }
 
                           return DataCell(
-                            Container(
-                              color: highlight ? Colors.redAccent.withOpacity(0.3) : Colors.transparent, // Fons vermell suau
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    titolActual.toString(),
-                                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                                  ), // Títol numèric
-                                  Text(
-                                    anyActual.toString(),
-                                    style: TextStyle(fontSize: 14),
-                                  ), // Any calculat
-                                ],
+                            SizedBox(
+                              width: 55,
+                              child: Container(
+                                color: highlight ? Colors.redAccent.withOpacity(0.3) : Colors.transparent, // Fons vermell suau
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      titolActual.toString(),
+                                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                    ), // Títol numèric
+                                    Text(
+                                      anyActual.toString(),
+                                      style: TextStyle(fontSize: 15),
+                                    ), // Any calculat
+                                  ],
+                                ),
                               ),
                             ),
                           );
