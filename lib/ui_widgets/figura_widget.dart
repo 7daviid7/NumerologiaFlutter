@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import '../models/data_model.dart';
 
 class FiguraWidget extends StatelessWidget {
-
   final String nameSVG;
   final double height; 
   final double width;
@@ -45,9 +44,13 @@ class NumerosPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    // El tamaño del círculo y el tamaño del texto se ajustan en función del tamaño del canvas
+    final double circleRadius = size.width * 0.03;
+    final double fontSize = size.width * 0.03;
+
     final textStyle = TextStyle(
       color: Colors.white,
-      fontSize: 16,
+      fontSize: fontSize,
       fontWeight: FontWeight.bold,
     );
 
@@ -56,29 +59,29 @@ class NumerosPainter extends CustomPainter {
       textDirection: TextDirection.ltr,
     );
 
-    // Lista de posiciones fijas
+    // Lista de posiciones ajustadas de forma proporcional
     final List<Offset> posiciones = [
-      Offset(size.width * 0.59, size.height-600),  // CAP DRET
-      Offset(size.width * 0.43, size.height -600),  // CAP ESQUERRE
-      Offset(size.width * 0.2, size.height-520),  // BRAÇ ESQUERRE
-      Offset(size.width * 0.35, size.height-400),  // PANXA ESQUERRE
-      Offset(size.width * 0.25, size.height-200),  // CAMA ESQUERRE
-      Offset(size.width * 0.515, size.height-260),  // CADERA
-      Offset(size.width * 0.8, size.height -200),  // CAMA DRETA
-      Offset(size.width * 0.65, size.height -400),  // PANXA DRETA
-      Offset(size.width * 0.8, size.height -520),  // BRAÇ DRET
+      Offset(size.width * 0.59, size.height *0.0001),  // CAP DRET
+      Offset(size.width * 0.43, size.height * 0.0001),  // CAP ESQUERRE
+      Offset(size.width * 0.2, size.height * 0.13),   // BRAÇ ESQUERRE
+      Offset(size.width * 0.35, size.height * 0.33),   // PANXA ESQUERRE
+      Offset(size.width * 0.25, size.height * 0.67 ),  // CAMA ESQUERRE
+      Offset(size.width * 0.515, size.height * 0.58),  // CADERA
+      Offset(size.width * 0.8, size.height * 0.67),   // CAMA DRETA
+      Offset(size.width * 0.65, size.height * 0.33),   // PANXA DRETA
+      Offset(size.width * 0.8, size.height * 0.13),   // BRAÇ DRET
     ];
 
     mapFigura.forEach((key, value) {
-      final posicion = posiciones[key - 1]; // Obtenemos la posición fija
+      final posicion = posiciones[key - 1]; // Obtenemos la posición fija correspondiente
 
-      // Dibujamos un círculo de fondo
+      // Dibujamos un círculo de fondo con tamaño dinámico
       final paint = Paint()
         ..color = Colors.black
         ..style = PaintingStyle.fill;
-      canvas.drawCircle(posicion, 15, paint);
+      canvas.drawCircle(posicion, circleRadius, paint);
 
-      // Pintamos el número
+      // Pintamos el número con tamaño dinámico
       textPainter.text = TextSpan(
         text: value.toString(),
         style: textStyle,
@@ -93,4 +96,3 @@ class NumerosPainter extends CustomPainter {
     return true;
   }
 }
-

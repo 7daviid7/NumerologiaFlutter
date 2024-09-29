@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart'; 
 import 'results_navegation_page.dart';
 import '../models/data_model.dart';
-import 'package:provider/provider.dart'; 
+import 'package:intl/intl.dart'; // Per donar format a la data
+
 class InputPage extends StatefulWidget {
   @override
   InputPageState createState() => InputPageState();
@@ -10,6 +12,7 @@ class InputPage extends StatefulWidget {
 class InputPageState extends State<InputPage> {
   final _nameController = TextEditingController();
   final _dateController = TextEditingController();
+  DateTime? selectedDate;
 
   @override
   void dispose() {
@@ -17,6 +20,25 @@ class InputPageState extends State<InputPage> {
     _dateController.dispose();
     super.dispose();
   }
+
+  // Funció per obrir el selector de dates
+  Future<void> _selectDate(BuildContext context) async {
+  final DateTime? picked = await showDatePicker(
+    context: context,
+    initialDate: selectedDate ?? DateTime.now(),
+    firstDate: DateTime(1900),
+    lastDate: DateTime(2100),
+    locale: const Locale('es', 'ES'), // Establecer español aquí
+  );
+
+  if (picked != null && picked != selectedDate) {
+    setState(() {
+      selectedDate = picked;
+      _dateController.text = DateFormat('yyyy-MM-dd').format(picked);
+    });
+  }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +60,12 @@ class InputPageState extends State<InputPage> {
               controller: _dateController,
               decoration: InputDecoration(hintText: 'Data de naixement (YYYY-MM-DD)'),
               keyboardType: TextInputType.datetime,
+              onTap: () {
+                // Evitar que s'obri el teclat
+                FocusScope.of(context).requestFocus(FocusNode());
+                // Obrir el selector de data
+                _selectDate(context);
+              },
             ),
             SizedBox(height: 20),
             ElevatedButton(

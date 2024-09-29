@@ -20,13 +20,19 @@ class SpiritualFigurePage extends StatelessWidget {
             // Mostrar el nombre y la fecha
             Text(
               dataModel.name,
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontSize: size.width * 0.016, // Ajuste del tamaño de fuente relativo al ancho de la pantalla
+                fontWeight: FontWeight.bold,
+              ),
             ),
             Text(
               dataModel.date,
-              style: TextStyle(fontSize: 18, color: Colors.grey),
+              style: TextStyle(
+                fontSize: size.width * 0.015, // Ajuste del tamaño de fuente relativo
+                color: Colors.grey,
+              ),
             ),
-            SizedBox(height: 40), // Espacio entre el texto y el Row
+            SizedBox(height: size.height * 0.05), // Espacio relativo al tamaño de la pantalla
             // Mostrar el Row con los valores de yin, el SVG y yang
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -36,20 +42,24 @@ class SpiritualFigurePage extends StatelessWidget {
                   children: [
                     Text(
                       'Yang: ${dataModel.yang}',
-                      style: TextStyle(fontSize: 24),
+                      style: TextStyle(fontSize: size.width * 0.02),
                     ),
                   ],
                 ),
-                SizedBox(width: 20), // Espacio entre yin y el SVG
+                SizedBox(width: size.width * 0), // Espacio relativo
                 // Mostrar el SVG
-                FiguraWidget(nameSVG: svgName, width: size.width*0.35, height: size.height*0.75),
-                SizedBox(width: 20), // Espacio entre el SVG y yang
+                FiguraWidget(
+                  nameSVG: svgName, 
+                  width: size.width * 0.35, 
+                  height: size.height * 0.75
+                ),
+                SizedBox(width: size.width * 0), // Espacio relativo
                 // Mostrar el valor de yang
                 Column(
                   children: [
                     Text(
                       'Yin: ${dataModel.yin}',
-                      style: TextStyle(fontSize: 24),
+                      style: TextStyle(fontSize: size.width * 0.02),
                     ),
                   ],
                 ),
