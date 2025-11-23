@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'results_page.dart';
-import 'spiritual_figure_page.dart'; 
-import 'life_cycles_page.dart'; 
+import 'spiritual_figure_page.dart';
+import 'life_cycles_page.dart';
 import '../services/print_preview_dialog.dart';
+import 'ai_interpretation_page.dart';
 
 class ResultsNavigatorPage extends StatefulWidget {
   @override
@@ -10,7 +11,6 @@ class ResultsNavigatorPage extends StatefulWidget {
 }
 
 class ResultsNavigatorPageState extends State<ResultsNavigatorPage> {
-  
   final GlobalKey _globalKey = GlobalKey();
   final PrintPreviewDialog _printPreviewDialog = PrintPreviewDialog();
   int _selectedPageIndex = 0;
@@ -18,7 +18,7 @@ class ResultsNavigatorPageState extends State<ResultsNavigatorPage> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3,  // The number of tabs
+      length: 4, // The number of tabs
       child: Scaffold(
         body: Column(
           children: [
@@ -44,13 +44,16 @@ class ResultsNavigatorPageState extends State<ResultsNavigatorPage> {
                         Tab(text: 'Resultats Principals'),
                         Tab(text: 'Cicles de Vida'),
                         Tab(text: 'Ninot Espiritual'),
+                        Tab(text: 'Interpretació IA'),
                       ],
                     ),
                   ),
                   IconButton(
                     icon: Icon(Icons.print),
                     onPressed: () => _printPreviewDialog.showPreviewAndPrint(
-                      context, _globalKey, 'Resultats de Numerologia'), // Print preview dialog
+                        context,
+                        _globalKey,
+                        'Resultats de Numerologia'), // Print preview dialog
                   ),
                 ],
               ),
@@ -64,6 +67,7 @@ class ResultsNavigatorPageState extends State<ResultsNavigatorPage> {
                     ResultsPage(),
                     LifeCyclesPage(),
                     SpiritualFigurePage(),
+                    AIInterpretationPage(),
                   ],
                 ),
               ),

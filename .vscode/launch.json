@@ -5,18 +5,18 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "NumerologiaFlutter",
+            "name": "numerologia_flutter",
             "request": "launch",
             "type": "dart"
         },
         {
-            "name": "NumerologiaFlutter (profile mode)",
+            "name": "numerologia_flutter (profile mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile"
         },
         {
-            "name": "NumerologiaFlutter (release mode)",
+            "name": "numerologia_flutter (release mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "release"

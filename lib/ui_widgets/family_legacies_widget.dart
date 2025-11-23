@@ -26,7 +26,9 @@ class FamilyHeritageWidget extends StatelessWidget {
             border: Border.all(color: Colors.black),
             borderRadius: BorderRadius.circular(8.0),
           ),
-          child: Column(
+
+          child: SingleChildScrollView(
+            child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
@@ -37,9 +39,12 @@ class FamilyHeritageWidget extends StatelessWidget {
                 ),
               ),
               SizedBox(height: spacing),
-              _buildGridLayout(cardMargin, cardElevation, iconSize, textFontSize, spacing),
+              _buildGridLayout(cardMargin, cardElevation, iconSize, textFontSize, spacing)
+              
             ],
           ),
+          )
+        
         );
       },
     );
