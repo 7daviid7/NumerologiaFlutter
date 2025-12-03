@@ -61,6 +61,8 @@ class InputPageState extends State<InputPage> {
               controller: _dateController,
               decoration:
                   InputDecoration(hintText: 'Data de naixement (YYYY-MM-DD)'),
+              readOnly:
+                  true, // Evita que s'obri el teclat i es pugui escriure manualment
               keyboardType: TextInputType.datetime,
               onTap: () {
                 // Evitar que s'obri el teclat

@@ -27,13 +27,15 @@ class PrintPreviewDialog {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   TextButton(
-                    onPressed: () => Navigator.of(context).pop(), // Cancel·la la impressió
+                    onPressed: () =>
+                        Navigator.of(context).pop(), // Cancel·la la impressió
                     child: Text('Cancel·lar'),
                   ),
                   TextButton(
                     onPressed: () async {
                       Navigator.of(context).pop(); // Tanca el diàleg
-                      await _printService.printImage(imageBytes, title); // Imprimeix la imatge
+                      await _printService.printImage(
+                          imageBytes, title); // Imprimeix la imatge
                     },
                     child: Text('Imprimir'),
                   ),

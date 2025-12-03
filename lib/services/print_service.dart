@@ -10,8 +10,10 @@ import 'dart:io';
 
 class PrintService {
   Future<Uint8List> captureWidgetAsImage(GlobalKey key) async {
-    RenderRepaintBoundary boundary = key.currentContext!.findRenderObject() as RenderRepaintBoundary;
-    var image = await boundary.toImage(pixelRatio: 2.0); // Ajusta el pixelRatio segons calgui
+    RenderRepaintBoundary boundary =
+        key.currentContext!.findRenderObject() as RenderRepaintBoundary;
+    var image = await boundary.toImage(
+        pixelRatio: 2.0); // Ajusta el pixelRatio segons calgui
     ByteData? byteData = await image.toByteData(format: ImageByteFormat.png);
     return byteData!.buffer.asUint8List();
   }
@@ -20,12 +22,11 @@ class PrintService {
     final pdf = pw.Document();
     // Definir el format de pàgina A4 en horitzontal
     final pageFormat = PdfPageFormat.a4.landscape.copyWith(
-    marginLeft: 0,
-    marginTop: 40,
-    marginRight: 0,
-    marginBottom: 40,
-  );
-
+      marginLeft: 0,
+      marginTop: 40,
+      marginRight: 0,
+      marginBottom: 40,
+    );
 
     pdf.addPage(
       pw.Page(
@@ -53,6 +54,7 @@ class PrintService {
     await outputFile.writeAsBytes(pdfBytes);
 
     // Imprimir el PDF
-    await Printing.layoutPdf(onLayout: (PdfPageFormat format) async => pdfBytes);
+    await Printing.layoutPdf(
+        onLayout: (PdfPageFormat format) async => pdfBytes);
   }
 }

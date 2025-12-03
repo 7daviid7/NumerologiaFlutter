@@ -7,19 +7,28 @@
         {
             "name": "numerologia_flutter",
             "request": "launch",
-            "type": "dart"
+            "type": "dart",
+            "toolArgs": [
+                "--dart-define-from-file=.env"
+            ]
         },
         {
             "name": "numerologia_flutter (profile mode)",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "profile"
+            "flutterMode": "profile",
+            "toolArgs": [
+                "--dart-define-from-file=.env"
+            ]
         },
         {
             "name": "numerologia_flutter (release mode)",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "release"
+            "flutterMode": "release",
+            "toolArgs": [
+                "--dart-define-from-file=.env"
+            ]
         }
     ]
 }
