@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:numerologia/services/numerology_calculation_service.dart'; 
-class LifePathWidget extends StatelessWidget {
+import 'package:numerologia/services/numerology_calculation_service.dart';
 
+class LifePathWidget extends StatelessWidget {
   final Map<String, int> values;
   final String date;
 
@@ -17,8 +17,10 @@ class LifePathWidget extends StatelessWidget {
         double boxWidth = availableWidth * 0.17; // Amplada de les caixes
         double boxHeight = availableHeight * 0.22; // Alçada de les caixes
         double spacing = availableHeight * 0.02; // Espai entre els elements
-        double textFontSizeTitle = availableWidth * 0.03; // Mida del text del títol
-        double textFontSizeDate = availableWidth * 0.03; // Mida del text de la data
+        double textFontSizeTitle =
+            availableWidth * 0.03; // Mida del text del títol
+        double textFontSizeDate =
+            availableWidth * 0.03; // Mida del text de la data
 
         return Container(
           padding: EdgeInsets.all(spacing),
@@ -34,9 +36,11 @@ class LifePathWidget extends StatelessWidget {
                   children: [
                     Text(
                       'Camí de vida',
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: textFontSizeTitle),
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: textFontSizeTitle),
                     ),
-                    SizedBox(height: spacing ),
+                    SizedBox(height: spacing),
                     CustomPaint(
                       size: Size(availableWidth, availableHeight * 0.7),
                       painter: _LifePathPainter(),
@@ -49,83 +53,80 @@ class LifePathWidget extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   _buildPersonalityBox(
-                                    'Camí de Vida',
-                                    values['Camino de Vida'] ?? 0,
-                                    boxWidth,
-                                    boxHeight,
-                                    spacing
-                                  ),
+                                      'Camí de Vida',
+                                      values['Camino de Vida'] ?? 0,
+                                      boxWidth,
+                                      boxHeight,
+                                      spacing),
                                 ],
                               ),
                               SizedBox(height: spacing * 2),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
                                 children: [
                                   _buildPersonalityBox(
-                                    'Formació',
-                                    values['Formación'] ?? 0,
-                                    boxWidth,
-                                    boxHeight,
-                                    spacing
-                                  ),
+                                      'Formació',
+                                      values['Formación'] ?? 0,
+                                      boxWidth,
+                                      boxHeight,
+                                      spacing),
                                   _buildPersonalityBox(
-                                    'Producció',
-                                    values['Producción'] ?? 0,
-                                    boxWidth,
-                                    boxHeight,
-                                    spacing
-                                  ),
+                                      'Producció',
+                                      values['Producción'] ?? 0,
+                                      boxWidth,
+                                      boxHeight,
+                                      spacing),
                                   _buildPersonalityBox(
-                                    'Cosecha',
-                                    values['Cosecha'] ?? 0,
-                                    boxWidth,
-                                    boxHeight,
-                                    spacing
-                                  ),
+                                      'Cosecha',
+                                      values['Cosecha'] ?? 0,
+                                      boxWidth,
+                                      boxHeight,
+                                      spacing),
                                 ],
                               ),
                               SizedBox(height: spacing * 2),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
                                 children: [
                                   _buildPersonalityBox(
-                                    'Realització 1',
-                                    values['Fuerza'] ?? 0,
-                                    boxWidth,
-                                    boxHeight,
-                                    spacing
-                                  ),
+                                      'Realització 1',
+                                      values['Fuerza'] ?? 0,
+                                      boxWidth,
+                                      boxHeight,
+                                      spacing),
                                   _buildPersonalityBox(
-                                    'Realització 2',
-                                    values['Realizacion1'] ?? 0,
-                                    boxWidth,
-                                    boxHeight,
-                                    spacing
-                                  ),
+                                      'Realització 2',
+                                      values['Realizacion1'] ?? 0,
+                                      boxWidth,
+                                      boxHeight,
+                                      spacing),
                                   _buildPersonalityBox(
-                                    'Realització 3',
-                                    values['Realizacion2'] ?? 0,
-                                    boxWidth,
-                                    boxHeight,
-                                    spacing
-                                  ),
+                                      'Realització 3',
+                                      values['Realizacion2'] ?? 0,
+                                      boxWidth,
+                                      boxHeight,
+                                      spacing),
                                   _buildPersonalityBox(
-                                    'Realització 4',
-                                    values['Realizacion3'] ?? 0,
-                                    boxWidth,
-                                    boxHeight,
-                                    spacing
-                                  ),
+                                      'Realització 4',
+                                      values['Realizacion3'] ?? 0,
+                                      boxWidth,
+                                      boxHeight,
+                                      spacing),
                                 ],
                               ),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  _buildSmallBox('${values['Any1']} anys', spacing, textFontSizeDate), 
-                                  _buildSmallBox('${values['Any2']} anys', spacing, textFontSizeDate),
-                                  _buildSmallBox('${values['Any3']} anys', spacing, textFontSizeDate),
-                                ]
-                              )
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    _buildSmallBox('${values['Any1']} anys',
+                                        spacing, textFontSizeDate),
+                                    _buildSmallBox('${values['Any2']} anys',
+                                        spacing, textFontSizeDate),
+                                    _buildSmallBox('${values['Any3']} anys',
+                                        spacing, textFontSizeDate),
+                                  ])
                             ],
                           );
                         },
@@ -142,25 +143,33 @@ class LifePathWidget extends StatelessWidget {
                   children: [
                     Text(
                       'Data:',
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: textFontSizeDate),
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: textFontSizeDate),
                     ),
                     SizedBox(height: spacing / 2),
                     _buildSmallBox(date, spacing, textFontSizeDate),
-                    SizedBox(height: spacing/2),
+                    SizedBox(height: spacing / 2),
                     // Nou text per mostrar el total
-                   Text(
+                    Text(
                       'Total:',
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: textFontSizeDate),
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: textFontSizeDate),
                     ),
                     SizedBox(height: spacing / 2),
-                    _buildSmallBox(values['Total'] ?? 0, spacing, textFontSizeDate),
+                    _buildSmallBox(
+                        values['Total'] ?? 0, spacing, textFontSizeDate),
                     SizedBox(height: spacing / 2),
                     Text(
                       'Any Personal:',
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: textFontSizeDate),
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: textFontSizeDate),
                     ),
                     SizedBox(height: spacing / 2),
-                    _buildSmallBox(values['Any Personal'] ?? 0, spacing, textFontSizeDate)
+                    _buildSmallBox(
+                        values['Any Personal'] ?? 0, spacing, textFontSizeDate)
                   ],
                 ),
               ),
@@ -171,16 +180,18 @@ class LifePathWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildPersonalityBox(String label, int value, double width, double height, double spacing) {
+  Widget _buildPersonalityBox(
+      String label, int value, double width, double height, double spacing) {
     double textSizeLabel = width * 0.12; // Mida del text del label
     double textSizeValue = width * 0.24; // Mida del text del valor
 
     int reducedValue = reduceToSingleDigit(value);
     bool masterNumber = isMasterNumber(reducedValue); // Números mestres
-    bool reduce = reducedValue == value; // Comprovació si el valor reduït és igual al valor original
+    bool reduce = reducedValue ==
+        value; // Comprovació si el valor reduït és igual al valor original
 
     return Container(
-      padding: EdgeInsets.all(spacing/2),
+      padding: EdgeInsets.all(spacing / 2),
       width: width,
       height: height,
       decoration: BoxDecoration(
@@ -193,7 +204,8 @@ class LifePathWidget extends StatelessWidget {
           FittedBox(
             child: Text(
               label,
-              style: TextStyle(fontSize: textSizeLabel, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                  fontSize: textSizeLabel, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
           ),
@@ -202,16 +214,21 @@ class LifePathWidget extends StatelessWidget {
             child: RichText(
               text: TextSpan(
                 text: reduce ? '$value   ' : '$value/$reducedValue  ',
-                style: TextStyle(fontSize: textSizeValue, fontWeight: FontWeight.bold, color: Colors.black),
+                style: TextStyle(
+                    fontSize: textSizeValue,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black),
                 children: masterNumber
                     ? [
                         TextSpan(
                           text: '(${reduceToSingleDigitResult(reducedValue)})',
                           style: TextStyle(
-                            fontSize: textSizeValue * 1, // Mida del text reduït ajustada
+                            fontSize: textSizeValue *
+                                1, // Mida del text reduït ajustada
                             fontWeight: FontWeight.bold,
                             color: Colors.red, // Color del text reduït
-                            backgroundColor: Colors.yellow, // Fons per ressaltar
+                            backgroundColor:
+                                Colors.yellow, // Fons per ressaltar
                           ),
                         ),
                       ]
@@ -225,8 +242,7 @@ class LifePathWidget extends StatelessWidget {
   }
 }
 
-Widget _buildSmallBox(dynamic value, double spacing, double textFontSizeDate)
-{
+Widget _buildSmallBox(dynamic value, double spacing, double textFontSizeDate) {
   return Container(
     padding: EdgeInsets.all(spacing / 2),
     decoration: BoxDecoration(
@@ -247,11 +263,8 @@ Widget _buildSmallBox(dynamic value, double spacing, double textFontSizeDate)
         style: TextStyle(fontSize: textFontSizeDate),
       ),
     ),
-                     
   );
-  
 }
-
 
 class _LifePathPainter extends CustomPainter {
   @override
@@ -265,11 +278,15 @@ class _LifePathPainter extends CustomPainter {
     final Offset camiDeVidaOffset = Offset(size.width / 2, 20);
     final Offset formacioOffset = Offset(size.width / 4, size.height / 2 - 20);
     final Offset produccioOffset = Offset(size.width / 2, size.height / 2 - 20);
-    final Offset cosechaOffset = Offset(3 * size.width / 4, size.height / 2 - 20);
+    final Offset cosechaOffset =
+        Offset(3 * size.width / 4, size.height / 2 - 20);
     final Offset forzaOffset = Offset(size.width / 4 - 40, size.height - 40);
-    final Offset realitzacio1Offset = Offset(size.width / 2.5, size.height - 40);
-    final Offset realitzacio2Offset = Offset(size.width / 1.6, size.height - 40);
-    final Offset realitzacio3Offset = Offset(size.width / 1.2, size.height - 40);
+    final Offset realitzacio1Offset =
+        Offset(size.width / 2.5, size.height - 40);
+    final Offset realitzacio2Offset =
+        Offset(size.width / 1.6, size.height - 40);
+    final Offset realitzacio3Offset =
+        Offset(size.width / 1.2, size.height - 40);
 
     // Dibuixar línies connectores
     canvas.drawLine(camiDeVidaOffset, formacioOffset, paint);

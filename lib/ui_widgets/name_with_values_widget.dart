@@ -12,9 +12,10 @@ class NameWithValuesWidget extends StatelessWidget {
       builder: (context, constraints) {
         // Ajustem les mides segons l'espai disponible
         double availableWidth = constraints.maxWidth;
+        // double availableHeight = constraints.maxHeight;
 
         // Ajusta les mides i espais segons l'espai disponible
-        double fontSize = availableWidth/14 *0.14; // Tamany de la lletra
+        double fontSize = availableWidth / 14 * 0.14; // Tamany de la lletra
         double valueFontSize = fontSize * 0.9; // Tamany per als valors
         double letterSpacing = fontSize * 0.3; // Espai entre lletres
         double wordSpacing = fontSize * 2.3; // Espai entre paraules
@@ -42,7 +43,8 @@ class NameWithValuesWidget extends StatelessWidget {
                     'Vocals: $vocal/${reduceToSingleDigit(vocal)}\n'
                     'Consonants: $consonant/${reduceToSingleDigit(consonant)}\n'
                     'Total: ${reduceToSingleDigit(vocal + consonant)}',
-                    style: TextStyle(fontSize: valueFontSize, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        fontSize: valueFontSize, fontWeight: FontWeight.bold),
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -51,9 +53,12 @@ class NameWithValuesWidget extends StatelessWidget {
 
             // Afegir espais visuals i netejar les variables per al següent segment
             nameRows.add(SizedBox(width: wordSpacing)); // Espai entre paraules
-            valueRowsAbove.add(SizedBox(width: wordSpacing)); // Espai entre paraules
-            valueRowsBelow.add(SizedBox(width: wordSpacing)); // Espai entre paraules
-            currentRow.add(SizedBox(width: wordSpacing)); // Espai entre paraules
+            valueRowsAbove
+                .add(SizedBox(width: wordSpacing)); // Espai entre paraules
+            valueRowsBelow
+                .add(SizedBox(width: wordSpacing)); // Espai entre paraules
+            currentRow
+                .add(SizedBox(width: wordSpacing)); // Espai entre paraules
 
             vocal = 0;
             consonant = 0;
@@ -68,7 +73,8 @@ class NameWithValuesWidget extends StatelessWidget {
               alignment: Alignment.center,
               child: Text(
                 char,
-                style: TextStyle(fontSize: fontSize, letterSpacing: letterSpacing),
+                style:
+                    TextStyle(fontSize: fontSize, letterSpacing: letterSpacing),
               ),
             ),
           ));
@@ -81,27 +87,31 @@ class NameWithValuesWidget extends StatelessWidget {
                 alignment: Alignment.center,
                 child: Text(
                   value.toString(),
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: valueFontSize),
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: valueFontSize),
                 ),
               ),
             ));
-            valueRowsBelow.add(Expanded(child: SizedBox())); // Espai per la separació
+            valueRowsBelow
+                .add(Expanded(child: SizedBox())); // Espai per la separació
           } else {
             consonant += value;
-            valueRowsAbove.add(Expanded(child: SizedBox())); // Espai per la separació
+            valueRowsAbove
+                .add(Expanded(child: SizedBox())); // Espai per la separació
             valueRowsBelow.add(Expanded(
               child: Container(
                 alignment: Alignment.center,
                 child: Text(
                   value.toString(),
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: valueFontSize),
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: valueFontSize),
                 ),
               ),
             ));
           }
 
           // Afegir l'espai actual a la fila
-          currentRow.add(Expanded(child: SizedBox())); 
+          currentRow.add(Expanded(child: SizedBox()));
         }
 
         // Afegir el widget per mostrar totals al final
@@ -113,7 +123,8 @@ class NameWithValuesWidget extends StatelessWidget {
                   'Vocals: $vocal/${reduceToSingleDigit(vocal)}\n'
                   'Consonants: $consonant/${reduceToSingleDigit(consonant)}\n'
                   'Total: ${reduceToSingleDigit(vocal + consonant)}',
-                  style: TextStyle(fontSize: valueFontSize, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                      fontSize: valueFontSize, fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
                 ),
               ),

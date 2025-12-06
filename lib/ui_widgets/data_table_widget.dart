@@ -18,10 +18,15 @@ class DataTableWidget extends StatelessWidget {
         double titleFontSize = fontSize * 0.7; // Font més petit per als títols
 
         // Creem l'estil del text
-        TextStyle smallTextStyle = TextStyle(fontSize: fontSize * 0.6, fontWeight: FontWeight.bold);
-        TextStyle titleTextStyle = TextStyle(fontSize: titleFontSize, fontWeight: FontWeight.bold);
-        TextStyle darkNumberTextStyle = TextStyle(fontSize: fontSize, color: Colors.black87); // Color més fosc per als números
-        TextStyle sunSymbolStyle = TextStyle(fontSize: fontSize * 0.5); // Mida més petita per al símbol del sol
+        TextStyle smallTextStyle =
+            TextStyle(fontSize: fontSize * 0.6, fontWeight: FontWeight.bold);
+        TextStyle titleTextStyle =
+            TextStyle(fontSize: titleFontSize, fontWeight: FontWeight.bold);
+        TextStyle darkNumberTextStyle = TextStyle(
+            fontSize: fontSize,
+            color: Colors.black87); // Color més fosc per als números
+        TextStyle sunSymbolStyle = TextStyle(
+            fontSize: fontSize * 0.5); // Mida més petita per al símbol del sol
 
         return SingleChildScrollView(
           scrollDirection: Axis.vertical,
@@ -30,10 +35,13 @@ class DataTableWidget extends StatelessWidget {
             child: SizedBox(
               width: availableWidth,
               child: DataTable(
-                columnSpacing: availableWidth / 200, // Espai entre columnes proporcional
-                dataRowMinHeight: availableHeight / 20, // Alçada de les files proporcional
+                columnSpacing:
+                    availableWidth / 200, // Espai entre columnes proporcional
+                dataRowMinHeight:
+                    availableHeight / 20, // Alçada de les files proporcional
                 columns: _buildColumns(titleTextStyle),
-                rows: _buildRows(smallTextStyle, darkNumberTextStyle, sunSymbolStyle),
+                rows: _buildRows(
+                    smallTextStyle, darkNumberTextStyle, sunSymbolStyle),
               ),
             ),
           ),
@@ -47,7 +55,9 @@ class DataTableWidget extends StatelessWidget {
       DataColumn(label: Text('', style: textStyle)),
     ];
 
-    int maxColumns = tableData.values.map((listOfLists) => listOfLists.length).reduce((a, b) => a > b ? a : b);
+    int maxColumns = tableData.values
+        .map((listOfLists) => listOfLists.length)
+        .reduce((a, b) => a > b ? a : b);
 
     for (int i = 0; i < maxColumns; i++) {
       columns.add(DataColumn(label: Text('Casa ${i + 1}', style: textStyle)));
@@ -56,14 +66,13 @@ class DataTableWidget extends StatelessWidget {
     return columns;
   }
 
-  List<DataRow> _buildRows(TextStyle textStyle, TextStyle darkNumberTextStyle, TextStyle sunSymbolStyle) {
+  List<DataRow> _buildRows(TextStyle textStyle, TextStyle darkNumberTextStyle,
+      TextStyle sunSymbolStyle) {
     return tableData.entries.map((entry) {
       String rowTitle = entry.key;
       List<List<int>> rowValues = entry.value;
 
-      List<DataCell> cells = [
-        DataCell(Text(rowTitle, style: textStyle))
-      ];
+      List<DataCell> cells = [DataCell(Text(rowTitle, style: textStyle))];
 
       cells.addAll(rowValues.map((valueList) {
         // Combinem els valors en un string amb el símbol del sol ajustat
@@ -94,8 +103,10 @@ class DataTableWidget extends StatelessWidget {
         return DataCell(
           Container(
             padding: EdgeInsets.symmetric(
-              vertical: textStyle.fontSize! * 0.6, // Ajustament dinàmic del padding
-              horizontal: textStyle.fontSize! * 0.5, // Ajustament dinàmic del padding
+              vertical:
+                  textStyle.fontSize! * 0.6, // Ajustament dinàmic del padding
+              horizontal:
+                  textStyle.fontSize! * 0.5, // Ajustament dinàmic del padding
             ),
             alignment: Alignment.center, // Centrar el contingut
             child: Align(
@@ -103,7 +114,9 @@ class DataTableWidget extends StatelessWidget {
               child: Text(
                 cellContent,
                 style: darkNumberTextStyle.copyWith(
-                  fontSize: (cellContent.contains('☀') ? sunSymbolStyle.fontSize : darkNumberTextStyle.fontSize),
+                  fontSize: (cellContent.contains('☀')
+                      ? sunSymbolStyle.fontSize
+                      : darkNumberTextStyle.fontSize),
                 ),
               ),
             ),

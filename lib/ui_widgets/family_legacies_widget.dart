@@ -15,37 +15,35 @@ class FamilyHeritageWidget extends StatelessWidget {
 
         // Ajustem les mides segons l'espai disponible
         double cardMargin = availableHeight * 0.01; // Margin de les targetes
-        double cardElevation = availableHeight * 0.005; // Elevació de les targetes
+        double cardElevation =
+            availableHeight * 0.005; // Elevació de les targetes
         double iconSize = availableWidth * 0.05; // Mida de la icona
         double textFontSize = availableWidth * 0.034; // Mida del text
         double spacing = availableWidth * 0.01; // Espai entre columnes
 
         return Container(
-          padding: EdgeInsets.all(8.0),
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.black),
-            borderRadius: BorderRadius.circular(8.0),
-          ),
-
-          child: SingleChildScrollView(
-            child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Herències Familiars',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: textFontSize,
-                ),
+            padding: EdgeInsets.all(8.0),
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.black),
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Herències Familiars',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: textFontSize,
+                    ),
+                  ),
+                  SizedBox(height: spacing),
+                  _buildGridLayout(cardMargin, cardElevation, iconSize,
+                      textFontSize, spacing)
+                ],
               ),
-              SizedBox(height: spacing),
-              _buildGridLayout(cardMargin, cardElevation, iconSize, textFontSize, spacing)
-              
-            ],
-          ),
-          )
-        
-        );
+            ));
       },
     );
   }
@@ -62,7 +60,8 @@ class FamilyHeritageWidget extends StatelessWidget {
     int itemCount = entries.length;
     int itemsPerRow = 4; // Sempre 4 columnes
 
-    for (int row = 0; row < 2; row++) { // Sempre 2 files
+    for (int row = 0; row < 2; row++) {
+      // Sempre 2 files
       List<Widget> rowItems = [];
       for (int col = 0; col < itemsPerRow; col++) {
         int index = row * itemsPerRow + col;
@@ -109,79 +108,82 @@ class FamilyHeritageWidget extends StatelessWidget {
     );
   }
 
- Widget _buildHeritageCard(
-  String label,
-  int value,
-  int reducedValue,
-  double cardMargin,
-  double cardElevation,
-  double iconSize,
-  double textFontSize,
-) {
-  bool masterNumber = isMasterNumber(reducedValue);
-  int finalReducedValue = masterNumber ? reduceToSingleDigitResult(reducedValue) : reducedValue;
+  Widget _buildHeritageCard(
+    String label,
+    int value,
+    int reducedValue,
+    double cardMargin,
+    double cardElevation,
+    double iconSize,
+    double textFontSize,
+  ) {
+    bool masterNumber = isMasterNumber(reducedValue);
+    int finalReducedValue =
+        masterNumber ? reduceToSingleDigitResult(reducedValue) : reducedValue;
 
-  return Card(
-    margin: EdgeInsets.symmetric(vertical: cardMargin), // Màrgen vertical
-    elevation: cardElevation, // Elevació de la targeta
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(6.0), // Radius de les cantonades
-    ),
-    color: Colors.blue[100], // Color blau suau per a la targeta
-    child: Padding(
-      padding: const EdgeInsets.all(6.0), // Padding intern
-      child: Row(
-        children: [
-          Icon(
-            Icons.family_restroom,
-            color: const Color.fromARGB(255, 8, 9, 9), // Color de la icona
-            size: iconSize, // Mida de la icona
-          ),
-          SizedBox(width: 6), // Espai entre icona i text
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
-                  style: TextStyle(
-                    fontSize: textFontSize * 0.6, // Mida del text de l'etiqueta
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blue[600], // Color del text
+    return Card(
+      margin: EdgeInsets.symmetric(vertical: cardMargin), // Màrgen vertical
+      elevation: cardElevation, // Elevació de la targeta
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(6.0), // Radius de les cantonades
+      ),
+      color: Colors.blue[100], // Color blau suau per a la targeta
+      child: Padding(
+        padding: const EdgeInsets.all(6.0), // Padding intern
+        child: Row(
+          children: [
+            Icon(
+              Icons.family_restroom,
+              color: const Color.fromARGB(255, 8, 9, 9), // Color de la icona
+              size: iconSize, // Mida de la icona
+            ),
+            SizedBox(width: 6), // Espai entre icona i text
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    style: TextStyle(
+                      fontSize:
+                          textFontSize * 0.6, // Mida del text de l'etiqueta
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blue[600], // Color del text
+                    ),
                   ),
-                ),
-                SizedBox(height: 2),
-                RichText(
-                  text: TextSpan(
-                    children: [
-                      TextSpan(
-                        text: '$value/$reducedValue ',
-                        style: TextStyle(
-                          fontSize: textFontSize, // Mida del text del valor
-                          fontWeight: FontWeight.bold,
-                          color: Colors.blue[900], // Color del text
-                        ),
-                      ),
-                      if (masterNumber)
+                  SizedBox(height: 2),
+                  RichText(
+                    text: TextSpan(
+                      children: [
                         TextSpan(
-                          text: '($finalReducedValue)',
+                          text: '$value/$reducedValue ',
                           style: TextStyle(
-                            fontSize: textFontSize, // Mida del text del valor reduït
+                            fontSize: textFontSize, // Mida del text del valor
                             fontWeight: FontWeight.bold,
-                            color: Colors.red, // Color del text reduït
-                            backgroundColor: Colors.yellow, // Color de fons per encerclar
+                            color: Colors.blue[900], // Color del text
                           ),
                         ),
-                    ],
+                        if (masterNumber)
+                          TextSpan(
+                            text: '($finalReducedValue)',
+                            style: TextStyle(
+                              fontSize:
+                                  textFontSize, // Mida del text del valor reduït
+                              fontWeight: FontWeight.bold,
+                              color: Colors.red, // Color del text reduït
+                              backgroundColor:
+                                  Colors.yellow, // Color de fons per encerclar
+                            ),
+                          ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-    ),
-  );
-}
-
+    );
+  }
 }

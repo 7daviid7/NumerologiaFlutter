@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import '../models/data_model.dart';
 import '../services/gemini_service.dart';
@@ -16,6 +17,20 @@ class _AIInterpretationPageState extends State<AIInterpretationPage> {
   String? _currentDocId;
   bool? _userFeedback; // null: no feedback, true: like, false: dislike
   bool _isLoading = false;
+  bool _isEditing = false;
+  late TextEditingController _editController;
+
+  @override
+  void initState() {
+    super.initState();
+    _editController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _editController.dispose();
+    super.dispose();
+  }
 
   Future<void> _generateInterpretation() async {
     const apiKey = String.fromEnvironment('GEMINI_API_KEY');
@@ -62,6 +77,7 @@ class _AIInterpretationPageState extends State<AIInterpretationPage> {
         _interpretation = result;
         _currentDocId = docId;
         _userFeedback = null; // Reset feedback for new interpretation
+        _editController.text = result;
       });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -80,6 +96,7 @@ class _AIInterpretationPageState extends State<AIInterpretationPage> {
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Text('Interpretació IA',
             style: TextStyle(fontWeight: FontWeight.bold)),
         centerTitle: true,
@@ -213,48 +230,254 @@ class _AIInterpretationPageState extends State<AIInterpretationPage> {
         elevation: 2,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         color: theme.colorScheme.surface,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(16),
-          child: SingleChildScrollView(
-            padding: EdgeInsets.all(24),
-            child: MarkdownBody(
-              data: _interpretation!,
-              styleSheet: MarkdownStyleSheet(
-                h1: theme.textTheme.headlineMedium?.copyWith(
-                  color: theme.colorScheme.primary,
-                  fontWeight: FontWeight.bold,
-                  height: 1.5,
-                ),
-                h2: theme.textTheme.titleLarge?.copyWith(
-                  color: theme.colorScheme.secondary,
-                  fontWeight: FontWeight.bold,
-                  height: 1.5,
-                ),
-                h3: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  height: 1.5,
-                ),
-                p: theme.textTheme.bodyLarge
-                    ?.copyWith(height: 1.6, fontSize: 16),
-                listBullet: theme.textTheme.bodyLarge
-                    ?.copyWith(color: theme.colorScheme.primary),
-                blockquote: theme.textTheme.bodyMedium?.copyWith(
-                  fontStyle: FontStyle.italic,
-                  color: theme.colorScheme.onSurfaceVariant,
-                ),
-                blockquoteDecoration: BoxDecoration(
-                  color: theme.colorScheme.surfaceContainerHighest,
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border(
-                      left: BorderSide(
-                          color: theme.colorScheme.primary, width: 4)),
-                ),
+        child: Column(
+          children: [
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    _isEditing ? 'Editant Interpretació' : 'Resultat',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: theme.colorScheme.primary,
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      if (_isEditing) ...[
+                        IconButton(
+                          icon: Icon(Icons.close, color: Colors.red),
+                          onPressed: _cancelEdit,
+                          tooltip: 'Cancel·lar',
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.check, color: Colors.green),
+                          onPressed: _saveEdit,
+                          tooltip: 'Guardar',
+                        ),
+                      ] else ...[
+                        IconButton(
+                          icon: Icon(Icons.fullscreen,
+                              color: theme.colorScheme.primary),
+                          onPressed: _openFullScreen,
+                          tooltip: 'Pantalla completa',
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.copy,
+                              color: theme.colorScheme.primary),
+                          onPressed: _copyToClipboard,
+                          tooltip: 'Copiar text',
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.edit,
+                              color: theme.colorScheme.primary),
+                          onPressed: () {
+                            setState(() {
+                              _isEditing = true;
+                              _editController.text = _interpretation ?? '';
+                            });
+                          },
+                          tooltip: 'Editar text',
+                        ),
+                      ],
+                    ],
+                  ),
+                ],
               ),
             ),
-          ),
+            Divider(height: 1),
+            Expanded(
+              child: _isEditing
+                  ? Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: TextField(
+                        controller: _editController,
+                        maxLines: null,
+                        expands: true,
+                        textAlignVertical: TextAlignVertical.top,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          hintText: 'Escriu aquí la interpretació...',
+                        ),
+                        style: theme.textTheme.bodyLarge
+                            ?.copyWith(height: 1.6, fontSize: 16),
+                      ),
+                    )
+                  : ClipRRect(
+                      borderRadius:
+                          BorderRadius.vertical(bottom: Radius.circular(16)),
+                      child: SingleChildScrollView(
+                        padding: EdgeInsets.all(24),
+                        child: MarkdownBody(
+                          data: _interpretation!,
+                          styleSheet: MarkdownStyleSheet(
+                            h1: theme.textTheme.headlineMedium?.copyWith(
+                              color: theme.colorScheme.primary,
+                              fontWeight: FontWeight.bold,
+                              height: 1.5,
+                            ),
+                            h2: theme.textTheme.titleLarge?.copyWith(
+                              color: theme.colorScheme.secondary,
+                              fontWeight: FontWeight.bold,
+                              height: 1.5,
+                            ),
+                            h3: theme.textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              height: 1.5,
+                            ),
+                            p: theme.textTheme.bodyLarge
+                                ?.copyWith(height: 1.6, fontSize: 16),
+                            listBullet: theme.textTheme.bodyLarge
+                                ?.copyWith(color: theme.colorScheme.primary),
+                            blockquote: theme.textTheme.bodyMedium?.copyWith(
+                              fontStyle: FontStyle.italic,
+                              color: theme.colorScheme.onSurfaceVariant,
+                            ),
+                            blockquoteDecoration: BoxDecoration(
+                              color: theme.colorScheme.surfaceContainerHighest,
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border(
+                                  left: BorderSide(
+                                      color: theme.colorScheme.primary,
+                                      width: 4)),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+            ),
+          ],
         ),
       ),
     );
+  }
+
+  Future<void> _saveEdit() async {
+    if (_editController.text.trim().isEmpty) return;
+
+    final newText = _editController.text;
+    setState(() {
+      _interpretation = newText;
+      _isEditing = false;
+    });
+
+    if (_currentDocId != null) {
+      try {
+        final historyService = HistoryService();
+        await historyService.updateInterpretation(_currentDocId!, newText);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Interpretació actualitzada correctament')),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error guardant els canvis: $e')),
+        );
+      }
+    }
+  }
+
+  void _cancelEdit() {
+    setState(() {
+      _isEditing = false;
+      _editController.text = _interpretation ?? '';
+    });
+  }
+
+  void _openFullScreen() {
+    if (_interpretation == null) return;
+
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        fullscreenDialog: true,
+        builder: (context) {
+          final theme = Theme.of(context);
+          return Scaffold(
+            appBar: AppBar(
+              title: Text('Interpretació Completa',
+                  style: TextStyle(fontWeight: FontWeight.bold)),
+              centerTitle: true,
+              backgroundColor: theme.colorScheme.surface,
+              foregroundColor: theme.colorScheme.onSurface,
+              elevation: 0,
+              actions: [
+                IconButton(
+                  icon: Icon(Icons.close),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+              ],
+              automaticallyImplyLeading: false,
+            ),
+            body: Container(
+              width: double.infinity,
+              height: double.infinity,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    theme.colorScheme.surface,
+                    theme.colorScheme.primaryContainer.withOpacity(0.1),
+                  ],
+                ),
+              ),
+              child: SingleChildScrollView(
+                padding: EdgeInsets.all(24),
+                child: MarkdownBody(
+                  data: _interpretation!,
+                  styleSheet: MarkdownStyleSheet(
+                    h1: theme.textTheme.headlineMedium?.copyWith(
+                      color: theme.colorScheme.primary,
+                      fontWeight: FontWeight.bold,
+                      height: 1.5,
+                    ),
+                    h2: theme.textTheme.titleLarge?.copyWith(
+                      color: theme.colorScheme.secondary,
+                      fontWeight: FontWeight.bold,
+                      height: 1.5,
+                    ),
+                    h3: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      height: 1.5,
+                    ),
+                    p: theme.textTheme.bodyLarge
+                        ?.copyWith(height: 1.6, fontSize: 16),
+                    listBullet: theme.textTheme.bodyLarge
+                        ?.copyWith(color: theme.colorScheme.primary),
+                    blockquote: theme.textTheme.bodyMedium?.copyWith(
+                      fontStyle: FontStyle.italic,
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                    blockquoteDecoration: BoxDecoration(
+                      color: theme.colorScheme.surfaceContainerHighest,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border(
+                          left: BorderSide(
+                              color: theme.colorScheme.primary, width: 4)),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  void _copyToClipboard() {
+    if (_interpretation != null) {
+      Clipboard.setData(ClipboardData(text: _interpretation!));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Text copiat al porta-retalls'),
+          duration: Duration(seconds: 2),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
   }
 
   Widget _buildFeedbackSection(ThemeData theme) {

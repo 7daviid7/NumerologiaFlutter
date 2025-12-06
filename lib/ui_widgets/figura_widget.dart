@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
+import 'dart:math' as math;
 import '../services/svg_dinamic_service.dart';
 import 'package:provider/provider.dart';
 import '../models/data_model.dart';
 
 class FiguraWidget extends StatelessWidget {
   final String nameSVG;
-  final double height; 
+  final double height;
   final double width;
 
   // Constructor que incluye el valor requerido 'name'
-  FiguraWidget({required this.nameSVG, required this.width, required this.height});
+  FiguraWidget(
+      {required this.nameSVG, required this.width, required this.height});
 
   @override
   Widget build(BuildContext context) {
@@ -45,8 +47,10 @@ class NumerosPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     // El tamaño del círculo y el tamaño del texto se ajustan en función del tamaño del canvas
-    final double circleRadius = size.width * 0.03;
-    final double fontSize = size.width * 0.03;
+    // Usamos el minimo para evitar deformaciones en relaciones de aspecto extremas
+    final double minDimension = math.min(size.width, size.height);
+    final double circleRadius = minDimension * 0.03;
+    final double fontSize = minDimension * 0.03;
 
     final textStyle = TextStyle(
       color: Colors.white,
@@ -61,19 +65,20 @@ class NumerosPainter extends CustomPainter {
 
     // Lista de posiciones ajustadas de forma proporcional
     final List<Offset> posiciones = [
-      Offset(size.width * 0.59, size.height *0.0001),  // CAP DRET
-      Offset(size.width * 0.43, size.height * 0.0001),  // CAP ESQUERRE
-      Offset(size.width * 0.2, size.height * 0.13),   // BRAÇ ESQUERRE
-      Offset(size.width * 0.35, size.height * 0.33),   // PANXA ESQUERRE
-      Offset(size.width * 0.25, size.height * 0.67 ),  // CAMA ESQUERRE
-      Offset(size.width * 0.515, size.height * 0.58),  // CADERA
-      Offset(size.width * 0.8, size.height * 0.67),   // CAMA DRETA
-      Offset(size.width * 0.65, size.height * 0.33),   // PANXA DRETA
-      Offset(size.width * 0.8, size.height * 0.13),   // BRAÇ DRET
+      Offset(size.width * 0.59, size.height * 0.0001), // CAP DRET
+      Offset(size.width * 0.43, size.height * 0.0001), // CAP ESQUERRE
+      Offset(size.width * 0.2, size.height * 0.13), // BRAÇ ESQUERRE
+      Offset(size.width * 0.35, size.height * 0.33), // PANXA ESQUERRE
+      Offset(size.width * 0.25, size.height * 0.67), // CAMA ESQUERRE
+      Offset(size.width * 0.515, size.height * 0.58), // CADERA
+      Offset(size.width * 0.8, size.height * 0.67), // CAMA DRETA
+      Offset(size.width * 0.65, size.height * 0.33), // PANXA DRETA
+      Offset(size.width * 0.8, size.height * 0.13), // BRAÇ DRET
     ];
 
     mapFigura.forEach((key, value) {
-      final posicion = posiciones[key - 1]; // Obtenemos la posición fija correspondiente
+      final posicion =
+          posiciones[key - 1]; // Obtenemos la posición fija correspondiente
 
       // Dibujamos un círculo de fondo con tamaño dinámico
       final paint = Paint()
@@ -87,7 +92,8 @@ class NumerosPainter extends CustomPainter {
         style: textStyle,
       );
       textPainter.layout();
-      textPainter.paint(canvas, posicion - Offset(textPainter.width / 2, textPainter.height / 2));
+      textPainter.paint(canvas,
+          posicion - Offset(textPainter.width / 2, textPainter.height / 2));
     });
   }
 

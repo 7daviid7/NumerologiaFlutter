@@ -35,4 +35,16 @@ class HistoryService {
       rethrow;
     }
   }
+
+  Future<void> updateInterpretation(String docId, String newText) async {
+    try {
+      await _historyCollection.doc(docId).update({
+        'interpretation': newText,
+      });
+      print('DEBUG: Interpretation updated for doc $docId');
+    } catch (e) {
+      print('Error updating interpretation: $e');
+      rethrow;
+    }
+  }
 }
