@@ -13,6 +13,8 @@ class AIInterpretationPage extends StatefulWidget {
 
 class _AIInterpretationPageState extends State<AIInterpretationPage> {
   String? _interpretation;
+  String? _currentDocId;
+  bool? _userFeedback; // null: no feedback, true: like, false: dislike
   bool _isLoading = false;
 
   Future<void> _generateInterpretation() async {
@@ -50,7 +52,7 @@ class _AIInterpretationPageState extends State<AIInterpretationPage> {
 
       // Guardar a Firestore
       final historyService = HistoryService();
-      await historyService.saveInterpretation(
+      final docId = await historyService.saveInterpretation(
         fullName: dataModel.name,
         birthDate: dataModel.date,
         interpretation: result,
@@ -58,6 +60,8 @@ class _AIInterpretationPageState extends State<AIInterpretationPage> {
 
       setState(() {
         _interpretation = result;
+        _currentDocId = docId;
+        _userFeedback = null; // Reset feedback for new interpretation
       });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -105,6 +109,8 @@ class _AIInterpretationPageState extends State<AIInterpretationPage> {
                 _buildEmptyState(theme)
               else
                 _buildResultState(theme),
+              if (_interpretation != null && !_isLoading)
+                _buildFeedbackSection(theme),
               SizedBox(height: 24),
               if (!_isLoading)
                 Center(
@@ -249,5 +255,60 @@ class _AIInterpretationPageState extends State<AIInterpretationPage> {
         ),
       ),
     );
+  }
+
+  Widget _buildFeedbackSection(ThemeData theme) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 16.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text('T\'ha estat útil?', style: theme.textTheme.bodyMedium),
+          SizedBox(width: 16),
+          IconButton(
+            icon: Icon(
+              _userFeedback == true ? Icons.thumb_up : Icons.thumb_up_outlined,
+              color: _userFeedback == true ? Colors.green : null,
+            ),
+            onPressed: () => _handleFeedback(true),
+            tooltip: 'M\'agrada',
+          ),
+          IconButton(
+            icon: Icon(
+              _userFeedback == false
+                  ? Icons.thumb_down
+                  : Icons.thumb_down_outlined,
+              color: _userFeedback == false ? Colors.red : null,
+            ),
+            onPressed: () => _handleFeedback(false),
+            tooltip: 'No m\'agrada',
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _handleFeedback(bool isPositive) async {
+    if (_currentDocId == null) return;
+
+    setState(() {
+      _userFeedback = isPositive;
+    });
+
+    try {
+      final historyService = HistoryService();
+      await historyService.updateFeedback(_currentDocId!, isPositive);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Gràcies pel teu feedback!'),
+          duration: Duration(seconds: 2),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    } catch (e) {
+      print('Error updating feedback: $e');
+      // Opcional: Revertir l'estat si falla
+    }
   }
 }

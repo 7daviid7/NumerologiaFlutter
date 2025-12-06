@@ -1,4 +1,6 @@
 {
     "CodeGPT.apiKey": "CodeGPT Plus Beta",
-    "java.configuration.updateBuildConfiguration": "interactive"
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "dart.openDevTools": "flutter",
+    "cmake.sourceDirectory": "C:/Users/David/Documents/DAVIDPROJECTES/numerologia_flutter/windows"
 }

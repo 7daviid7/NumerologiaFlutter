@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:math' as math;
 
 class ChallengesWidget extends StatelessWidget {
   final Map<String, int> challenges; // Map que conté els desafiaments
@@ -11,13 +12,19 @@ class ChallengesWidget extends StatelessWidget {
       builder: (context, constraints) {
         // Obtenim l'espai disponible
         double availableWidth = constraints.maxWidth;
+        double availableHeight = constraints.maxHeight;
 
-        // Ajustem les mides i espaiaments basats en l'amplada disponible
-        double titleFontSize = availableWidth * 0.08; // Mida del text per al títol com a proporció de l'amplada
-        double itemFontSize = availableWidth * 0.06;  // Mida del text per als elements com a proporció de l'amplada
-        double iconSize = availableWidth * 0.1;      // Mida de la icona com a proporció de l'amplada
-        double spacing = availableWidth * 0.02;        // Espai entre elements com a proporció de l'amplada
-        double padding = availableWidth * 0.02;        // Padding com a proporció de l'amplada
+        // Ajustem les mides i espaiaments basats en la dimensió més petita
+        // per evitar que en pantalles molt amples els elements siguin gegants
+        double minDimension = math.min(availableWidth, availableHeight * 2);
+
+        double titleFontSize =
+            minDimension * 0.08; // Mida del text per al títol
+        double itemFontSize =
+            minDimension * 0.06; // Mida del text per als elements
+        double iconSize = minDimension * 0.1; // Mida de la icona
+        double spacing = minDimension * 0.02; // Espai entre elements
+        double padding = minDimension * 0.02; // Padding
 
         TextStyle titleTextStyle = TextStyle(
           fontWeight: FontWeight.bold,
@@ -29,7 +36,7 @@ class ChallengesWidget extends StatelessWidget {
         );
 
         TextStyle valueTextStyle = TextStyle(
-          fontSize: itemFontSize*1.9,
+          fontSize: itemFontSize * 1.9,
           color: Colors.blue[900],
         );
 
@@ -41,6 +48,7 @@ class ChallengesWidget extends StatelessWidget {
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
               // Títol General
               Text(
@@ -49,18 +57,22 @@ class ChallengesWidget extends StatelessWidget {
               ),
               SizedBox(height: spacing), // Espai entre el títol i la llista
               // Llista de desafiaments
-              Column(
-                children: challenges.entries.map((entry) {
-                  return _buildChallengeItem(
-                    entry.key,
-                    entry.value,
-                    itemTextStyle,
-                    valueTextStyle,
-                    iconSize,
-                    spacing,
-                    padding,
-                  );
-                }).toList(),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: challenges.entries.map((entry) {
+                      return _buildChallengeItem(
+                        entry.key,
+                        entry.value,
+                        itemTextStyle,
+                        valueTextStyle,
+                        iconSize,
+                        spacing,
+                        padding,
+                      );
+                    }).toList(),
+                  ),
+                ),
               ),
             ],
           ),
@@ -80,14 +92,16 @@ class ChallengesWidget extends StatelessWidget {
   ) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: spacing), // Margin entre elements
-      padding: EdgeInsets.symmetric(vertical: padding, horizontal: padding), // Padding entre text i borde
+      padding: EdgeInsets.symmetric(
+          vertical: padding, horizontal: padding), // Padding entre text i borde
       decoration: BoxDecoration(
         color: Colors.blue[50], // Color de fons
         borderRadius: BorderRadius.circular(4.0), // Radi fix del bord
         border: Border.all(color: Colors.blue, width: 1), // Color del borde
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween, // Espai entre text i valor
+        mainAxisAlignment:
+            MainAxisAlignment.spaceBetween, // Espai entre text i valor
         children: [
           // Icona per a cada desafiament
           Icon(
@@ -100,13 +114,15 @@ class ChallengesWidget extends StatelessWidget {
           Expanded(
             child: Text(
               challenge,
-              style: textStyle.copyWith(fontWeight: FontWeight.bold), // Estil del text
+              style: textStyle.copyWith(
+                  fontWeight: FontWeight.bold), // Estil del text
             ),
           ),
           // Valor del desafiament
           Text(
             value.toString(),
-            style: valueTextStyle.copyWith(fontWeight: FontWeight.bold), // Estil del valor
+            style: valueTextStyle.copyWith(
+                fontWeight: FontWeight.bold), // Estil del valor
           ),
         ],
       ),

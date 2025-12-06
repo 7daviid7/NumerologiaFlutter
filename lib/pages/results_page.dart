@@ -44,12 +44,14 @@ class ResultsPage extends StatelessWidget {
                               SizedBox(width: 10),
                               Expanded(
                                 flex: 1,
-                                child: ChallengesWidget(challenges: dataModel.mapDesafio),
+                                child: ChallengesWidget(
+                                    challenges: dataModel.mapDesafio),
                               ),
                               SizedBox(width: 20),
                               Expanded(
                                 flex: 3,
-                                child: FamilyHeritageWidget(values: dataModel.mapHerencies),
+                                child: FamilyHeritageWidget(
+                                    values: dataModel.mapHerencies),
                               ),
                             ],
                           ),
@@ -63,9 +65,14 @@ class ResultsPage extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Expanded(child: PersonalityAreaWidget(personalityValues: dataModel.mapPersonalidad)),
+                        Expanded(
+                            child: PersonalityAreaWidget(
+                                personalityValues: dataModel.mapPersonalidad)),
                         SizedBox(height: 5),
-                        Expanded(child: LifePathWidget(values: dataModel.mapVida, date: dataModel.date)),
+                        Expanded(
+                            child: LifePathWidget(
+                                values: dataModel.mapVida,
+                                date: dataModel.date)),
                       ],
                     ),
                   ),
@@ -75,9 +82,11 @@ class ResultsPage extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        ArcWidget(values: dataModel.mapPrimerArc),
+                        Expanded(
+                            child: ArcWidget(values: dataModel.mapPrimerArc)),
                         SizedBox(height: 20),
-                        ArcWidget(values: dataModel.mapSegonArc),
+                        Expanded(
+                            child: ArcWidget(values: dataModel.mapSegonArc)),
                       ],
                     ),
                   ),

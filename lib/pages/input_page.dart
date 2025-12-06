@@ -15,6 +15,17 @@ class InputPageState extends State<InputPage> {
   DateTime? selectedDate;
 
   @override
+  void initState() {
+    super.initState();
+    // TODO: DEBUG - Dades pre-omplertes per testeig ràpid
+    // Canvia aquestes dades per les teves dades de prova habituals
+    _nameController.text =
+        "David Quintanilla Jimenez Garcia Molina"; // Posa aquí el teu nom complet
+    selectedDate = DateTime(2003, 04, 03); // Posa aquí la teva data
+    _dateController.text = DateFormat('yyyy-MM-dd').format(selectedDate!);
+  }
+
+  @override
   void dispose() {
     _nameController.dispose();
     _dateController.dispose();
