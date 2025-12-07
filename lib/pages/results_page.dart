@@ -33,13 +33,14 @@ class ResultsPage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Expanded(
-                          flex: 2,
+                          flex: 5,
                           child: DataTableWidget(tableData: dataModel.taula),
                         ),
                         SizedBox(height: 10),
                         Expanded(
-                          flex: 1,
+                          flex: 3,
                           child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               SizedBox(width: 10),
                               Expanded(

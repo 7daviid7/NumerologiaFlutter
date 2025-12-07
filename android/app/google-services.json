@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "477029872399",
-    "project_id": "gen-lang-client-0094093679",
-    "storage_bucket": "gen-lang-client-0094093679.firebasestorage.app"
+    "project_number": "95277363870",
+    "project_id": "charged-sum-419213",
+    "storage_bucket": "charged-sum-419213.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:477029872399:android:1e0a4b9ec8866fe0a1847a",
+        "mobilesdk_app_id": "1:95277363870:android:1189d2f1abff860038c18f",
         "android_client_info": {
           "package_name": "com.example.numerologia"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDBKm5_d3ozXTrcVUq7m8Nx7MgP4IeCsx4"
+          "current_key": "AIzaSyASiSwpxx6FGssF4An2mYzmTP4OKKpsUIU"
         }
       ],
       "services": {

@@ -11,34 +11,55 @@ class DataTableWidget extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         double availableWidth = constraints.maxWidth;
-        double availableHeight = constraints.maxHeight;
 
         // Ajustem la mida del text segons l'amplada disponible
-        double fontSize = (availableWidth / 38);
-        double titleFontSize = fontSize * 0.7; // Font més petit per als títols
+        // Utilitzem un mínim de 10.0 per assegurar llegibilitat (scroll si és necessari)
+        double availableHeight = constraints.maxHeight;
+
+        // Càlcul de la mida ideal basada en l'amplada
+        double widthBasedFontSize = availableWidth / 25;
+
+        // Càlcul de la mida ideal basada en l'alçada (si és finita)
+        // Assumim ~22 files de dades (incloent capçaleres i marges)
+        double heightBasedFontSize = double.infinity;
+        if (availableHeight != double.infinity) {
+          heightBasedFontSize = availableHeight / 20;
+        }
+
+        // Triem la mida més restrictiva per evitar overflow (intentar que tot càpiga)
+        double optimalFontSize = widthBasedFontSize < heightBasedFontSize
+            ? widthBasedFontSize
+            : heightBasedFontSize;
+
+        // Apliquem límits:
+        // Mínim 10.0: Per sota d'això és il·legible -> Activem scroll.
+        // Màxim 18.0: Per sobre d'això és massa gran -> Deixem espai buit.
+        double fontSize = optimalFontSize;
+        if (fontSize < 10.0) fontSize = 10.0;
+        if (fontSize > 18.0) fontSize = 18.0;
+
+        double titleFontSize = fontSize * 0.7;
 
         // Creem l'estil del text
         TextStyle smallTextStyle =
             TextStyle(fontSize: fontSize * 0.6, fontWeight: FontWeight.bold);
         TextStyle titleTextStyle =
             TextStyle(fontSize: titleFontSize, fontWeight: FontWeight.bold);
-        TextStyle darkNumberTextStyle = TextStyle(
-            fontSize: fontSize,
-            color: Colors.black87); // Color més fosc per als números
-        TextStyle sunSymbolStyle = TextStyle(
-            fontSize: fontSize * 0.5); // Mida més petita per al símbol del sol
+        TextStyle darkNumberTextStyle =
+            TextStyle(fontSize: fontSize, color: Colors.black87);
+        TextStyle sunSymbolStyle = TextStyle(fontSize: fontSize * 0.5);
 
         return SingleChildScrollView(
           scrollDirection: Axis.vertical,
-          child: ConstrainedBox(
-            constraints: BoxConstraints(minWidth: availableWidth),
-            child: SizedBox(
-              width: availableWidth,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minWidth: availableWidth),
               child: DataTable(
-                columnSpacing:
-                    availableWidth / 200, // Espai entre columnes proporcional
-                dataRowMinHeight:
-                    availableHeight / 20, // Alçada de les files proporcional
+                columnSpacing: fontSize * 0.5, // Espaiat basat en la font
+                horizontalMargin: fontSize * 0.5,
+                dataRowMinHeight: fontSize * 1.5,
+                dataRowMaxHeight: fontSize * 2.5,
                 columns: _buildColumns(titleTextStyle),
                 rows: _buildRows(
                     smallTextStyle, darkNumberTextStyle, sunSymbolStyle),

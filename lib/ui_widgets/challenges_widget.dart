@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:math' as math;
 
 class ChallengesWidget extends StatelessWidget {
   final Map<String, int> challenges; // Map que conté els desafiaments
@@ -13,18 +12,40 @@ class ChallengesWidget extends StatelessWidget {
         // Obtenim l'espai disponible
         double availableWidth = constraints.maxWidth;
         double availableHeight = constraints.maxHeight;
+        int widthDivisible = availableHeight.toInt() <= 185 ? 18 : 12;
+        // Calculem quants elements tenim per saber quant espai vertical necessitem
+        int itemCount = challenges.length;
+        // Estimació de "files" lògiques: Títol (2) + Cada item (3 unitats d'alçada aprox amb marges) + Padding (1)
+        double logicalRows = 2.0 + (itemCount * 3.5) + 1.0;
 
-        // Ajustem les mides i espaiaments basats en la dimensió més petita
-        // per evitar que en pantalles molt amples els elements siguin gegants
-        double minDimension = math.min(availableWidth, availableHeight * 2);
+        // Càlcul de la mida ideal basada en l'amplada
+        double widthBasedFontSize =
+            availableWidth / widthDivisible; // Aprox caracters per línia
 
-        double titleFontSize =
-            minDimension * 0.08; // Mida del text per al títol
-        double itemFontSize =
-            minDimension * 0.06; // Mida del text per als elements
-        double iconSize = minDimension * 0.1; // Mida de la icona
-        double spacing = minDimension * 0.02; // Espai entre elements
-        double padding = minDimension * 0.02; // Padding
+        // Càlcul de la mida ideal basada en l'alçada
+        double heightBasedFontSize = double.infinity;
+        if (availableHeight != double.infinity) {
+          heightBasedFontSize = availableHeight / logicalRows;
+        }
+
+        // Triem la mida més restrictiva, però sense ser tan conservadors amb el min() rígid
+        // Volem omplir l'espai
+        double optimalFontSize = widthBasedFontSize < heightBasedFontSize
+            ? widthBasedFontSize
+            : heightBasedFontSize;
+
+        // Límits:
+        // Mínim 10: Per sota d'això activem scroll.
+        // Màxim 28: Per sobre d'això es veu massa gran.
+        double fontSize = optimalFontSize;
+        if (fontSize < 12.0) fontSize = 10.0;
+        if (fontSize > 32.0) fontSize = 32.0;
+
+        double titleFontSize = fontSize * 1.5;
+        double itemFontSize = fontSize * 0.9;
+        double iconSize = fontSize * 1.5;
+        double spacing = fontSize * 0.3;
+        double padding = fontSize * 0.4;
 
         TextStyle titleTextStyle = TextStyle(
           fontWeight: FontWeight.bold,
@@ -36,30 +57,33 @@ class ChallengesWidget extends StatelessWidget {
         );
 
         TextStyle valueTextStyle = TextStyle(
-          fontSize: itemFontSize * 1.9,
+          fontSize: itemFontSize * 1.8,
           color: Colors.blue[900],
         );
 
         return Container(
-          padding: EdgeInsets.all(padding), // Padding segons l'espai disponible
+          alignment: Alignment.center,
+          padding: EdgeInsets.all(padding),
           decoration: BoxDecoration(
             border: Border.all(color: Colors.black),
-            borderRadius: BorderRadius.circular(4.0), // Radi fix del bord
+            borderRadius: BorderRadius.circular(4.0),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Títol General
               Text(
                 'Desafiaments',
-                style: titleTextStyle, // Aplicar estil del títol
+                style: titleTextStyle,
               ),
-              SizedBox(height: spacing), // Espai entre el títol i la llista
-              // Llista de desafiaments
-              Expanded(
+              SizedBox(height: spacing),
+              Flexible(
+                // Canviat d'Expanded a Flexible
+                fit: FlexFit.loose,
                 child: SingleChildScrollView(
                   child: Column(
+                    mainAxisSize:
+                        MainAxisSize.min, // Important perquè s'encongeixi
                     children: challenges.entries.map((entry) {
                       return _buildChallengeItem(
                         entry.key,

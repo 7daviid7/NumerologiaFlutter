@@ -41,48 +41,47 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyAZ2tW66EVN8uy1IHtiJ0YL2sV_tc2vUgo',
-    appId: '1:477029872399:web:d8f3de435f429000a1847a',
-    messagingSenderId: '477029872399',
-    projectId: 'gen-lang-client-0094093679',
-    authDomain: 'gen-lang-client-0094093679.firebaseapp.com',
-    storageBucket: 'gen-lang-client-0094093679.firebasestorage.app',
-    measurementId: 'G-XGMTY7HSNM',
+    apiKey: 'AIzaSyA2rKsqNst1M6o3pONj-k9IsORak8wpDd4',
+    appId: '1:95277363870:web:af50d572dffd0a1338c18f',
+    messagingSenderId: '95277363870',
+    projectId: 'charged-sum-419213',
+    authDomain: 'charged-sum-419213.firebaseapp.com',
+    storageBucket: 'charged-sum-419213.firebasestorage.app',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDBKm5_d3ozXTrcVUq7m8Nx7MgP4IeCsx4',
-    appId: '1:477029872399:android:1e0a4b9ec8866fe0a1847a',
-    messagingSenderId: '477029872399',
-    projectId: 'gen-lang-client-0094093679',
-    storageBucket: 'gen-lang-client-0094093679.firebasestorage.app',
+    apiKey: 'AIzaSyASiSwpxx6FGssF4An2mYzmTP4OKKpsUIU',
+    appId: '1:95277363870:android:1189d2f1abff860038c18f',
+    messagingSenderId: '95277363870',
+    projectId: 'charged-sum-419213',
+    storageBucket: 'charged-sum-419213.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCPAxWFMcqIx6od2En2PO1BlNUneFNPboY',
-    appId: '1:477029872399:ios:20dc37ba5b8d59d4a1847a',
-    messagingSenderId: '477029872399',
-    projectId: 'gen-lang-client-0094093679',
-    storageBucket: 'gen-lang-client-0094093679.firebasestorage.app',
+    apiKey: 'AIzaSyDEsPPxySM7Ek2T_2tHbsp3g9nSKL_ix94',
+    appId: '1:95277363870:ios:7c223b5ce056905e38c18f',
+    messagingSenderId: '95277363870',
+    projectId: 'charged-sum-419213',
+    storageBucket: 'charged-sum-419213.firebasestorage.app',
     iosBundleId: 'com.example.numerologia',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyCPAxWFMcqIx6od2En2PO1BlNUneFNPboY',
-    appId: '1:477029872399:ios:20dc37ba5b8d59d4a1847a',
-    messagingSenderId: '477029872399',
-    projectId: 'gen-lang-client-0094093679',
-    storageBucket: 'gen-lang-client-0094093679.firebasestorage.app',
+    apiKey: 'AIzaSyDEsPPxySM7Ek2T_2tHbsp3g9nSKL_ix94',
+    appId: '1:95277363870:ios:7c223b5ce056905e38c18f',
+    messagingSenderId: '95277363870',
+    projectId: 'charged-sum-419213',
+    storageBucket: 'charged-sum-419213.firebasestorage.app',
     iosBundleId: 'com.example.numerologia',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyAZ2tW66EVN8uy1IHtiJ0YL2sV_tc2vUgo',
-    appId: '1:477029872399:web:3c26fe3b48f3472da1847a',
-    messagingSenderId: '477029872399',
-    projectId: 'gen-lang-client-0094093679',
-    authDomain: 'gen-lang-client-0094093679.firebaseapp.com',
-    storageBucket: 'gen-lang-client-0094093679.firebasestorage.app',
-    measurementId: 'G-XT4EJH5DT0',
+    apiKey: 'AIzaSyA2rKsqNst1M6o3pONj-k9IsORak8wpDd4',
+    appId: '1:95277363870:web:04c10266f5e21f3338c18f',
+    messagingSenderId: '95277363870',
+    projectId: 'charged-sum-419213',
+    authDomain: 'charged-sum-419213.firebaseapp.com',
+    storageBucket: 'charged-sum-419213.firebasestorage.app',
   );
+
 }

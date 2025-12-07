@@ -13,37 +13,60 @@ class FamilyHeritageWidget extends StatelessWidget {
         double availableWidth = constraints.maxWidth;
         double availableHeight = constraints.maxHeight;
 
-        // Ajustem les mides segons l'espai disponible
-        double cardMargin = availableHeight * 0.01; // Margin de les targetes
-        double cardElevation =
-            availableHeight * 0.005; // Elevació de les targetes
-        double iconSize = availableWidth * 0.05; // Mida de la icona
-        double textFontSize = availableWidth * 0.034; // Mida del text
-        double spacing = availableWidth * 0.01; // Espai entre columnes
+        // Càlcul de la mida ideal basada en l'amplada
+        // Tenim 4 columnes + marges/paddings. Suposem divisor ~50 per encabir-ho
+        double widthBasedFontSize = availableWidth / 20;
+
+        // Càlcul de la mida ideal basada en l'alçada (si és finita)
+        // Tenim títol + 2 files de targetes. Suposem divisor ~15
+        double heightBasedFontSize = double.infinity;
+        if (availableHeight != double.infinity) {
+          heightBasedFontSize = availableHeight / 13;
+        }
+
+        // Mida óptima: la que permeti omplir l'espai més restrictiu
+        double optimalFontSize = widthBasedFontSize < heightBasedFontSize
+            ? widthBasedFontSize
+            : heightBasedFontSize;
+
+        // Límits
+        double fontSize = optimalFontSize;
+        if (fontSize < 10.0) fontSize = 10.0;
+        if (fontSize > 42.0) fontSize = 42.0;
+
+        double cardMargin = fontSize * 0.2;
+        double cardElevation = 2.0;
+        double iconSize = fontSize * 1.5;
+        double textFontSize = fontSize;
+        double spacing = fontSize * 0.5;
 
         return Container(
-            padding: EdgeInsets.all(8.0),
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.black),
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Herències Familiars',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: textFontSize,
-                    ),
+          alignment: Alignment.center,
+          padding: EdgeInsets.all(spacing),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.black),
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Herències Familiars',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: textFontSize * 1.2,
                   ),
-                  SizedBox(height: spacing),
-                  _buildGridLayout(cardMargin, cardElevation, iconSize,
-                      textFontSize, spacing)
-                ],
-              ),
-            ));
+                ),
+                SizedBox(height: spacing),
+                _buildGridLayout(
+                    cardMargin, cardElevation, iconSize, textFontSize, spacing)
+              ],
+            ),
+          ),
+        );
       },
     );
   }

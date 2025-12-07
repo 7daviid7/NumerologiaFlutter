@@ -266,6 +266,12 @@ class _AIInterpretationPageState extends State<AIInterpretationPage> {
                           tooltip: 'Pantalla completa',
                         ),
                         IconButton(
+                          icon: Icon(Icons.share,
+                              color: theme.colorScheme.primary),
+                          onPressed: _shareLink,
+                          tooltip: 'Compartir enllaç segur',
+                        ),
+                        IconButton(
                           icon: Icon(Icons.copy,
                               color: theme.colorScheme.primary),
                           onPressed: _copyToClipboard,
@@ -302,8 +308,6 @@ class _AIInterpretationPageState extends State<AIInterpretationPage> {
                           border: InputBorder.none,
                           hintText: 'Escriu aquí la interpretació...',
                         ),
-                        style: theme.textTheme.bodyLarge
-                            ?.copyWith(height: 1.6, fontSize: 16),
                       ),
                     )
                   : ClipRRect(
@@ -478,6 +482,88 @@ class _AIInterpretationPageState extends State<AIInterpretationPage> {
         ),
       );
     }
+  }
+
+  Future<void> _shareLink() async {
+    if (_interpretation == null) return;
+
+    // Mostrar diàleg de càrrega
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => Center(child: CircularProgressIndicator()),
+    );
+
+    try {
+      final historyService = HistoryService();
+      // Guardar el link compartit
+      final docId = await historyService.createSharedLink(_interpretation!);
+
+      Navigator.pop(context); // Tancar loading
+
+      // Construir la URL
+      const baseUrl = 'https://charged-sum-419213.web.app';
+      final url = '$baseUrl/?id=$docId';
+
+      _showShareDialog(url);
+    } catch (e) {
+      Navigator.pop(context); // Tancar loading
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error generant l\'enllaç: $e')),
+      );
+    }
+  }
+
+  void _showShareDialog(String url) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Row(
+          children: [
+            Icon(Icons.lock_clock, color: Colors.orange),
+            SizedBox(width: 10),
+            Text('Enllaç Segur (24h)'),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+                'Aquest enllaç permet veure aquesta interpretació sense necessitat de l\'app. Caducarà automàticament en 24 hores.\n'),
+            Container(
+              padding: EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: SelectableText(
+                url,
+                style: TextStyle(
+                    fontFamily: 'Courier', fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton.icon(
+            icon: Icon(Icons.copy),
+            label: Text('Copiar'),
+            onPressed: () {
+              Clipboard.setData(ClipboardData(text: url));
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Enllaç copiat!')),
+              );
+            },
+          ),
+          TextButton(
+            child: Text('Tancar'),
+            onPressed: () => Navigator.pop(context),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildFeedbackSection(ThemeData theme) {
