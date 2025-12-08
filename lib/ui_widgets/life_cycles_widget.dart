@@ -43,10 +43,11 @@ class MapTableWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // Taula centrada dins d'una pàgina amb espai disponible
-            FittedBox(
-              fit: BoxFit.contain, // Ocupa tot l'ample de la pàgina
+            // Taula centrada dins d'una pàgina amb espai disponible
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
               child: DataTable(
-                columnSpacing: 100,
+                columnSpacing: 30, // Reduït espaiat per encabir millor
                 columns: [
                   DataColumn(label: SizedBox.shrink()), // Primera columna buida
                   ...List.generate(originalKeys.length + 1,
@@ -94,8 +95,8 @@ class MapTableWidget extends StatelessWidget {
                 ],
               ),
             ),
-            FittedBox(
-              fit: BoxFit.contain, // Ocupa tot l'ample de la pàgina
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
               child: DataTable(
                 columns: [
                   DataColumn(label: Text('Habitants')),

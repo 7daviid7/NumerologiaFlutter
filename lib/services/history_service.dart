@@ -40,6 +40,7 @@ class HistoryService {
     try {
       await _historyCollection.doc(docId).update({
         'interpretation': newText,
+        'lastModified': FieldValue.serverTimestamp(),
       });
       print('DEBUG: Interpretation updated for doc $docId');
     } catch (e) {

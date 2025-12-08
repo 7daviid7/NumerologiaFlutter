@@ -1,41 +1,52 @@
 import 'package:flutter/material.dart';
 import '../services/numerology_calculation_service.dart';
 
-class DataTableWidget extends StatelessWidget {
+class DataTableWidget extends StatefulWidget {
   final Map<String, List<List<int>>> tableData;
 
   DataTableWidget({required this.tableData});
+
+  @override
+  _DataTableWidgetState createState() => _DataTableWidgetState();
+}
+
+class _DataTableWidgetState extends State<DataTableWidget> {
+  final ScrollController _verticalController = ScrollController();
+  final ScrollController _horizontalController = ScrollController();
+
+  @override
+  void dispose() {
+    _verticalController.dispose();
+    _horizontalController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
         double availableWidth = constraints.maxWidth;
-
-        // Ajustem la mida del text segons l'amplada disponible
-        // Utilitzem un mínim de 10.0 per assegurar llegibilitat (scroll si és necessari)
         double availableHeight = constraints.maxHeight;
 
         // Càlcul de la mida ideal basada en l'amplada
         double widthBasedFontSize = availableWidth / 25;
 
         // Càlcul de la mida ideal basada en l'alçada (si és finita)
-        // Assumim ~22 files de dades (incloent capçaleres i marges)
         double heightBasedFontSize = double.infinity;
         if (availableHeight != double.infinity) {
           heightBasedFontSize = availableHeight / 20;
         }
 
-        // Triem la mida més restrictiva per evitar overflow (intentar que tot càpiga)
+        // Triem la mida més restrictiva
         double optimalFontSize = widthBasedFontSize < heightBasedFontSize
             ? widthBasedFontSize
             : heightBasedFontSize;
 
         // Apliquem límits:
-        // Mínim 10.0: Per sota d'això és il·legible -> Activem scroll.
-        // Màxim 18.0: Per sobre d'això és massa gran -> Deixem espai buit.
         double fontSize = optimalFontSize;
-        if (fontSize < 10.0) fontSize = 10.0;
+        if (fontSize < 14.0) {
+          fontSize = 14.0; // Mínim augmentat per llegibilitat
+        }
         if (fontSize > 18.0) fontSize = 18.0;
 
         double titleFontSize = fontSize * 0.7;
@@ -49,20 +60,32 @@ class DataTableWidget extends StatelessWidget {
             TextStyle(fontSize: fontSize, color: Colors.black87);
         TextStyle sunSymbolStyle = TextStyle(fontSize: fontSize * 0.5);
 
-        return SingleChildScrollView(
-          scrollDirection: Axis.vertical,
+        // Estructura per a scroll bidireccional amb barres interactives:
+        // Necessitem dos Scrollbars i dos SingleChildScrollViews niats.
+        return Scrollbar(
+          controller: _verticalController,
+          thumbVisibility: true,
           child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: ConstrainedBox(
-              constraints: BoxConstraints(minWidth: availableWidth),
-              child: DataTable(
-                columnSpacing: fontSize * 0.5, // Espaiat basat en la font
-                horizontalMargin: fontSize * 0.5,
-                dataRowMinHeight: fontSize * 1.5,
-                dataRowMaxHeight: fontSize * 2.5,
-                columns: _buildColumns(titleTextStyle),
-                rows: _buildRows(
-                    smallTextStyle, darkNumberTextStyle, sunSymbolStyle),
+            controller: _verticalController,
+            scrollDirection: Axis.vertical,
+            child: Scrollbar(
+              controller: _horizontalController,
+              thumbVisibility: true,
+              child: SingleChildScrollView(
+                controller: _horizontalController,
+                scrollDirection: Axis.horizontal,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minWidth: availableWidth),
+                  child: DataTable(
+                    columnSpacing: fontSize * 0.5, // Espaiat basat en la font
+                    horizontalMargin: fontSize * 0.5,
+                    dataRowMinHeight: fontSize * 1.5,
+                    dataRowMaxHeight: fontSize * 2.5,
+                    columns: _buildColumns(titleTextStyle),
+                    rows: _buildRows(
+                        smallTextStyle, darkNumberTextStyle, sunSymbolStyle),
+                  ),
+                ),
               ),
             ),
           ),
@@ -76,7 +99,7 @@ class DataTableWidget extends StatelessWidget {
       DataColumn(label: Text('', style: textStyle)),
     ];
 
-    int maxColumns = tableData.values
+    int maxColumns = widget.tableData.values
         .map((listOfLists) => listOfLists.length)
         .reduce((a, b) => a > b ? a : b);
 
@@ -89,14 +112,13 @@ class DataTableWidget extends StatelessWidget {
 
   List<DataRow> _buildRows(TextStyle textStyle, TextStyle darkNumberTextStyle,
       TextStyle sunSymbolStyle) {
-    return tableData.entries.map((entry) {
+    return widget.tableData.entries.map((entry) {
       String rowTitle = entry.key;
       List<List<int>> rowValues = entry.value;
 
       List<DataCell> cells = [DataCell(Text(rowTitle, style: textStyle))];
 
       cells.addAll(rowValues.map((valueList) {
-        // Combinem els valors en un string amb el símbol del sol ajustat
         String cellContent = valueList.isEmpty
             ? '☀'
             : valueList.map((value) {
@@ -124,12 +146,10 @@ class DataTableWidget extends StatelessWidget {
         return DataCell(
           Container(
             padding: EdgeInsets.symmetric(
-              vertical:
-                  textStyle.fontSize! * 0.6, // Ajustament dinàmic del padding
-              horizontal:
-                  textStyle.fontSize! * 0.5, // Ajustament dinàmic del padding
+              vertical: textStyle.fontSize! * 0.6,
+              horizontal: textStyle.fontSize! * 0.5,
             ),
-            alignment: Alignment.center, // Centrar el contingut
+            alignment: Alignment.center,
             child: Align(
               alignment: Alignment.center,
               child: Text(

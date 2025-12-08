@@ -17,6 +17,7 @@ class LifeCyclesPage extends StatelessWidget {
             // Mostrem el nom i la data de manera elegant
             Text(
               dataModel.name, // Nom de l'usuari
+              textAlign: TextAlign.center, // Centrat
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -26,9 +27,11 @@ class LifeCyclesPage extends StatelessWidget {
             SizedBox(height: 8), // Espai entre el nom i la data
             Text(
               dataModel.date, // Data
+              textAlign: TextAlign.center, // Centrat
               style: TextStyle(
                 fontSize: 18,
-                color: Colors.grey[600], // Text més petit i subtil per a la data
+                color:
+                    Colors.grey[600], // Text més petit i subtil per a la data
               ),
             ),
             // Espai entre el bloc de nom/data i la taula

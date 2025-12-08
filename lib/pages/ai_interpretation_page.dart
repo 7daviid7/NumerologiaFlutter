@@ -18,7 +18,12 @@ class _AIInterpretationPageState extends State<AIInterpretationPage> {
   bool? _userFeedback; // null: no feedback, true: like, false: dislike
   bool _isLoading = false;
   bool _isEditing = false;
+  DateTime? _lastModified;
   late TextEditingController _editController;
+
+  String _formatDate(DateTime date) {
+    return '${date.day}/${date.month}/${date.year} ${date.hour}:${date.minute.toString().padLeft(2, '0')}';
+  }
 
   @override
   void initState() {
@@ -245,6 +250,14 @@ class _AIInterpretationPageState extends State<AIInterpretationPage> {
                       color: theme.colorScheme.primary,
                     ),
                   ),
+                  if (_lastModified != null && !_isEditing)
+                    Text(
+                      'Editat: ${_formatDate(_lastModified!)}',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.secondary,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
                   Row(
                     children: [
                       if (_isEditing) ...[
@@ -366,6 +379,7 @@ class _AIInterpretationPageState extends State<AIInterpretationPage> {
     setState(() {
       _interpretation = newText;
       _isEditing = false;
+      _lastModified = DateTime.now();
     });
 
     if (_currentDocId != null) {

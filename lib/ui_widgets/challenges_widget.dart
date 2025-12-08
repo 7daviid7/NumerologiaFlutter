@@ -39,9 +39,9 @@ class ChallengesWidget extends StatelessWidget {
         // Màxim 28: Per sobre d'això es veu massa gran.
         double fontSize = optimalFontSize;
         if (fontSize < 12.0) fontSize = 10.0;
-        if (fontSize > 32.0) fontSize = 32.0;
+        if (fontSize > 18.0) fontSize = 15.0;
 
-        double titleFontSize = fontSize * 1.5;
+        double titleFontSize = fontSize * 1.3;
         double itemFontSize = fontSize * 0.9;
         double iconSize = fontSize * 1.5;
         double spacing = fontSize * 0.3;
@@ -57,7 +57,7 @@ class ChallengesWidget extends StatelessWidget {
         );
 
         TextStyle valueTextStyle = TextStyle(
-          fontSize: itemFontSize * 1.8,
+          fontSize: itemFontSize,
           color: Colors.blue[900],
         );
 

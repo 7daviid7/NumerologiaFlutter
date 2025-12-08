@@ -14,8 +14,14 @@ class NameWithValuesWidget extends StatelessWidget {
         double availableWidth = constraints.maxWidth;
         // double availableHeight = constraints.maxHeight;
 
-        // Ajusta les mides i espais segons l'espai disponible
-        double fontSize = availableWidth / 14 * 0.14; // Tamany de la lletra
+        // Lògica per fer scroll: si l'espai és massa petit, forcem una amplada mínima
+        // Això manté la lògica del widget però permet fer scroll en lloc de trencar-se
+        double minWidth = 600.0;
+        double calculationWidth =
+            availableWidth < minWidth ? 1300 : availableWidth;
+
+        // Ajusta les mides i espais segons l'espai disponible (o el mínim forçat)
+        double fontSize = calculationWidth / 14 * 0.14; // Tamany de la lletra
         double valueFontSize = fontSize * 0.9; // Tamany per als valors
         double letterSpacing = fontSize * 0.3; // Espai entre lletres
         double wordSpacing = fontSize * 2.3; // Espai entre paraules
@@ -132,28 +138,35 @@ class NameWithValuesWidget extends StatelessWidget {
           );
         }
 
-        return Column(
-          children: [
-            // Mostrar els totals a dalt
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: totalRows,
+        return SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: SizedBox(
+            width:
+                calculationWidth, // Forcem l'amplada perquè Expanded funcioni
+            child: Column(
+              children: [
+                // Mostrar els totals a dalt
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: totalRows,
+                ),
+                SizedBox(height: rowSpacing), // Espai entre files
+                // Mostrar les files de noms i valors
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: valueRowsAbove,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: nameRows,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: valueRowsBelow,
+                ),
+              ],
             ),
-            SizedBox(height: rowSpacing), // Espai entre files
-            // Mostrar les files de noms i valors
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: valueRowsAbove,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: nameRows,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: valueRowsBelow,
-            ),
-          ],
+          ),
         );
       },
     );

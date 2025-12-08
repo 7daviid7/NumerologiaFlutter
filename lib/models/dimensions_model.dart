@@ -1,1 +1,3 @@
-//set common devices dimensions here for desktop. 
+class DimensionsModel {
+  static const double kMobileBreakpoint = 800.0;
+}
