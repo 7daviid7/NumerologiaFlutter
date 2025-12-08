@@ -83,6 +83,8 @@ class _AIInterpretationPageState extends State<AIInterpretationPage> {
         _currentDocId = docId;
         _userFeedback = null; // Reset feedback for new interpretation
         _editController.text = result;
+        Provider.of<DataModel>(context, listen: false).aiInterpretation =
+            result;
       });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -380,6 +382,7 @@ class _AIInterpretationPageState extends State<AIInterpretationPage> {
       _interpretation = newText;
       _isEditing = false;
       _lastModified = DateTime.now();
+      Provider.of<DataModel>(context, listen: false).aiInterpretation = newText;
     });
 
     if (_currentDocId != null) {

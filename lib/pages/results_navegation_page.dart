@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../models/data_model.dart';
+import '../services/print_service.dart';
 import 'results_page.dart';
 import 'spiritual_figure_page.dart';
 import 'life_cycles_page.dart';
-import '../services/print_preview_dialog.dart';
 import 'ai_interpretation_page.dart';
 
 class ResultsNavigatorPage extends StatefulWidget {
@@ -12,7 +14,6 @@ class ResultsNavigatorPage extends StatefulWidget {
 
 class ResultsNavigatorPageState extends State<ResultsNavigatorPage> {
   final GlobalKey _globalKey = GlobalKey();
-  final PrintPreviewDialog _printPreviewDialog = PrintPreviewDialog();
   int _selectedPageIndex = 0;
 
   @override
@@ -50,10 +51,25 @@ class ResultsNavigatorPageState extends State<ResultsNavigatorPage> {
                   ),
                   IconButton(
                     icon: Icon(Icons.print),
-                    onPressed: () => _printPreviewDialog.showPreviewAndPrint(
-                        context,
-                        _globalKey,
-                        'Resultats de Numerologia'), // Print preview dialog
+                    onPressed: () async {
+                      final dataModel =
+                          Provider.of<DataModel>(context, listen: false);
+                      final printService = PrintService();
+
+                      if (_selectedPageIndex == 1) {
+                        // Imprimir només Cicles de Vida
+                        await printService.printLifeCyclesPdf(dataModel);
+                      } else if (_selectedPageIndex == 2) {
+                        // Imprimir només Ninot Espiritual
+                        await printService.printSpiritualFigurePdf(dataModel);
+                      } else if (_selectedPageIndex == 3) {
+                        // Imprimir Interpretació IA
+                        await printService.printAiInterpretationPdf(dataModel);
+                      } else {
+                        // Imprimir l'informe complet (Resultats Principals)
+                        await printService.printFullReportPdf(dataModel);
+                      }
+                    },
                   ),
                 ],
               ),

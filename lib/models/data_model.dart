@@ -19,6 +19,7 @@ class DataModel with ChangeNotifier {
   late Map<int, int> mapFigura;
   late double yin;
   late double yang;
+  String? aiInterpretation; // Stores the latest AI interpretation
 
   void setData(String name, String date) {
     this.name = name;
