@@ -68,7 +68,10 @@ class _AIInterpretationPageState extends State<AIInterpretationPage> {
     try {
       final dataModel = Provider.of<DataModel>(context, listen: false);
       final service = GeminiService(apiKey: apiKey);
-      final result = await service.interpretData(dataModel.toJson());
+      final rawResult = await service.interpretData(dataModel.toJson());
+
+      // Inject local greeting for warmth without sending PII to API
+      final result = "Hola ${dataModel.name},\n\n$rawResult";
 
       // Guardar a Firestore
       final historyService = HistoryService();

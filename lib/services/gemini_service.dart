@@ -38,7 +38,13 @@ class GeminiService {
   }
 
   String _buildPrompt(Map<String, dynamic> data) {
-    final jsonString = JsonEncoder.withIndent('  ').convert(data);
+    // CLONE & SANITIZE: Remove PII (Personally Identifiable Information)
+    // to protect user privacy when using the API.
+    final dataSanitized = Map<String, dynamic>.from(data);
+    dataSanitized.remove('name');
+    dataSanitized.remove('date');
+
+    final jsonString = JsonEncoder.withIndent('  ').convert(dataSanitized);
     const contextTeoric = '''
 CONTEXT TEÒRIC (Mètode Martine Coquatrix, Llibre: La numerología a la luz del árbol de vida y las letras hebraicas):
 1. ELS NOMBRES (0-9):
@@ -65,9 +71,9 @@ CONTEXT TEÒRIC (Mètode Martine Coquatrix, Llibre: La numerología a la luz del
    - Casa 4: Nosaltres (Arrels), Treball. Com construeixes la teva base. Ciments.
    - Casa 5: Llibertat, Sexualitat. Com experimentes el canvi. Excessos.
    - Casa 6: Amor, Família, parella. Com estimes i cuides. Sacrifici.
-   - Casa 7: Espiritualitat, Saviesa. Com entens el món. Educació, perfecció, bellesa.
+   - Casa 7: Espiritualitat, Saviesa. Com entens el món. Educació, perfecció, bellesa, estudis. En búsqueda de la perfecció i el coneixament. 
    - Casa 8: Poder, Talents, diners. Com transformes la matèria.
-   - Casa 9: Transcendència, Món. Com t'obres a l'univers. Final d'etapa.
+   - Casa 9: Transcendència, Món. Com t'obres a l'univers. Final d'etapa. 
 
 4. ELS HABITANTS:
    - El número que ocupa una Casa és l'"Habitant". Indica la QUALITAT o la MANERA de viure aquella àrea, segons el nombre que ocupa. 
@@ -98,7 +104,7 @@ DICCIONARI DE DADES (GUIA D'INTERPRETACIÓ):
 INSTRUCCIONS DE RESPOSTA:
 1.  **To i Estil**: Professional, càlid, empàtic i constructiu. Parla directament a l'usuari ("Tu"). Evita ser fatalista; enfoca els reptes com a oportunitats de creixement.
 2.  **Estructura**: Utilitza Markdown per organitzar la lectura.
-    - **Introducció**: Saluda pel nom i comenta breument la vibració general (Camí de Vida).
+    - **Introducció**: NO SALUDIS. Comenta directament i breument la vibració general (Camí de Vida).
     - **Anàlisi de la Personalitat (Inclusió)**: No llistis totes les cases. Agrupa-les per temes (ex: "Com et relaciones", "Món material i professional", "Món espiritual"). *Fes servir les dades de 'habitants' per explicar com viu cada àrea.*
     - **Camí de Vida i Misió**: Connecta el 'mapVida' amb el 'mapPersonalidad'.
     - **Desafiaments i Herències**: Explica què ha de treballar.
