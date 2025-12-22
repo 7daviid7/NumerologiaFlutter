@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'results_navegation_page.dart';
 import '../models/data_model.dart';
 import 'package:intl/intl.dart'; // Per donar format a la data
+import 'feedback_list_page.dart';
 
 class InputPage extends StatefulWidget {
   @override
@@ -54,6 +55,36 @@ class InputPageState extends State<InputPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Numerologia')),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primary,
+              ),
+              child: Text(
+                'Menú',
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onPrimary,
+                  fontSize: 24,
+                ),
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.history),
+              title: Text('Historial i Feedback'),
+              onTap: () {
+                Navigator.pop(context); // Tanca el drawer
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => FeedbackListPage()),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

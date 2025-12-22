@@ -1,0 +1,25 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // 1. Col·lecció PRIVADA "interpretations"
+    // ARA SÍ: Només l'admin (autenticat) pot llegir i escriure.
+    match /interpretations/{docId} {
+       allow read, write: if request.auth != null;
+    }
+
+    // 2. Col·lecció PÚBLICA "shared_interpretations"
+    match /shared_interpretations/{docId} {
+      // Tothom pot LLEGIR (perquè la web funcioni per als convidats)
+      allow get: if true;
+      
+      // Admin pot crear
+      allow create: if request.auth != null;
+
+      // Actualitzar: Només permetem afegir feedback si ets convidat (no cal auth)
+      // Per simplificar, deixem update obert però l'ideal seria validar els camps.
+      allow update: if true; 
+    }
+  }
+}

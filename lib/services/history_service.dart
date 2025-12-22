@@ -49,12 +49,19 @@ class HistoryService {
     }
   }
 
+  Stream<QuerySnapshot> getHistoryStream() {
+    return _historyCollection
+        .orderBy('timestamp', descending: true)
+        .snapshots();
+  }
+
   // --- Mètodes per a Links Compartits ---
 
   final CollectionReference _sharedCollection =
       FirebaseFirestore.instance.collection('shared_interpretations');
 
-  Future<String> createSharedLink(String interpretation) async {
+  Future<String> createSharedLink(String interpretation,
+      {String? originalDocId}) async {
     try {
       final now = DateTime.now();
       // Caduca en 24 hores
@@ -62,6 +69,7 @@ class HistoryService {
 
       final docRef = await _sharedCollection.add({
         'interpretation': interpretation,
+        'originalDocId': originalDocId, // Link to the original interpretation
         'createdAt': FieldValue.serverTimestamp(),
         'expiresAt': Timestamp.fromDate(expiresAt),
       });
@@ -111,6 +119,36 @@ class HistoryService {
     } catch (e) {
       print('Error saving guest feedback: $e');
       rethrow;
+    }
+  }
+
+  /// Retrieves guest feedback associated with an original interpretation ID.
+  /// Returns a list of strings (the feedback texts).
+  Future<List<Map<String, dynamic>>> getGuestFeedback(
+      String originalDocId) async {
+    try {
+      final querySnapshot = await _sharedCollection
+          .where('originalDocId', isEqualTo: originalDocId)
+          .get();
+
+      List<Map<String, dynamic>> allFeedback = [];
+
+      for (var doc in querySnapshot.docs) {
+        final data = doc.data() as Map<String, dynamic>;
+        if (data.containsKey('guestFeedback') &&
+            data['guestFeedback'] is List) {
+          final feedbackList = data['guestFeedback'] as List;
+          for (var item in feedbackList) {
+            if (item is Map<String, dynamic>) {
+              allFeedback.add(item);
+            }
+          }
+        }
+      }
+      return allFeedback;
+    } catch (e) {
+      print('Error getting guest feedback: $e');
+      return [];
     }
   }
 }

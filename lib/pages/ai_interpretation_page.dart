@@ -517,7 +517,8 @@ class _AIInterpretationPageState extends State<AIInterpretationPage> {
     try {
       final historyService = HistoryService();
       // Guardar el link compartit
-      final docId = await historyService.createSharedLink(_interpretation!);
+      final docId = await historyService.createSharedLink(_interpretation!,
+          originalDocId: _currentDocId);
 
       Navigator.pop(context); // Tancar loading
 
