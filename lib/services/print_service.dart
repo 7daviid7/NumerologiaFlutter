@@ -6,6 +6,7 @@ import '../models/data_model.dart';
 import '../services/numerology_calculation_service.dart';
 import 'package:numerologia/constants/svg_constants_identifiers.dart';
 import 'package:xml/xml.dart' as xml;
+import 'dart:math' as math;
 
 class PrintService {
   Future<void> printFullReportPdf(DataModel data) async {
@@ -20,80 +21,109 @@ class PrintService {
         margin: const pw.EdgeInsets.all(32),
         build: (pw.Context context) {
           return [
-            pw.Header(
-              level: 0,
-              child: pw.Center(
-                child: pw.Text("Informe de Numerologia: ${data.name}",
-                    style: pw.TextStyle(
-                        fontSize: 24, fontWeight: pw.FontWeight.bold)),
-              ),
-            ),
-            pw.SizedBox(height: 20),
-            pw.Text("Data de naixement: ${data.date}",
-                style: const pw.TextStyle(fontSize: 14)),
-            pw.Divider(),
-            pw.SizedBox(height: 20),
-
-            // 1. Name Analysis
-            pw.Text("Anàlisi del Nom",
-                style:
-                    pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 18)),
-            pw.SizedBox(height: 10),
             _buildNameWidget(data.name),
             pw.SizedBox(height: 30),
 
-            pw.Row(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
-              pw.Column(
-                  crossAxisAlignment: pw.CrossAxisAlignment.start,
-                  children: [
-                    pw.Text("Taula de Resultats",
-                        style: pw.TextStyle(
-                            fontWeight: pw.FontWeight.bold, fontSize: 18)),
-                    pw.SizedBox(height: 10),
-                    _buildResultsTable(data.taula),
-                  ]),
-              pw.SizedBox(width: 20),
-              pw.Expanded(
-                child: pw.Column(children: [
-                  _buildFamilyHeritage(data.mapHerencies),
-                  pw.SizedBox(height: 10),
-                  _buildChallenges(data.mapDesafio),
-                ]),
-              ),
-            ]),
-            pw.SizedBox(height: 10),
+            // Main Desktop Layout 5:3:1
+            pw.Container(
+              height: 400, // Fixed height to allow inner Expanded to work
+              child: pw.Row(
+                crossAxisAlignment: pw.CrossAxisAlignment.stretch,
+                children: [
+                  // COLUMN 1 (Flex 5)
+                  pw.Expanded(
+                    flex: 5,
+                    child: pw.Column(
+                      crossAxisAlignment: pw.CrossAxisAlignment.start,
+                      children: [
+                        // Results Table (Flex 5)
+                        pw.Expanded(
+                          flex: 5,
+                          child: _buildResultsTable(data.taula),
+                        ),
+                        pw.SizedBox(height: 10),
+                        // Challenges & Arcs Row (Flex 3)
+                        pw.Expanded(
+                          flex: 3,
+                          child: pw.Row(
+                            crossAxisAlignment: pw.CrossAxisAlignment.stretch,
+                            children: [
+                              // Triangle Challenges (Flex 1)
+                              pw.Expanded(
+                                flex: 1,
+                                child: pw.Center(
+                                  child: _buildChallenges(data.mapDesafio),
+                                ),
+                              ),
+                              pw.SizedBox(width: 5),
+                              // Arcs (Flex 3) - Grouped in Bordered Container
+                              pw.Expanded(
+                                flex: 3,
+                                child: pw.Container(
+                                  padding: const pw.EdgeInsets.all(5),
+                                  decoration: pw.BoxDecoration(
+                                    border:
+                                        pw.Border.all(color: PdfColors.black),
+                                    borderRadius: pw.BorderRadius.circular(
+                                        4), // Matching radius 8 roughly scaled
+                                  ),
+                                  child: pw.Row(
+                                    children: [
+                                      pw.Expanded(
+                                        child: _buildSingleArc(
+                                            data.mapPrimerArc,
+                                            'Apertura',
+                                            'Desarrollar',
+                                            'Expresión',
+                                            'NL'),
+                                      ),
+                                      pw.SizedBox(width: 10),
+                                      pw.Expanded(
+                                        child: _buildSingleArc(
+                                            data.mapSegonArc,
+                                            'Renacer',
+                                            'Evolutivo',
+                                            'Alma',
+                                            'NL'),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  pw.SizedBox(width: 5),
 
-            pw.Row(
-              crossAxisAlignment: pw.CrossAxisAlignment.start,
-              children: [
-                pw.Expanded(
-                  child: pw.Column(
-                    crossAxisAlignment: pw.CrossAxisAlignment.start,
-                    children: [
-                      _buildPersonalityArea(data.mapPersonalidad),
-                    ],
+                  // COLUMN 2 (Flex 3)
+                  pw.Expanded(
+                    flex: 3,
+                    child: pw.Column(
+                      crossAxisAlignment: pw.CrossAxisAlignment.start,
+                      children: [
+                        pw.Expanded(
+                          child: _buildPersonalityArea(data.mapPersonalidad),
+                        ),
+                        pw.SizedBox(height: 5),
+                        pw.Expanded(
+                          child: _buildLifePath(data.mapVida, data.date),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                pw.SizedBox(width: 20),
-                pw.Expanded(
-                  child: pw.Column(
-                    crossAxisAlignment: pw.CrossAxisAlignment.start,
-                    children: [
-                      _buildLifePath(data.mapVida, data.date),
-                    ],
+                  pw.SizedBox(width: 5),
+
+                  // COLUMN 3 (Flex 1)
+                  pw.Expanded(
+                    flex: 1,
+                    child: _buildFamilyHeritage(data.mapHerencies,
+                        isVertical: true),
                   ),
-                ),
-              ],
-            ),
-            pw.SizedBox(height: 10),
-            pw.Row(
-              mainAxisAlignment: pw.MainAxisAlignment.spaceEvenly,
-              children: [
-                _buildSingleArc(data.mapPrimerArc, 'Apertura', 'Desarrollar',
-                    'NL', 'Expresión'),
-                _buildSingleArc(
-                    data.mapSegonArc, 'Renacer', 'Evolutivo', 'NL', 'Alma'),
-              ],
+                ],
+              ),
             ),
           ];
         },
@@ -253,7 +283,7 @@ class PrintService {
               .toList())
     ];
 
-    tableData.entries.forEach((entry) {
+    for (var entry in tableData.entries) {
       String rowTitle = entry.key;
       List<List<int>> rowValues = entry.value;
 
@@ -302,7 +332,7 @@ class PrintService {
               .map((c) =>
                   pw.Padding(padding: const pw.EdgeInsets.all(4), child: c))
               .toList()));
-    });
+    }
 
     return pw.Table(
       border: pw.TableBorder.all(color: PdfColors.grey),
@@ -315,129 +345,268 @@ class PrintService {
     return pw.Container(
       padding: const pw.EdgeInsets.all(10),
       decoration: pw.BoxDecoration(
-        border: pw.Border.all(),
+        border: pw.Border.all(color: PdfColors.black),
         borderRadius: pw.BorderRadius.circular(4),
       ),
       child: pw.Column(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
           pw.Text('Desafiaments',
               style:
-                  pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 12)),
-          pw.SizedBox(height: 5),
-          ...challenges.entries.map((entry) {
-            return pw.Container(
-              margin: const pw.EdgeInsets.symmetric(vertical: 2),
-              padding: const pw.EdgeInsets.all(4),
-              decoration: pw.BoxDecoration(
-                border: pw.Border.all(color: PdfColors.blue),
-                color: PdfColors.blue50,
-              ),
-              child: pw.Row(
-                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                children: [
-                  pw.Text('(!)', style: pw.TextStyle(color: PdfColors.blue)),
-                  pw.SizedBox(width: 5),
-                  pw.Expanded(
-                    child: pw.Text(
-                      entry.key,
-                      style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
-                    ),
+                  pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10)),
+          pw.SizedBox(height: 10),
+          pw.Expanded(
+            child: pw.LayoutBuilder(
+              builder: (context, constraints) {
+                if (constraints == null) return pw.Container();
+
+                double size =
+                    math.min(constraints.maxWidth, constraints.maxHeight);
+                // Ensure non-zero
+                if (size <= 0) size = 100;
+
+                double fontSize = 10;
+
+                return pw.Container(
+                  width: size,
+                  height: size,
+                  child: pw.Stack(
+                    children: [
+                      // Triangle Background
+                      pw.Center(
+                        child: pw.CustomPaint(
+                          size: PdfPoint(size, size),
+                          painter: (PdfGraphics canvas, PdfPoint s) {
+                            double w = s.x;
+                            double h = s.y;
+                            double i = w * 0.1; // 10% inset
+
+                            canvas.setColor(PdfColors.blue100);
+                            canvas.setLineWidth(2);
+
+                            // Inverted Triangle
+                            // Top Left (High Y)
+                            canvas.moveTo(i, h - i);
+                            // Top Right (High Y)
+                            canvas.lineTo(w - i, h - i);
+                            // Bottom Center (Low Y)
+                            canvas.lineTo(w / 2, i);
+                            // Close
+                            canvas.lineTo(i, h - i);
+                            canvas.strokePath();
+                          },
+                        ),
+                      ),
+
+                      // Desafio 1 (Top Left)
+                      pw.Positioned(
+                        top: 8,
+                        left: 0,
+                        child: _buildChallengeItemPDF(
+                          'Desafio 1',
+                          challenges['Desafio 1'] ??
+                              challenges['Desafio1'] ??
+                              0,
+                          fontSize,
+                        ),
+                      ),
+
+                      // Desafio 2 (Top Right)
+                      pw.Positioned(
+                        top: 8,
+                        right: 0,
+                        child: _buildChallengeItemPDF(
+                          'Desafio 2',
+                          challenges['Desafio 2'] ??
+                              challenges['Desafio2'] ??
+                              0,
+                          fontSize,
+                        ),
+                      ),
+
+                      // Desafio 3 (Bottom Center)
+                      pw.Positioned(
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        child: pw.Center(
+                          child: _buildChallengeItemPDF(
+                            'Desafio 3',
+                            challenges['Desafio 3'] ??
+                                challenges['Desafio3'] ??
+                                0,
+                            fontSize,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  pw.Text(
-                    entry.value.toString(),
-                    style: pw.TextStyle(
-                        fontWeight: pw.FontWeight.bold,
-                        color: PdfColors.blue900),
-                  ),
-                ],
-              ),
-            );
-          }).toList(),
+                );
+              },
+            ),
+          ),
         ],
       ),
     );
   }
 
-  pw.Widget _buildFamilyHeritage(Map<String, int> values) {
-    List<pw.Widget> rows = [];
-    List<MapEntry<String, int>> entries = values.entries.toList();
-    int itemCount = entries.length;
-    int itemsPerRow = 4;
+  pw.Widget _buildChallengeItemPDF(String label, int value, double fontSize) {
+    double valueSize = fontSize * 1.5;
+    double labelSize = fontSize * 0.8;
+    double circlePadding = fontSize * 0.5;
 
-    // We want 2 rows max generally
-    int rowCount = (itemCount / itemsPerRow).ceil();
-
-    for (int row = 0; row < rowCount; row++) {
-      List<pw.Widget> rowItems = [];
-      for (int col = 0; col < itemsPerRow; col++) {
-        int index = row * itemsPerRow + col;
-        if (index < itemCount) {
-          String label = entries[index].key;
-          int value = entries[index].value;
-
-          rowItems.add(
-            pw.Expanded(
-              child: pw.Container(
-                margin: const pw.EdgeInsets.all(2),
-                padding: const pw.EdgeInsets.all(4),
-                decoration: pw.BoxDecoration(
-                  color: PdfColors.blue100,
-                  borderRadius: pw.BorderRadius.circular(4),
-                ),
-                child: pw.Column(
-                  crossAxisAlignment: pw.CrossAxisAlignment.start,
-                  children: [
-                    pw.Text(label,
-                        style: pw.TextStyle(
-                            fontSize: 8, color: PdfColors.blue700)),
-                    _formatNumber(value),
-                  ],
-                ),
-              ),
+    return pw.Column(
+      mainAxisSize: pw.MainAxisSize.min,
+      children: [
+        pw.Container(
+          padding: pw.EdgeInsets.all(circlePadding),
+          decoration: pw.BoxDecoration(
+            color: PdfColors.white,
+            shape: pw.BoxShape.circle,
+            border: pw.Border.all(color: PdfColors.blueAccent, width: 2),
+            // No shadow support in simple BoxDecoration for PDF usually without more complex work
+          ),
+          child: pw.Text(
+            value.toString(),
+            style: pw.TextStyle(
+              fontSize: valueSize,
+              fontWeight: pw.FontWeight.bold,
+              color: PdfColors.blue900,
             ),
-          );
-        } else {
-          // Filler for empty cells
-          rowItems.add(pw.Expanded(child: pw.Container()));
-        }
-      }
-      rows.add(pw.Row(children: rowItems));
-    }
+          ),
+        ),
+        pw.SizedBox(height: 2),
+        pw.Text(
+          label,
+          style: pw.TextStyle(
+            fontSize: labelSize,
+            fontWeight: pw.FontWeight.bold,
+            color: PdfColors.grey700,
+          ),
+        ),
+      ],
+    );
+  }
 
-    return pw.Container(
+  pw.Widget _buildFamilyHeritage(Map<String, int> values,
+      {bool isVertical = false}) {
+    List<MapEntry<String, int>> entries = values.entries.toList();
+
+    if (isVertical) {
+      // Vertical Column Layout
+      return pw.Container(
         padding: const pw.EdgeInsets.all(5),
         decoration: pw.BoxDecoration(
           border: pw.Border.all(),
           borderRadius: pw.BorderRadius.circular(4),
         ),
         child: pw.Column(
-            crossAxisAlignment: pw.CrossAxisAlignment.start,
-            children: [
-              pw.Text('Herències Familiars',
-                  style: pw.TextStyle(
-                      fontWeight: pw.FontWeight.bold, fontSize: 12)),
-              pw.SizedBox(height: 5),
-              ...rows
-            ]));
+          crossAxisAlignment: pw.CrossAxisAlignment.center,
+          children: [
+            pw.Text('Herències\nFamiliars',
+                textAlign: pw.TextAlign.center,
+                style:
+                    pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10)),
+            pw.SizedBox(height: 5),
+            ...entries.map((entry) {
+              return pw.Container(
+                width: double.infinity, // Full width of the column
+                margin: const pw.EdgeInsets.symmetric(vertical: 2),
+                padding: const pw.EdgeInsets.all(4),
+                decoration: pw.BoxDecoration(
+                  color: PdfColors.blue100,
+                  borderRadius: pw.BorderRadius.circular(4),
+                ),
+                child: pw.Column(
+                  children: [
+                    pw.Text(entry.key,
+                        style:
+                            pw.TextStyle(fontSize: 8, color: PdfColors.blue700),
+                        textAlign: pw.TextAlign.center),
+                    _formatNumber(entry.value),
+                  ],
+                ),
+              );
+            }).toList(),
+          ],
+        ),
+      );
+    } else {
+      // Original Grid Layout
+      List<pw.Widget> rows = [];
+      int itemCount = entries.length;
+      int itemsPerRow = 4;
+      int rowCount = (itemCount / itemsPerRow).ceil();
+
+      for (int row = 0; row < rowCount; row++) {
+        List<pw.Widget> rowItems = [];
+        for (int col = 0; col < itemsPerRow; col++) {
+          int index = row * itemsPerRow + col;
+          if (index < itemCount) {
+            String label = entries[index].key;
+            int value = entries[index].value;
+
+            rowItems.add(
+              pw.Expanded(
+                child: pw.Container(
+                  margin: const pw.EdgeInsets.all(2),
+                  padding: const pw.EdgeInsets.all(4),
+                  decoration: pw.BoxDecoration(
+                    color: PdfColors.blue100,
+                    borderRadius: pw.BorderRadius.circular(4),
+                  ),
+                  child: pw.Column(
+                    crossAxisAlignment: pw.CrossAxisAlignment.start,
+                    children: [
+                      pw.Text(label,
+                          style: pw.TextStyle(
+                              fontSize: 8, color: PdfColors.blue700)),
+                      _formatNumber(value),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          } else {
+            rowItems.add(pw.Expanded(child: pw.Container()));
+          }
+        }
+        rows.add(pw.Row(children: rowItems));
+      }
+
+      return pw.Container(
+          padding: const pw.EdgeInsets.all(5),
+          decoration: pw.BoxDecoration(
+            border: pw.Border.all(),
+            borderRadius: pw.BorderRadius.circular(4),
+          ),
+          child: pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                pw.Text('Herències Familiars',
+                    style: pw.TextStyle(
+                        fontWeight: pw.FontWeight.bold, fontSize: 12)),
+                pw.SizedBox(height: 5),
+                ...rows
+              ]));
+    }
   }
 
   pw.Widget _buildPersonalityArea(Map<String, int> personalityValues) {
     return pw.Container(
-        padding: const pw.EdgeInsets.all(10),
+        padding: const pw.EdgeInsets.all(7),
         decoration: pw.BoxDecoration(
             border: pw.Border.all(), borderRadius: pw.BorderRadius.circular(4)),
         child:
             pw.Row(mainAxisAlignment: pw.MainAxisAlignment.center, children: [
           // Left Column
-          pw.Column(children: [
+          pw.Column(mainAxisAlignment: pw.MainAxisAlignment.center, children: [
             _buildPersonalitySquarePDF(
                 'Equilibri', personalityValues['Equilibrio'] ?? 0),
-            pw.SizedBox(height: 10),
+            pw.SizedBox(height: 5),
             _buildPersonalitySquarePDF(
                 'Força', personalityValues['Fuerza'] ?? 0),
           ]),
-          pw.SizedBox(width: 20),
+          pw.SizedBox(width: 10),
           // Center Column
           pw.Expanded(
               child: pw.Stack(children: [
@@ -447,9 +616,10 @@ class PrintService {
                 painter: (canvas, size) {
                   double cx = size.x / 2;
                   // Inverting Y coordinates because PDF origin is bottom-left
-                  double topY = size.y - 40; // High Y (Top)
-                  double midY = size.y - 110; // Mid Y
-                  double botY = size.y - 180; // Low Y (Bottom)
+                  // Adjusted offsets for smaller scale
+                  double topY = size.y - 30; // High Y (Top)
+                  double midY = size.y - 80; // Mid Y
+                  double botY = size.y - 130; // Low Y (Bottom)
 
                   canvas.setColor(PdfColors.grey400);
                   canvas.setLineWidth(1);
@@ -467,11 +637,11 @@ class PrintService {
             pw.Column(children: [
               pw.Text('Àrees de la Personalitat',
                   style: pw.TextStyle(
-                      fontWeight: pw.FontWeight.bold, fontSize: 12)),
-              pw.SizedBox(height: 10),
+                      fontWeight: pw.FontWeight.bold, fontSize: 10)),
+              pw.SizedBox(height: 5),
               _buildPersonalityCirclePDF(
                   'Expresió', personalityValues['Expresión'] ?? 0),
-              pw.SizedBox(height: 10),
+              pw.SizedBox(height: 5),
               pw.Row(
                   mainAxisAlignment: pw.MainAxisAlignment.spaceEvenly,
                   children: [
@@ -482,14 +652,14 @@ class PrintService {
                         child: _buildPersonalityCirclePDF('Personalitat',
                             personalityValues['Personalidad'] ?? 0)),
                   ]),
-              pw.SizedBox(height: 10),
+              pw.SizedBox(height: 5),
               _buildPersonalityCirclePDF(
                   'Missió', personalityValues['Misión'] ?? 0),
             ])
           ])),
-          pw.SizedBox(width: 20),
+          pw.SizedBox(width: 10),
           // Right Column
-          pw.Column(children: [
+          pw.Column(mainAxisAlignment: pw.MainAxisAlignment.center, children: [
             _buildPersonalitySquarePDF(
                 'Iniciació', personalityValues['Iniciacio'] ?? 0),
           ]),
@@ -498,8 +668,8 @@ class PrintService {
 
   pw.Widget _buildPersonalitySquarePDF(String label, int value) {
     return pw.Container(
-        width: 60,
-        height: 50,
+        width: 45,
+        height: 40,
         decoration: pw.BoxDecoration(
           color: PdfColors.blue100,
           borderRadius: pw.BorderRadius.circular(4),
@@ -507,227 +677,309 @@ class PrintService {
         child: pw
             .Column(mainAxisAlignment: pw.MainAxisAlignment.center, children: [
           pw.Text(label,
-              style: pw.TextStyle(fontSize: 8, fontWeight: pw.FontWeight.bold)),
+              style: pw.TextStyle(fontSize: 7, fontWeight: pw.FontWeight.bold)),
           _formatNumber(value),
         ]));
   }
 
   pw.Widget _buildPersonalityCirclePDF(String label, int value) {
     return pw.Column(children: [
-      if (label == 'Expresió') pw.Text(label, style: pw.TextStyle(fontSize: 8)),
+      if (label == 'Expresió') pw.Text(label, style: pw.TextStyle(fontSize: 7)),
       pw.Container(
-          width: 50,
-          height: 50,
+          width: 40,
+          height: 40,
           alignment: pw.Alignment.center,
           decoration: const pw.BoxDecoration(
               color: PdfColors.blue100, shape: pw.BoxShape.circle),
           child: _formatNumber(value)),
-      if (label != 'Expresió') pw.Text(label, style: pw.TextStyle(fontSize: 8)),
+      if (label != 'Expresió') pw.Text(label, style: pw.TextStyle(fontSize: 7)),
     ]);
   }
 
   pw.Widget _buildLifePath(Map<String, int> values, String date) {
     return pw.Container(
-        padding: const pw.EdgeInsets.all(10),
+        padding: const pw.EdgeInsets.all(5),
         decoration: pw.BoxDecoration(
             border: pw.Border.all(), borderRadius: pw.BorderRadius.circular(4)),
-        child: pw.Stack(children: [
-          // Connections
-          pw.Positioned.fill(child: pw.CustomPaint(painter: (canvas, size) {
-            double w = size.x;
-            // Inverting Y coordinates
-            double y1 = size.y - 45; // Top
-            double y2 = size.y - 110; // Mid
-            double y3 = size.y - 170; // Bot
+        child: pw.Row(
+          crossAxisAlignment: pw.CrossAxisAlignment.start,
+          children: [
+            // Left Side: Graph
+            pw.Expanded(
+              child: pw.Stack(children: [
+                // Connections
+                pw.Positioned.fill(
+                    child: pw.CustomPaint(painter: (canvas, size) {
+                  double w = size.x;
+                  // Inverting Y coordinates
+                  // Adjusted offsets for smaller scale
+                  double y1 = size.y - 35; // Top
+                  double y2 = size.y - 80; // Mid
+                  double y3 = size.y - 125; // Bot
 
-            canvas.setColor(PdfColors.grey400);
-            canvas.setLineWidth(1);
+                  canvas.setColor(PdfColors.grey400);
+                  canvas.setLineWidth(1);
 
-            // Row 1 Center
-            double x1 = w / 2;
+                  // Row 1 Center
+                  double x1 = w / 2;
 
-            // Row 2 Centers (3 items expanded: 1/6, 3/6, 5/6)
-            double x2a = w * (1 / 6);
-            double x2b = w * (3 / 6);
-            double x2c = w * (5 / 6);
+                  // Row 2 Centers (3 items expanded: 1/6, 3/6, 5/6)
+                  double x2a = w * (1 / 6);
+                  double x2b = w * (3 / 6);
+                  double x2c = w * (5 / 6);
 
-            // Row 3 Centers (4 items expanded: 1/8, 3/8, 5/8, 7/8)
-            double x3a = w * (1 / 8);
-            double x3b = w * (3 / 8);
-            double x3c = w * (5 / 8);
-            double x3d = w * (7 / 8);
+                  // Row 3 Centers (4 items expanded: 1/8, 3/8, 5/8, 7/8)
+                  double x3a = w * (1 / 8);
+                  double x3b = w * (3 / 8);
+                  double x3c = w * (5 / 8);
+                  double x3d = w * (7 / 8);
 
-            // Draw lines 1 -> 2
-            canvas.drawLine(x1, y1, x2a, y2);
-            canvas.drawLine(x1, y1, x2b, y2);
-            canvas.drawLine(x1, y1, x2c, y2);
-            canvas.strokePath();
+                  // Draw lines 1 -> 2
+                  canvas.drawLine(x1, y1, x2a, y2);
+                  canvas.drawLine(x1, y1, x2b, y2);
+                  canvas.drawLine(x1, y1, x2c, y2);
+                  canvas.strokePath();
 
-            // Draw lines 2 -> 3
-            // Formació (x2a) -> R1 (x3a)
-            canvas.drawLine(x2a, y2, x3a, y3);
-            // Producció (x2b) -> R2 (x3b) & R3 (x3c)
-            canvas.drawLine(x2b, y2, x3b, y3);
-            canvas.drawLine(x2b, y2, x3c, y3);
-            // Cosecha (x2c) -> R4 (x3d)
-            canvas.drawLine(x2c, y2, x3d, y3);
-            canvas.strokePath();
-          })),
-          // Content
-          pw.Column(children: [
-            pw.Text('Camí de vida: $date',
-                style:
-                    pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 12)),
-            pw.SizedBox(height: 10),
-            // Top: Camino de Vida
-            pw.Row(children: [
-              pw.Spacer(),
-              _buildPersonalitySquarePDF(
-                  'Camí de Vida', values['Camino de Vida'] ?? 0),
-              pw.Spacer(),
-            ]),
-            pw.SizedBox(height: 10),
-            // Middle: Formacion, Produccion, Cosecha
-            pw.Row(
-                mainAxisAlignment: pw.MainAxisAlignment.spaceEvenly,
-                children: [
-                  pw.Expanded(
-                      child: pw.Center(
-                          child: _buildPersonalitySquarePDF(
-                              'Formació', values['Formación'] ?? 0))),
-                  pw.Expanded(
-                      child: pw.Center(
-                          child: _buildPersonalitySquarePDF(
-                              'Producció', values['Producción'] ?? 0))),
-                  pw.Expanded(
-                      child: pw.Center(
-                          child: _buildPersonalitySquarePDF(
-                              'Cosecha', values['Cosecha'] ?? 0))),
-                ]),
-            pw.SizedBox(height: 10),
-            // Bottom: Realizaciones
-            pw.Row(
-                mainAxisAlignment: pw.MainAxisAlignment.spaceEvenly,
-                children: [
-                  pw.Expanded(
-                      child: pw.Center(
-                          child: _buildPersonalitySquarePDF(
-                              'R1', values['Fuerza'] ?? 0))),
-                  pw.Expanded(
-                      child: pw.Center(
-                          child: _buildPersonalitySquarePDF(
-                              'R2', values['Realizacion1'] ?? 0))),
-                  pw.Expanded(
-                      child: pw.Center(
-                          child: _buildPersonalitySquarePDF(
-                              'R3', values['Realizacion2'] ?? 0))),
-                  pw.Expanded(
-                      child: pw.Center(
-                          child: _buildPersonalitySquarePDF(
-                              'R4', values['Realizacion3'] ?? 0))),
-                ]),
-          ])
-        ]));
+                  // Draw lines 2 -> 3
+                  // Formació (x2a) -> R1 (x3a)
+                  canvas.drawLine(x2a, y2, x3a, y3);
+                  // Producció (x2b) -> R2 (x3b) & R3 (x3c)
+                  canvas.drawLine(x2b, y2, x3b, y3);
+                  canvas.drawLine(x2b, y2, x3c, y3);
+                  // Cosecha (x2c) -> R4 (x3d)
+                  canvas.drawLine(x2c, y2, x3d, y3);
+                  canvas.strokePath();
+                })),
+                // Content
+                pw.Column(children: [
+                  pw.Text('Camí de vida',
+                      style: pw.TextStyle(
+                          fontWeight: pw.FontWeight.bold, fontSize: 10)),
+                  pw.SizedBox(height: 5),
+                  // Top: Camino de Vida
+                  pw.Row(children: [
+                    pw.Spacer(),
+                    _buildPersonalitySquarePDF(
+                        'Camí de Vida', values['Camino de Vida'] ?? 0),
+                    pw.Spacer(),
+                  ]),
+                  pw.SizedBox(height: 5),
+                  // Middle: Formacion, Produccion, Cosecha
+                  pw.Row(
+                      mainAxisAlignment: pw.MainAxisAlignment.spaceEvenly,
+                      children: [
+                        pw.Expanded(
+                            child: pw.Center(
+                                child: _buildPersonalitySquarePDF(
+                                    'Formació', values['Formación'] ?? 0))),
+                        pw.Expanded(
+                            child: pw.Center(
+                                child: _buildPersonalitySquarePDF(
+                                    'Producció', values['Producción'] ?? 0))),
+                        pw.Expanded(
+                            child: pw.Center(
+                                child: _buildPersonalitySquarePDF(
+                                    'Cosecha', values['Cosecha'] ?? 0))),
+                      ]),
+                  pw.SizedBox(height: 5),
+                  // Bottom: Realizaciones
+                  pw.Row(
+                      mainAxisAlignment: pw.MainAxisAlignment.spaceEvenly,
+                      children: [
+                        pw.Expanded(
+                            child: pw.Center(
+                                child: _buildPersonalitySquarePDF(
+                                    'R1', values['Fuerza'] ?? 0))),
+                        pw.Expanded(
+                            child: pw.Center(
+                                child: _buildPersonalitySquarePDF(
+                                    'R2', values['Realizacion1'] ?? 0))),
+                        pw.Expanded(
+                            child: pw.Center(
+                                child: _buildPersonalitySquarePDF(
+                                    'R3', values['Realizacion2'] ?? 0))),
+                        pw.Expanded(
+                            child: pw.Center(
+                                child: _buildPersonalitySquarePDF(
+                                    'R4', values['Realizacion3'] ?? 0))),
+                      ]),
+                ])
+              ]),
+            ),
+            pw.SizedBox(width: 10),
+            // Right Side: Info Column
+            pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              mainAxisAlignment: pw.MainAxisAlignment.start,
+              children: [
+                _buildInfoBoxPDF('Data', date),
+                pw.SizedBox(height: 5),
+                _buildInfoBoxPDF('Total', '${values['Total'] ?? 0}'),
+                pw.SizedBox(height: 5),
+                _buildInfoBoxPDF(
+                    'Any Personal', '${values['Any Personal'] ?? 0}'),
+              ],
+            ),
+          ],
+        ));
+  }
+
+  pw.Widget _buildInfoBoxPDF(String label, String value) {
+    return pw.Column(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.Text('$label:',
+            style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 8)),
+        pw.Container(
+          padding: const pw.EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+          decoration: pw.BoxDecoration(
+            color: PdfColors.blue50, // Using blue50 if available, else standard
+            borderRadius: pw.BorderRadius.circular(4),
+            border: pw.Border.all(color: PdfColors.grey300),
+          ),
+          child: pw.Text(value, style: pw.TextStyle(fontSize: 8)),
+        )
+      ],
+    );
   }
 
   pw.Widget _buildSingleArc(Map<String, int> values, String topKey,
-      String centerKey, String leftKey, String rightKey) {
-    // Keys expected: 'Misión', 'Iniciacio', 'Evolutivo', 'Desarrollar'
-    // Map usage:
-    // Left (Mision): values['Misión']
-    // Right (Iniciacio): values['Iniciacio']
-    // Top (Apertura/Evolutivo?): Wait, mockup says "Apertura" at top. Code passed 'Evolutivo'.
-    // Let's check calculateValues. 'Apertura' is also calculated.
-    // The user mockup shows "Apertura" at the top.
+      String bottomKey, String rightKey, String leftKey) {
+    // Drawing Dimensions
+    const double drawingSize = 115;
+    const double padding = 20;
+    const double radius = (drawingSize / 2) - padding; // 37.5
 
-    // Bottom (Desarrollar): values['Desarrollar']
-    // Left Bottom (NL): values['NL']
-    // Right Bottom (Expresión): values['Expresión'] - wait, user mockup has 3 bottom values?
-    // Mockup:
-    // Top: Apertura
-    // Bottom Left: NL
-    // Bottom Center: Desarrollar
-    // Bottom Right: Expresión
-    // Arcs connect NL and Expresión to the center line.
+    // Container Dimensions (Increased to fit labels)
+    const double containerWidth = 180;
+    const double containerHeight = 130;
 
-    // We need 'Apertura', 'NL', 'Desarrollar', 'Expresión'.
-    // Let's ensure we have these keys.
+    const double cx = containerWidth / 2;
+    const double cy = containerHeight / 2;
+
+    double arrowStartX = cx - radius;
+    double arrowEndX = cx + radius;
 
     return pw.Container(
-      height: 200,
-      width: 250,
+      width: containerWidth,
+      height: containerHeight,
       child: pw.Stack(
-        alignment: pw.Alignment.center,
         children: [
-          // Custom Paint for Arrow and Arcs
+          // Drawing
           pw.Center(
             child: pw.CustomPaint(
-              size: const PdfPoint(200, 150),
-              painter: (PdfGraphics canvas, PdfPoint size) {
-                double cx = size.x / 2;
-                double top = size.y;
-                double bottom = 0;
-
-                // Main Vertical Arrow (Desarrollar -> Apertura)
+              size: const PdfPoint(containerWidth, containerHeight),
+              painter: (PdfGraphics canvas, PdfPoint s) {
                 canvas.setColor(PdfColors.black);
                 canvas.setLineWidth(2);
-                canvas.drawLine(cx, bottom + 20, cx, top - 20);
+
+                // Arrow Left -> Right
+                canvas.drawLine(arrowStartX, cy, arrowEndX, cy);
                 canvas.strokePath();
 
                 // Arrow Head
-                canvas.drawLine(cx, top - 20, cx - 5, top - 30);
-                canvas.drawLine(cx, top - 20, cx + 5, top - 30);
+                canvas.drawLine(arrowEndX, cy, arrowEndX - 8, cy - 8);
+                canvas.drawLine(arrowEndX, cy, arrowEndX - 8, cy + 8);
                 canvas.strokePath();
 
-                // Arcs
-                // Left Arc (NL -> Center Line)
-                // Right Arc (Expresión -> Center Line)
-                // We can approximate arcs with bezier curves or ellipses.
-                // Draw Left Arc
-                // Simple approach: Semi-circles using curveTo
-                // Left Arc
-                canvas.moveTo(cx - 60, bottom + 20);
-                canvas.curveTo(
-                    cx - 60, bottom + 80, cx, bottom + 80, cx, bottom + 60);
-                canvas.strokePath();
+                // Arc
+                double k = 0.552284749831 * radius;
 
-                // Right Arc
-                canvas.moveTo(cx + 60, bottom + 20);
-                canvas.curveTo(
-                    cx + 60, bottom + 80, cx, bottom + 80, cx, bottom + 60);
+                // Top half arc
+                canvas.moveTo(arrowStartX, cy - radius);
+                canvas.curveTo(arrowStartX + k, cy - radius,
+                    arrowStartX + radius, cy - k, arrowStartX + radius, cy);
+
+                // Bottom half arc
+                canvas.curveTo(arrowStartX + radius, cy + k, arrowStartX + k,
+                    cy + radius, arrowStartX, cy + radius);
+
                 canvas.strokePath();
               },
             ),
           ),
 
-          // Labels
-          // Top
+          // Labels - Using direct positioning relative to calculated points
+
+          // Top Label (Apertura)
           pw.Positioned(
-            top: 0,
-            child: _buildArcLabel(topKey, values[topKey] ?? 0),
+            left: arrowStartX - 50, // Centered roughly 50px left of arrow start
+            top: cy - radius - 25,
+            child: pw.Container(
+              width: 100,
+              alignment: pw.Alignment.center,
+              child: _buildArcLabelPDF(leftKey, values[leftKey] ?? 0),
+            ),
           ),
 
-          // Bottom Center
+          // Bottom Label (Desarrollar)
           pw.Positioned(
-            bottom: 0,
-            child: _buildArcLabel(centerKey, values[centerKey] ?? 0),
+            left: arrowStartX - 50,
+            top: cy + radius + 5,
+            child: pw.Container(
+              width: 100,
+              alignment: pw.Alignment.center,
+              child: _buildArcLabelPDF(rightKey, values[rightKey] ?? 0),
+            ),
           ),
 
-          // Bottom Left
+          // Left Label (NL)
           pw.Positioned(
-            bottom: 0,
-            left: 20,
-            child: _buildArcLabel(leftKey, values[leftKey] ?? 0),
+            left: arrowStartX - 55, // 55px left of start
+            top: cy - 15,
+            child: pw.Container(
+              width: 50,
+              alignment: pw.Alignment.centerRight,
+              child: _buildArcLabelPDF(bottomKey, values[bottomKey] ?? 0),
+            ),
           ),
 
-          // Bottom Right
+          // Right Label (Expresion)
           pw.Positioned(
-            bottom: 0,
-            right: 20,
-            child: _buildArcLabel(rightKey, values[rightKey] ?? 0),
+            left: arrowEndX - 20, // 5px right of end
+            top: cy - 35,
+            child: pw.Container(
+              width: 50,
+              alignment: pw.Alignment.centerLeft,
+              child: _buildArcLabelPDF(topKey, values[topKey] ?? 0),
+            ),
           ),
         ],
       ),
+    );
+  }
+
+  pw.Widget _buildArcLabelPDF(String label, int value) {
+    int originalValue = value; // Keep original value for master number check
+    int reduced = reduceToSingleDigit(value);
+
+    // Check if the original value was a master number (11, 22, 33)
+    bool isMaster = isMasterNumber(originalValue);
+
+    String valueText;
+    if (originalValue == reduced) {
+      valueText = '$originalValue';
+    } else if (isMaster) {
+      valueText = '$originalValue/$reduced';
+    } else {
+      valueText = '$originalValue/$reduced';
+    }
+
+    // Highlight master numbers with Color (Red) as background is hard
+    PdfColor valueColor = isMaster ? PdfColors.red : PdfColors.black;
+
+    return pw.Column(
+      mainAxisSize: pw.MainAxisSize.min,
+      crossAxisAlignment: pw.CrossAxisAlignment.center,
+      children: [
+        pw.Text(label,
+            style: pw.TextStyle(fontSize: 8, color: PdfColors.black)),
+        pw.Text(valueText,
+            style: pw.TextStyle(
+                fontSize: 10,
+                fontWeight: pw.FontWeight.bold,
+                color: valueColor)),
+      ],
     );
   }
 
@@ -740,7 +992,7 @@ class PrintService {
     );
   }
 
-  pw.Widget _formatNumber(int value) {
+  pw.Widget _formatNumber(int value, {double fontSize = 10}) {
     int reduced = reduceToSingleDigit(value);
     bool master = isMasterNumber(reduced);
     // Logic: if value == reduced, show just value. If value != reduced (e.g. 11/2), show both.
@@ -767,7 +1019,7 @@ class PrintService {
         text,
         style: pw.TextStyle(
           fontWeight: pw.FontWeight.bold,
-          fontSize: 12,
+          fontSize: fontSize,
           color: master ? PdfColors.red : PdfColors.black,
         ),
       ),
@@ -1114,31 +1366,22 @@ class PrintService {
     switch (key) {
       case SvgIdentifiers.CAP_DRET:
         baseId = "CapDret";
-        break;
       case SvgIdentifiers.CAP_ESQUERRE:
         baseId = "CapEsquerre";
-        break;
       case SvgIdentifiers.BRAC_ESQUERRE:
         baseId = "BracEsquerre";
-        break;
       case SvgIdentifiers.PANXA_ESQUERRE:
         baseId = "PanxaEsquerre";
-        break;
       case SvgIdentifiers.CADERA:
         baseId = "Cadera";
-        break;
       case SvgIdentifiers.CAMA_ESQUERRE:
         baseId = "CamaEsquerre";
-        break;
       case SvgIdentifiers.CAMA_DRETA:
         baseId = "CamaDreta";
-        break;
       case SvgIdentifiers.PANXA_DRETA:
         baseId = "PanxaDreta";
-        break;
       case SvgIdentifiers.BRAC_DRET:
         baseId = "BracDret";
-        break;
     }
 
     String targetId;

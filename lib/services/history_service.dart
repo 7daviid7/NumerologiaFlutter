@@ -49,8 +49,45 @@ class HistoryService {
     }
   }
 
-  Stream<QuerySnapshot> getHistoryStream() {
+  Stream<QuerySnapshot> getHistoryStream({int limit = 20}) {
     return _historyCollection
+        .orderBy('timestamp', descending: true)
+        .limit(limit)
+        .snapshots();
+  }
+
+  // --- Mètodes de Cerca (Autocomplete) ---
+
+  Future<List<String>> searchNames(String query) async {
+    if (query.isEmpty) return [];
+
+    // "Comença per..." query
+    // \uf8ff és un caràcter Unicode molt alt, va bé per fer rangs de strings.
+    final endQuery = '$query\uf8ff';
+
+    try {
+      final snapshot = await _historyCollection
+          .where('fullName', isGreaterThanOrEqualTo: query)
+          .where('fullName', isLessThan: endQuery)
+          .limit(10) // Suggereix max 10 noms
+          .get();
+
+      final names = snapshot.docs
+          .map((doc) =>
+              (doc.data() as Map<String, dynamic>)['fullName'] as String)
+          .toSet() // Elimina duplicats (mateix client 2 cops)
+          .toList();
+
+      return names;
+    } catch (e) {
+      print('Error searching names: $e');
+      return [];
+    }
+  }
+
+  Stream<QuerySnapshot> getHistoryByName(String fullName) {
+    return _historyCollection
+        .where('fullName', isEqualTo: fullName)
         .orderBy('timestamp', descending: true)
         .snapshots();
   }

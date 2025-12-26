@@ -9,6 +9,9 @@ class ArcWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Detectar si és mòbil (amplada de pantalla < 600)
+    bool isMobile = MediaQuery.of(context).size.width < 600;
+
     return LayoutBuilder(
       builder: (context, constraints) {
         double size = constraints.maxWidth;
@@ -22,8 +25,11 @@ class ArcWidget extends StatelessWidget {
             width: size,
             height: size, // Mantenim un widget quadrat
             child: CustomPaint(
-              painter:
-                  ArcPainter(values: values, maxWidth: size, maxHeight: size),
+              painter: ArcPainter(
+                  values: values,
+                  maxWidth: size,
+                  maxHeight: size,
+                  isMobile: isMobile),
             ),
           ),
         );
@@ -36,45 +42,61 @@ class ArcPainter extends CustomPainter {
   final Map<String, int> values;
   final double maxWidth;
   final double maxHeight;
+  final bool isMobile;
 
   ArcPainter(
-      {required this.values, required this.maxWidth, required this.maxHeight});
+      {required this.values,
+      required this.maxWidth,
+      required this.maxHeight,
+      required this.isMobile});
 
   @override
   void paint(Canvas canvas, Size size) {
+    final double side = min(size.width, size.height);
     final Paint paint = Paint()
       ..color = Colors.black
-      ..strokeWidth = 3
+      ..strokeWidth = side * 0.01 // Proportional stroke
       ..style = PaintingStyle.stroke;
 
     // Defineix el centre de la fletxa
     final center = Offset(size.width / 2, size.height / 2);
-    final radius = min(size.width, size.height) / 2 - 60;
+    // Reduim padding a % per fer-ho responsive
+    final double padding = side * 0.15; // 15% padding
+    final radius = side / 2 - padding;
 
-    // Dibuixa la fletxa
+    // Dibuixa la fletxa (Horitzontal: Esquerra -> Dreta)
     final arrowStart =
-        Offset(center.dx, center.dy + radius); // Inici de la fletxa
+        Offset(center.dx - radius, center.dy); // Inici de la fletxa (Esquerra)
     final arrowEnd =
-        Offset(center.dx, center.dy - radius); // Final de la fletxa
+        Offset(center.dx + radius, center.dy); // Final de la fletxa (Dreta)
     canvas.drawLine(arrowStart, arrowEnd, paint);
 
-    // Dibuixa la punta de la fletxa
-    final arrowTip1 = Offset(arrowEnd.dx - 10, arrowEnd.dy + 10);
-    final arrowTip2 = Offset(arrowEnd.dx + 10, arrowEnd.dy + 10);
+    // Dibuixa la punta de la fletxa (a la Dreta)
+    final double arrowTipSize = side * 0.025; // Proportional arrow tip
+    final arrowTip1 =
+        Offset(arrowEnd.dx - arrowTipSize, arrowEnd.dy - arrowTipSize);
+    final arrowTip2 =
+        Offset(arrowEnd.dx - arrowTipSize, arrowEnd.dy + arrowTipSize);
     canvas.drawLine(arrowEnd, arrowTip1, paint);
     canvas.drawLine(arrowEnd, arrowTip2, paint);
 
-    // Ajusta el centre de l'arc perquè el semicercle estigui centrat amb la fletxa
-    final arcCenter = Offset(center.dx, center.dy + radius);
+    // Ajusta el centre de l'arc (Coincideix amb l'inici de la fletxa a l'esquerra)
+    final arcCenter = arrowStart;
     final arcRadius = radius;
 
-    // Dibuixa l'arc
+    // Dibuixa l'arc (Semicercle cap a la dreta)
+    // Start -PI/2 (Dalt) -> Sweep PI (Baix) -> Resultat: Corba a la dreta
     final Rect arcRect = Rect.fromCircle(center: arcCenter, radius: arcRadius);
-    canvas.drawArc(arcRect, pi, pi, false, paint);
+    canvas.drawArc(arcRect, -pi / 2, pi, false, paint);
 
-    // Ajustar el mides del text en funció del contenidor
-    final double textSize = min(maxWidth, maxHeight) /
-        17; // Ajusta el divisor per controlar la mida del text
+    // Ajustar el mides del text en funció del tipus de dispositiu
+    // Si és mòbil, dividim per 20 (més petit relatiu). Si és desktop, per 15 (més gran relatiu).
+    final double textSize = side / (isMobile ? 20 : 15);
+
+    // Distància dinàmica per al padding (responsive)
+    final double dynamicOffset = textSize * 2.5;
+    // Offset horitzontal per etiquetes Dalt/Baix (per allunyar-les de la línia vertical)
+    final double verticalAnchorOffset = textSize * 2.0;
 
     // Crear TextStyle amb mida ajustada
     final TextStyle titleStyle = TextStyle(
@@ -84,19 +106,42 @@ class ArcPainter extends CustomPainter {
 
     // Mostrar els textos utilitzant el `Map`
     if (values.length >= 4) {
-      // Primers i segons valors per als extrems del semicercle
-      final arcLeft = Offset(arcCenter.dx - arcRadius, arcCenter.dy);
-      final arcRight = Offset(arcCenter.dx + arcRadius, arcCenter.dy);
-      _drawText(canvas, values.keys.elementAt(0), values.values.elementAt(0),
-          arcLeft + Offset(5, 20), titleStyle, valueStyle);
-      _drawText(canvas, values.keys.elementAt(1), values.values.elementAt(1),
-          arcRight + Offset(15, 20), titleStyle, valueStyle);
+      // 0: Dalt (Inici Arc)
+      // 1: Baix (Final Arc)
+      final arcTop = Offset(arcCenter.dx, arcCenter.dy - arcRadius);
+      final arcBottom = Offset(arcCenter.dx, arcCenter.dy + arcRadius);
 
-      // Tercer i quart valors per als extrems de la fletxa
-      _drawText(canvas, values.keys.elementAt(2), values.values.elementAt(2),
-          arrowEnd + Offset(0, -30), titleStyle, valueStyle);
-      _drawText(canvas, values.keys.elementAt(3), values.values.elementAt(3),
-          arrowStart + Offset(0, 20), titleStyle, valueStyle);
+      _drawText(
+          canvas,
+          values.keys.elementAt(0),
+          values.values.elementAt(0),
+          arcTop + Offset(-verticalAnchorOffset, 0),
+          titleStyle,
+          valueStyle); // Padding esquerra
+      _drawText(
+          canvas,
+          values.keys.elementAt(1),
+          values.values.elementAt(1),
+          arcBottom + Offset(-verticalAnchorOffset, 0),
+          titleStyle,
+          valueStyle); // Padding esquerra
+
+      // 2: Dreta (Final Fletxa)
+      // 3: Esquerra (Inici Fletxa / Centre Arc)
+      _drawText(
+          canvas,
+          values.keys.elementAt(2),
+          values.values.elementAt(2),
+          arrowEnd + Offset(dynamicOffset, 0),
+          titleStyle,
+          valueStyle); // Padding dreta (responsive)
+      _drawText(
+          canvas,
+          values.keys.elementAt(3),
+          values.values.elementAt(3),
+          arrowStart + Offset(-dynamicOffset, 0),
+          titleStyle,
+          valueStyle); // Padding esquerra (responsive)
     }
   }
 
@@ -106,10 +151,12 @@ class ArcPainter extends CustomPainter {
     final bool masterNumber = isMasterNumber(reducedValue);
 
     final TextSpan titleSpan = TextSpan(text: key, style: titleStyle);
+
+    // Eliminem el \n inicial per controlar nosaltres la posició vertical
     final TextSpan valueSpan = TextSpan(
       text: masterNumber
-          ? '\n$reducedValue/${reduceToSingleDigitResult(reducedValue)}'
-          : '\n$reducedValue',
+          ? '$reducedValue/${reduceToSingleDigitResult(reducedValue)}'
+          : '$reducedValue',
       style: masterNumber
           ? valueStyle.copyWith(
               color: Colors.red,
@@ -131,24 +178,23 @@ class ArcPainter extends CustomPainter {
     );
     valuePainter.layout();
 
-    // Calcular l'offset per centrar el text
-    final double xOffset =
-        offset.dx - max(titlePainter.width / 2, valuePainter.width) / 2;
-    final double yOffset = offset.dy;
+    // Càlcul de l'alçada total i gap
+    final double gap =
+        titleStyle.fontSize! * 0.1; // Espai entre títol i text (30% de la font)
+    final double totalHeight = titlePainter.height + gap + valuePainter.height;
 
-    // Dibuixar el text títol
+    // Calcular l'offset d'inici vertical (centrat en el punt 'offset')
+    final double startY = offset.dy - (totalHeight / 2);
+
+    // Dibuixar el text títol (centrat horitzontalment)
     titlePainter.paint(
-        canvas,
-        Offset(
-            xOffset - 10,
-            yOffset -
-                (titlePainter.height / 2) -
-                (valuePainter.height / 2) +
-                10));
+        canvas, Offset(offset.dx - (titlePainter.width / 2), startY));
 
-    // Dibuixar el text del valor centrat amb el text títol
+    // Dibuixar el text del valor (centrat horitzontalment, a sota del títol)
     valuePainter.paint(
-        canvas, Offset(xOffset - 2, yOffset + (titlePainter.height / 2) - 25));
+        canvas,
+        Offset(offset.dx - (valuePainter.width / 2),
+            startY + titlePainter.height + gap));
   }
 
   @override

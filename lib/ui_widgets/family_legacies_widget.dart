@@ -3,8 +3,9 @@ import '../services/numerology_calculation_service.dart';
 
 class FamilyHeritageWidget extends StatelessWidget {
   final Map<String, int> values;
+  final bool isVertical;
 
-  FamilyHeritageWidget({required this.values});
+  FamilyHeritageWidget({required this.values, this.isVertical = false});
 
   @override
   Widget build(BuildContext context) {
@@ -14,14 +15,17 @@ class FamilyHeritageWidget extends StatelessWidget {
         double availableHeight = constraints.maxHeight;
 
         // Càlcul de la mida ideal basada en l'amplada
-        // Tenim 4 columnes + marges/paddings. Suposem divisor ~50 per encabir-ho
-        double widthBasedFontSize = availableWidth / 20;
+        // Càlcul de la mida ideal basada en l'amplada
+        // Si és vertical, tenim menys divisió (1 columna) però volem que sigui més compacte
+        double widthDivisor = isVertical ? 12 : 20;
+        double widthBasedFontSize = availableWidth / widthDivisor;
 
         // Càlcul de la mida ideal basada en l'alçada (si és finita)
-        // Tenim títol + 2 files de targetes. Suposem divisor ~15
+        // Si és vertical, tenim més files (7 items -> 7 files). Augmentem divisor per fer-ho més petit
+        double heightDivisor = isVertical ? 40 : 13;
         double heightBasedFontSize = double.infinity;
         if (availableHeight != double.infinity) {
-          heightBasedFontSize = availableHeight / 13;
+          heightBasedFontSize = availableHeight / heightDivisor;
         }
 
         // Mida óptima: la que permeti omplir l'espai més restrictiu
@@ -38,7 +42,25 @@ class FamilyHeritageWidget extends StatelessWidget {
         double cardElevation = 2.0;
         double iconSize = fontSize * 1.5;
         double textFontSize = fontSize;
-        double spacing = fontSize * 0.5;
+        double spacing = fontSize * 0.3;
+
+        Widget childContent = Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center, // CENTRED
+          children: [
+            Text(
+              'Herències Familiars',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: textFontSize * 1.2,
+              ),
+            ),
+            SizedBox(height: spacing),
+            _buildGridLayout(cardMargin, cardElevation, iconSize, textFontSize,
+                spacing, availableWidth)
+          ],
+        );
 
         return Container(
           alignment: Alignment.center,
@@ -47,25 +69,14 @@ class FamilyHeritageWidget extends StatelessWidget {
             border: Border.all(color: Colors.black),
             borderRadius: BorderRadius.circular(8.0),
           ),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Herències Familiars',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: textFontSize * 1.2,
-                  ),
+          child: isVertical
+              ? FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: childContent,
+                )
+              : SingleChildScrollView(
+                  child: childContent,
                 ),
-                SizedBox(height: spacing),
-                _buildGridLayout(
-                    cardMargin, cardElevation, iconSize, textFontSize, spacing)
-              ],
-            ),
-          ),
         );
       },
     );
@@ -77,14 +88,20 @@ class FamilyHeritageWidget extends StatelessWidget {
     double iconSize,
     double textFontSize,
     double spacing,
+    double availableWidth,
   ) {
     List<Widget> rows = [];
     List<MapEntry<String, int>> entries = values.entries.toList();
     int itemCount = entries.length;
-    int itemsPerRow = 4; // Sempre 4 columnes
+    // Responsive Logic:
+    // - If isVertical (Sidebar): 1 column.
+    // - If Mobile (width < 600): 2 columns.
+    // - If Desktop/Tablet: 4 columns.
+    int itemsPerRow = isVertical ? 1 : (availableWidth < 600 ? 2 : 4);
 
-    for (int row = 0; row < 2; row++) {
-      // Sempre 2 files
+    int rowCount = (itemCount / itemsPerRow).ceil();
+
+    for (int row = 0; row < rowCount; row++) {
       List<Widget> rowItems = [];
       for (int col = 0; col < itemsPerRow; col++) {
         int index = row * itemsPerRow + col;
@@ -93,22 +110,55 @@ class FamilyHeritageWidget extends StatelessWidget {
           int value = entries[index].value;
           int reducedValue = reduceToSingleDigit(value);
 
-          rowItems.add(
-            Expanded(
-              child: _buildHeritageCard(
-                label,
-                value,
-                reducedValue,
-                cardMargin,
-                cardElevation,
-                iconSize,
-                textFontSize,
+          if (isVertical) {
+            // Vertical mode: Limit width explicitly
+            // We want them uniform but not full width.
+            // Estimate width based on font size or just allow content to define it but consistent?
+            // "Limit width a little more" -> Fixed width relative to font is safest for alignment.
+            // Let's use a multiple of textFontSize that fits the content comfortably (approx 10-12 chars + icon)
+            double cardWidth = textFontSize * 10.0;
+
+            rowItems.add(
+              Container(
+                width: cardWidth,
+                child: _buildHeritageCard(
+                  label,
+                  value,
+                  reducedValue,
+                  cardMargin,
+                  cardElevation,
+                  iconSize,
+                  textFontSize,
+                ),
               ),
-            ),
-          );
+            );
+          } else {
+            // Horizontal/Grid mode: Use Expanded to fill cells
+            rowItems.add(
+              Expanded(
+                child: _buildHeritageCard(
+                  label,
+                  value,
+                  reducedValue,
+                  cardMargin,
+                  cardElevation,
+                  iconSize,
+                  textFontSize,
+                ),
+              ),
+            );
+          }
 
           if (col < itemsPerRow - 1) {
             rowItems.add(SizedBox(width: spacing)); // Espai entre columnes
+          }
+        } else {
+          // Fill empty space if logic requires it for grid alignment,
+          // but Expanded handles it well usually if we want them to stretch.
+          // For now, let's keep it simple.
+          rowItems.add(Spacer());
+          if (col < itemsPerRow - 1) {
+            rowItems.add(SizedBox(width: spacing));
           }
         }
       }
@@ -116,11 +166,12 @@ class FamilyHeritageWidget extends StatelessWidget {
       rows.add(
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center, // CENTERED
           children: rowItems,
         ),
       );
 
-      if (row < 1) {
+      if (row < rowCount - 1) {
         rows.add(SizedBox(height: spacing)); // Espai entre files
       }
     }
@@ -168,8 +219,8 @@ class FamilyHeritageWidget extends StatelessWidget {
                   Text(
                     label,
                     style: TextStyle(
-                      fontSize:
-                          textFontSize * 0.6, // Mida del text de l'etiqueta
+                      fontSize: textFontSize *
+                          1.1, // Mida del text de l'etiqueta (increased)
                       fontWeight: FontWeight.bold,
                       color: Colors.blue[600], // Color del text
                     ),
@@ -181,7 +232,8 @@ class FamilyHeritageWidget extends StatelessWidget {
                         TextSpan(
                           text: '$value/$reducedValue ',
                           style: TextStyle(
-                            fontSize: textFontSize, // Mida del text del valor
+                            fontSize: textFontSize *
+                                1.5, // Mida del text del valor (increased)
                             fontWeight: FontWeight.bold,
                             color: Colors.blue[900], // Color del text
                           ),
@@ -190,8 +242,8 @@ class FamilyHeritageWidget extends StatelessWidget {
                           TextSpan(
                             text: '($finalReducedValue)',
                             style: TextStyle(
-                              fontSize:
-                                  textFontSize, // Mida del text del valor reduït
+                              fontSize: textFontSize *
+                                  1.3, // Mida del text del valor reduït (increased)
                               fontWeight: FontWeight.bold,
                               color: Colors.red, // Color del text reduït
                               backgroundColor:

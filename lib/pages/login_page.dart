@@ -7,8 +7,9 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
+  final _emailController =
+      TextEditingController(text: 'quintanilladtona@gmail.com');
+  final _passwordController = TextEditingController(text: 'd@7PA45MA33');
   final AuthService _authService = AuthService();
   bool _isLoading = false;
 

@@ -87,7 +87,7 @@ class SpiritualFigurePage extends StatelessWidget {
                         finalHeight = heightBasedOnWidth;
                       }
 
-                      return Container(
+                      return SizedBox(
                         // Envolcallem en container per donar mida concreta
                         width: finalWidth,
                         height: finalHeight,

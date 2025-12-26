@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/data_model.dart';
 import '../ui_widgets/arc_widget.dart';
-import '../ui_widgets/challenges_widget.dart';
+import '../ui_widgets/triangle_challenges_widget.dart';
 import '../ui_widgets/family_legacies_widget.dart';
 import '../ui_widgets/data_table_widget.dart';
 import '../ui_widgets/name_with_values_widget.dart';
@@ -48,7 +48,7 @@ class ResultsPage extends StatelessWidget {
           // Desafiaments
           SizedBox(
             height: 400,
-            child: ChallengesWidget(challenges: dataModel.mapDesafio),
+            child: TriangleChallengesWidget(challenges: dataModel.mapDesafio),
           ),
           SizedBox(height: 20),
           // Herències
@@ -71,15 +71,27 @@ class ResultsPage extends StatelessWidget {
                 LifePathWidget(values: dataModel.mapVida, date: dataModel.date),
           ),
           SizedBox(height: 20),
-          // Arcs
-          SizedBox(
-            height: 300,
-            child: ArcWidget(values: dataModel.mapPrimerArc),
-          ),
           SizedBox(height: 20),
-          SizedBox(
-            height: 300,
-            child: ArcWidget(values: dataModel.mapSegonArc),
+          // Arcs grouped in one frame
+          Container(
+            padding: EdgeInsets.all(8.0),
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.black),
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 300,
+                  child: ArcWidget(values: dataModel.mapPrimerArc),
+                ),
+                SizedBox(height: 20),
+                SizedBox(
+                  height: 300,
+                  child: ArcWidget(values: dataModel.mapSegonArc),
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -100,7 +112,7 @@ class ResultsPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
-                  flex: 3,
+                  flex: 5,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -117,14 +129,33 @@ class ResultsPage extends StatelessWidget {
                             SizedBox(width: 10),
                             Expanded(
                               flex: 1,
-                              child: ChallengesWidget(
-                                  challenges: dataModel.mapDesafio),
+                              child: Center(
+                                child: TriangleChallengesWidget(
+                                    challenges: dataModel.mapDesafio),
+                              ),
                             ),
                             SizedBox(width: 20),
+                            // Arcs moved here (replacing FamilyHeritage)
                             Expanded(
                               flex: 3,
-                              child: FamilyHeritageWidget(
-                                  values: dataModel.mapHerencies),
+                              child: Container(
+                                padding: EdgeInsets.all(8.0),
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.black),
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                        child: ArcWidget(
+                                            values: dataModel.mapPrimerArc)),
+                                    SizedBox(width: 10),
+                                    Expanded(
+                                        child: ArcWidget(
+                                            values: dataModel.mapSegonArc)),
+                                  ],
+                                ),
+                              ),
                             ),
                           ],
                         ),
@@ -134,7 +165,7 @@ class ResultsPage extends StatelessWidget {
                 ),
                 SizedBox(width: 10),
                 Expanded(
-                  flex: 2,
+                  flex: 3,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -149,16 +180,12 @@ class ResultsPage extends StatelessWidget {
                   ),
                 ),
                 SizedBox(width: 20),
+                // FamilyHeritage moved here (replacing Arcs)
                 Expanded(
                   flex: 1,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                          child: ArcWidget(values: dataModel.mapPrimerArc)),
-                      SizedBox(height: 20),
-                      Expanded(child: ArcWidget(values: dataModel.mapSegonArc)),
-                    ],
+                  child: FamilyHeritageWidget(
+                    values: dataModel.mapHerencies,
+                    isVertical: true,
                   ),
                 ),
               ],
