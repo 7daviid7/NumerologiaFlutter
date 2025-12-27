@@ -3,13 +3,12 @@ import '../services/auth_service.dart';
 
 class LoginPage extends StatefulWidget {
   @override
-  _LoginPageState createState() => _LoginPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final _emailController =
-      TextEditingController(text: 'quintanilladtona@gmail.com');
-  final _passwordController = TextEditingController(text: 'd@7PA45MA33');
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
   final AuthService _authService = AuthService();
   bool _isLoading = false;
 

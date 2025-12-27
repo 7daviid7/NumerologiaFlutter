@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -12,7 +13,7 @@ class FeedbackDetailPage extends StatefulWidget {
       : super(key: key);
 
   @override
-  _FeedbackDetailPageState createState() => _FeedbackDetailPageState();
+  State<FeedbackDetailPage> createState() => _FeedbackDetailPageState();
 }
 
 class _FeedbackDetailPageState extends State<FeedbackDetailPage> {
@@ -41,6 +42,100 @@ class _FeedbackDetailPageState extends State<FeedbackDetailPage> {
       return DateFormat('dd/MM/yyyy HH:mm').format(date);
     }
     return '';
+  }
+
+  void _copyToClipboard(String text) {
+    Clipboard.setData(ClipboardData(text: text));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Text copiat al porta-retalls'),
+        duration: Duration(seconds: 2),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
+
+  Future<void> _shareLink(String interpretation) async {
+    // Mostrar diàleg de càrrega
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => Center(child: CircularProgressIndicator()),
+    );
+
+    try {
+      // Guardar el link compartit
+      final docId = await _historyService.createSharedLink(interpretation,
+          originalDocId: widget.docId);
+
+      if (!mounted) return;
+
+      Navigator.pop(context); // Tancar loading
+
+      // Construir la URL
+      const baseUrl = 'https://charged-sum-419213.web.app';
+      final url = '$baseUrl/?id=$docId';
+
+      _showShareDialog(url);
+    } catch (e) {
+      if (!mounted) return;
+      Navigator.pop(context); // Tancar loading
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error generant l\'enllaç: $e')),
+      );
+    }
+  }
+
+  void _showShareDialog(String url) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Row(
+          children: [
+            Icon(Icons.lock_clock, color: Colors.orange),
+            SizedBox(width: 10),
+            Text('Enllaç Segur (24h)'),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+                'Aquest enllaç permet veure aquesta interpretació sense necessitat de l\'app. Caducarà automàticament en 24 hores.\n'),
+            Container(
+              padding: EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: SelectableText(
+                url,
+                style: TextStyle(
+                    fontFamily: 'Courier', fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton.icon(
+            icon: Icon(Icons.copy),
+            label: Text('Copiar'),
+            onPressed: () {
+              Clipboard.setData(ClipboardData(text: url));
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Enllaç copiat!')),
+              );
+            },
+          ),
+          TextButton(
+            child: Text('Tancar'),
+            onPressed: () => Navigator.pop(context),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -111,13 +206,34 @@ class _FeedbackDetailPageState extends State<FeedbackDetailPage> {
             ),
             SizedBox(height: 24),
 
-            // Interpretation Section
-            Text(
-              'Interpretació',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
+            // Interpretation Section header with actions
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Interpretació',
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                ),
+                Row(
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.share,
+                          color: Theme.of(context).colorScheme.primary),
+                      onPressed: () => _shareLink(interpretation),
+                      tooltip: 'Compartir enllaç segur',
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.copy,
+                          color: Theme.of(context).colorScheme.primary),
+                      onPressed: () => _copyToClipboard(interpretation),
+                      tooltip: 'Copiar text',
+                    ),
+                  ],
+                ),
+              ],
             ),
             SizedBox(height: 8),
             Card(

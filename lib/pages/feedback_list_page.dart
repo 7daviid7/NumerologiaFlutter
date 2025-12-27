@@ -10,7 +10,7 @@ class FeedbackListPage extends StatefulWidget {
   FeedbackListPage({Key? key}) : super(key: key);
 
   @override
-  _FeedbackListPageState createState() => _FeedbackListPageState();
+  State<FeedbackListPage> createState() => _FeedbackListPageState();
 }
 
 class _FeedbackListPageState extends State<FeedbackListPage> {
