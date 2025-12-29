@@ -2,6 +2,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';
 import '../services/history_service.dart';
 
@@ -274,6 +275,13 @@ class _FeedbackDetailPageState extends State<FeedbackDetailPage> {
                           final feedback = _guestFeedback[index];
                           final text = feedback['text'] ?? '';
                           final date = _formatDate(feedback['timestamp']);
+                          // Extract rating safely
+                          double rating = 5.0;
+                          if (feedback['rating'] != null) {
+                            rating = (feedback['rating'] is num)
+                                ? (feedback['rating'] as num).toDouble()
+                                : 5.0;
+                          }
 
                           return Card(
                             color: Theme.of(context)
@@ -285,6 +293,18 @@ class _FeedbackDetailPageState extends State<FeedbackDetailPage> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+                                  // Display Rating
+                                  RatingBarIndicator(
+                                    rating: rating,
+                                    itemBuilder: (context, index) => Icon(
+                                      Icons.star,
+                                      color: Colors.amber,
+                                    ),
+                                    itemCount: 5,
+                                    itemSize: 20.0,
+                                    direction: Axis.horizontal,
+                                  ),
+                                  SizedBox(height: 8),
                                   Text(text, style: TextStyle(fontSize: 16)),
                                   SizedBox(height: 4),
                                   Align(

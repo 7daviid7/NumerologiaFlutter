@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import '../services/history_service.dart';
 
 class SharedInterpretationPage extends StatefulWidget {
@@ -15,8 +16,20 @@ class SharedInterpretationPage extends StatefulWidget {
 
 class _SharedInterpretationPageState extends State<SharedInterpretationPage> {
   final _feedbackController = TextEditingController();
+  double _currentRating = 5.0; // Default rating initialized to 5 as requested
   bool _isSendingFeedback = false;
   bool _feedbackSent = false;
+  late Future<Map<String, dynamic>?> _interpretationFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _interpretationFuture =
+        HistoryService().getSharedInterpretation(widget.docId);
+    _feedbackController.addListener(() {
+      setState(() {});
+    });
+  }
 
   Future<void> _sendFeedback() async {
     if (_feedbackController.text.trim().isEmpty) return;
@@ -26,8 +39,8 @@ class _SharedInterpretationPageState extends State<SharedInterpretationPage> {
     });
 
     try {
-      await HistoryService()
-          .saveGuestFeedback(widget.docId, _feedbackController.text);
+      await HistoryService().saveGuestFeedback(
+          widget.docId, _feedbackController.text, _currentRating);
       if (mounted) {
         setState(() {
           _feedbackSent = true;
@@ -63,7 +76,7 @@ class _SharedInterpretationPageState extends State<SharedInterpretationPage> {
         automaticallyImplyLeading: false, // No back button for guests
       ),
       body: FutureBuilder<Map<String, dynamic>?>(
-        future: HistoryService().getSharedInterpretation(widget.docId),
+        future: _interpretationFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
@@ -175,6 +188,32 @@ class _SharedInterpretationPageState extends State<SharedInterpretationPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
+                          Text('Puntuació:',
+                              style: TextStyle(fontWeight: FontWeight.bold)),
+                          SizedBox(height: 8),
+                          Center(
+                            child: RatingBar.builder(
+                              initialRating: _currentRating,
+                              minRating: 1,
+                              direction: Axis.horizontal,
+                              allowHalfRating: true,
+                              itemCount: 5,
+                              itemSize: 40,
+                              unratedColor: Colors.grey.shade300,
+                              itemPadding:
+                                  EdgeInsets.symmetric(horizontal: 4.0),
+                              itemBuilder: (context, _) => Icon(
+                                Icons.star,
+                                color: Colors.amber,
+                              ),
+                              onRatingUpdate: (rating) {
+                                setState(() {
+                                  _currentRating = rating;
+                                });
+                              },
+                            ),
+                          ),
+                          SizedBox(height: 16),
                           TextField(
                             controller: _feedbackController,
                             maxLines: 4,
@@ -190,8 +229,10 @@ class _SharedInterpretationPageState extends State<SharedInterpretationPage> {
                           ),
                           SizedBox(height: 16),
                           ElevatedButton.icon(
-                            onPressed:
-                                _isSendingFeedback ? null : _sendFeedback,
+                            onPressed: (_isSendingFeedback ||
+                                    _feedbackController.text.trim().isEmpty)
+                                ? null
+                                : _sendFeedback,
                             icon: _isSendingFeedback
                                 ? SizedBox(
                                     width: 20,

@@ -29,6 +29,8 @@ dependencies:
   cloud_firestore: ^5.4.0
   firebase_auth: ^5.7.0
   flutter_typeahead: ^5.2.0
+  flutter_rating_bar: ^4.0.1
+  url_launcher: ^6.3.1
 
   
 
@@ -45,3 +47,7 @@ flutter:
     - assets/siluetaCreu.svg
     - assets/siluetaTrans.svg
     - assets/siluetaT.svg
+    - assets/screenshot_input.png
+    - assets/screenshot_results.png
+    - assets/screenshot_cycles.png
+    - assets/screenshot_figure.png

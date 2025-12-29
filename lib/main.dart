@@ -1,14 +1,13 @@
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
-import 'pages/input_page.dart';
 import 'package:provider/provider.dart';
 import 'models/data_model.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-import 'pages/shared_interpretation_page.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'pages/login_page.dart';
+import 'widgets/auth_guard.dart';
+import 'pages/public/public_calculator_page.dart';
+import 'pages/public/chart_explanation_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,12 +28,17 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Numerologia',
+      title: 'NUMEN',
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
       ),
-      home: AuthWrapper(),
+      routes: {
+        '/login': (context) => LoginPage(),
+        '/public_calculator': (context) => PublicCalculatorPage(),
+        '/chart_explanation': (context) => ChartExplanationPage(),
+      },
+      home: const AuthGuard(),
       debugShowCheckedModeBanner: false,
       localizationsDelegates: [
         GlobalMaterialLocalizations.delegate,
@@ -46,42 +50,6 @@ class MyApp extends StatelessWidget {
         const Locale('en', 'US'),
       ],
       locale: const Locale('es', 'ES'),
-    );
-  }
-}
-
-class AuthWrapper extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    // 1. Check for shared link ID in URL (Public Access)
-    // If an ID exists, we bypass login and go straight to the shared page.
-    if (kIsWeb) {
-      final uri = Uri.base;
-      if (uri.queryParameters.containsKey('id')) {
-        final docId = uri.queryParameters['id'];
-        if (docId != null && docId.isNotEmpty) {
-          print('DEBUG: Found Public ID: $docId');
-          return SharedInterpretationPage(docId: docId);
-        }
-      }
-    }
-
-    // 2. Check Auth State (Admin Access)
-    return StreamBuilder<User?>(
-      stream: FirebaseAuth.instance.authStateChanges(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Scaffold(body: Center(child: CircularProgressIndicator()));
-        }
-
-        // If user is logged in -> Show App
-        if (snapshot.hasData) {
-          return InputPage();
-        }
-
-        // If not logged in -> Show Login
-        return LoginPage();
-      },
     );
   }
 }

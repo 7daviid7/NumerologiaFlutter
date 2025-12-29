@@ -142,17 +142,19 @@ class HistoryService {
     }
   }
 
-  Future<void> saveGuestFeedback(String docId, String feedback) async {
+  Future<void> saveGuestFeedback(
+      String docId, String feedback, double rating) async {
     try {
       await _sharedCollection.doc(docId).update({
         'guestFeedback': FieldValue.arrayUnion([
           {
             'text': feedback,
+            'rating': rating,
             'timestamp': Timestamp.now(),
           }
         ]),
       });
-      print('DEBUG: Guest feedback saved for $docId');
+      print('DEBUG: Guest feedback saved for $docId with rating $rating');
     } catch (e) {
       print('Error saving guest feedback: $e');
       rethrow;
@@ -185,6 +187,82 @@ class HistoryService {
       return allFeedback;
     } catch (e) {
       print('Error getting guest feedback: $e');
+      return [];
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getPublicTestimonials(
+      {int limit = 5}) async {
+    try {
+      // 1. Fetch shared interpretations (most recent first)
+      // Note: We cannot easily filter by "guestFeedback is not null" inside an array in a simple query,
+      // so we fetch a batch of recent shared links and filter them in Dart.
+      // Assuming the volume of shared links isn't massive yet, fetching 50 is safe.
+      final snapshot = await _sharedCollection
+          .orderBy('createdAt', descending: true)
+          .limit(50)
+          .get();
+
+      List<Map<String, dynamic>> results = [];
+
+      for (var doc in snapshot.docs) {
+        if (results.length >= limit) break;
+
+        final data = doc.data() as Map<String, dynamic>;
+
+        // Check if guestFeedback exists and has items
+        if (data['guestFeedback'] != null &&
+            data['guestFeedback'] is List &&
+            (data['guestFeedback'] as List).isNotEmpty) {
+          final feedbacks = data['guestFeedback'] as List;
+          // Get the latest feedback (last in array usually, or check timestamps)
+          // For simplicity, we take the last one added.
+          final lastFeedback = feedbacks.last;
+          String feedbackText = '';
+          if (lastFeedback is Map && lastFeedback['text'] != null) {
+            feedbackText = lastFeedback['text'];
+          }
+
+          if (feedbackText.isEmpty) continue;
+
+          // 2. Fetch original name from 'interpretations' collection
+          String fullName = 'Anònim';
+          final originalDocId = data['originalDocId'];
+
+          if (originalDocId != null) {
+            try {
+              final originalDoc =
+                  await _historyCollection.doc(originalDocId).get();
+              if (originalDoc.exists) {
+                final originalData = originalDoc.data() as Map<String, dynamic>;
+                fullName = originalData['fullName'] ?? 'Anònim';
+              }
+            } catch (e) {
+              print('Error fetching original doc name: $e');
+            }
+          }
+
+          double rating = 5.0;
+          if (lastFeedback is Map && lastFeedback['rating'] != null) {
+            rating = (lastFeedback['rating'] is num)
+                ? (lastFeedback['rating'] as num).toDouble()
+                : 5.0;
+          }
+
+          results.add({
+            'fullName': fullName,
+            'interpretation':
+                feedbackText, // Mapping feedback text to 'interpretation' key for UI compatibility
+            'rating': rating,
+            'timestamp':
+                data['createdAt'], // Using link creation time or feedback time
+          });
+        }
+      }
+
+      return results;
+    } catch (e) {
+      print('Error fetching public testimonials: $e');
       return [];
     }
   }

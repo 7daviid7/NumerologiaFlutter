@@ -19,10 +19,10 @@ class InputPageState extends State<InputPage> {
   void initState() {
     super.initState();
     // Canvia aquestes dades per les teves dades de prova habituals
-    // _nameController.text =
-    //     "Francisco Quintanilla Garcia Mejino Fernandez"; // Posa aquí el teu nom complet
-    // selectedDate = DateTime(1965, 07, 22); // Posa aquí la teva data
-    // _dateController.text = DateFormat('yyyy-MM-dd').format(selectedDate!);
+    _nameController.text =
+        "Francisco Quintanilla Garcia Mejino Fernandez"; // Posa aquí el teu nom complet
+    selectedDate = DateTime(1965, 07, 22); // Posa aquí la teva data
+    _dateController.text = DateFormat('yyyy-MM-dd').format(selectedDate!);
   }
 
   @override
