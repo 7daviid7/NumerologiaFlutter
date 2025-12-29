@@ -3,6 +3,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:numerologia/pages/public/chart_explanation_page.dart'; // Corrected package name
 import '../../data/numerology_content.dart';
 import '../../services/history_service.dart';
+import '../../widgets/pwa_install_prompt.dart';
 
 class LandingPage extends StatefulWidget {
   const LandingPage({super.key});
@@ -637,6 +638,7 @@ class _LandingPageState extends State<LandingPage> {
           ],
         ),
       ),
+      bottomSheet: IosInstallPrompt(),
     );
   }
 
