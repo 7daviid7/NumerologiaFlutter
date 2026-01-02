@@ -29,8 +29,7 @@
             "toolArgs": [
                 "--dart-define-from-file=.env"
             ]
-        }
-        ,
+        },
         {
             "name": "numerologia_flutter (Web)",
             "request": "launch",
