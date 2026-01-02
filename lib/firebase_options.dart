@@ -41,7 +41,7 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyA2rKsqNst1M6o3pONj-k9IsORak8wpDd4',
+    apiKey: 'AIzaSyBxfl4G2aI2rQaZOQmPkDfnPjGY-nDF6LU',
     appId: '1:95277363870:web:af50d572dffd0a1338c18f',
     messagingSenderId: '95277363870',
     projectId: 'charged-sum-419213',
@@ -76,12 +76,11 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyA2rKsqNst1M6o3pONj-k9IsORak8wpDd4',
+    apiKey: 'AIzaSyBxfl4G2aI2rQaZOQmPkDfnPjGY-nDF6LU',
     appId: '1:95277363870:web:04c10266f5e21f3338c18f',
     messagingSenderId: '95277363870',
     projectId: 'charged-sum-419213',
     authDomain: 'charged-sum-419213.firebaseapp.com',
     storageBucket: 'charged-sum-419213.firebasestorage.app',
   );
-
 }
