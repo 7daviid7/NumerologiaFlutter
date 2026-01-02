@@ -1,11 +1,5 @@
 import 'package:flutter/material.dart';
-
-int reduceToSingleDigit(int number) {
-  while (number > 9) {
-    number = number.toString().split('').map(int.parse).reduce((a, b) => a + b);
-  }
-  return number;
-}
+import 'numerology_calculation.dart';
 
 class DataTableWidget extends StatelessWidget {
   final Map<String, List<List<int>>> tableData;
@@ -20,7 +14,7 @@ class DataTableWidget extends StatelessWidget {
         double availableHeight = constraints.maxHeight;
 
         // Ajustem la mida del text segons l'amplada disponible
-        double fontSize = availableWidth / 38;
+        double fontSize = (availableWidth / 38);
         double titleFontSize = fontSize * 0.7; // Font més petit per als títols
 
         // Creem l'estil del text
@@ -30,14 +24,14 @@ class DataTableWidget extends StatelessWidget {
         TextStyle sunSymbolStyle = TextStyle(fontSize: fontSize * 0.5); // Mida més petita per al símbol del sol
 
         return SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: ConstrainedBox(
-            constraints: BoxConstraints(minWidth: availableWidth),
-            child: Container(
-              width: availableWidth,
+          scrollDirection: Axis.horizontal,
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minWidth: availableWidth),
               child: DataTable(
-                columnSpacing: availableWidth / 200, // Espai entre columnes proporcional
-                dataRowMinHeight: availableHeight / 20, // Alçada de les files proporcional
+                columnSpacing: availableWidth / 200,
+                dataRowMinHeight: availableHeight / 20,
                 columns: _buildColumns(titleTextStyle),
                 rows: _buildRows(smallTextStyle, darkNumberTextStyle, sunSymbolStyle),
               ),
