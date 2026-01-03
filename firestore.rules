@@ -10,16 +10,26 @@ service cloud.firestore {
     }
 
     // 2. Col·lecció PÚBLICA "shared_interpretations"
+    // 2. Col·lecció PÚBLICA "shared_interpretations"
     match /shared_interpretations/{docId} {
-      // Tothom pot LLEGIR (perquè la web funcioni per als convidats)
-      allow get: if true;
+      // Tothom pot LLEGIR (incloent llistats/queries per als testimonis)
+      allow read: if true;
       
       // Admin pot crear
       allow create: if request.auth != null;
 
-      // Actualitzar: Només permetem afegir feedback si ets convidat (no cal auth)
-      // Per simplificar, deixem update obert però l'ideal seria validar els camps.
-      allow update: if true; 
+      // Actualitzar: Permetem a tothom (públic) afegir feedback,
+      // PERÒ protegim els camps crítics (originalDocId, interpretation, etc.)
+      allow update: if 
+        // 1. Camps que NO poden canviar (Immutables)
+        request.resource.data.originalDocId == resource.data.originalDocId &&
+        request.resource.data.interpretation == resource.data.interpretation &&
+        request.resource.data.createdAt == resource.data.createdAt &&
+        request.resource.data.expiresAt == resource.data.expiresAt &&
+        
+        // 2. Opcional: Podríem validar també que només es toqui 'guestFeedback'
+        // però amb la immutabilitat dels anteriors ja protegim el més important.
+        true;
     }
   }
 }

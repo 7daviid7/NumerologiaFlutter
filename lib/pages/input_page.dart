@@ -4,6 +4,8 @@ import 'results_navegation_page.dart';
 import '../models/data_model.dart';
 import 'package:intl/intl.dart'; // Per donar format a la data
 import 'feedback_list_page.dart';
+import '../services/auth_service.dart';
+import '../widgets/auth_guard.dart';
 
 class InputPage extends StatefulWidget {
   @override
@@ -78,6 +80,20 @@ class InputPageState extends State<InputPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => FeedbackListPage()),
+                );
+              },
+            ),
+            Divider(),
+            ListTile(
+              leading: Icon(Icons.exit_to_app, color: Colors.red),
+              title: Text('Tancar Sessió', style: TextStyle(color: Colors.red)),
+              onTap: () async {
+                Navigator.pop(context); // Tanca el drawer
+                await AuthService().signOut();
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => AuthGuard()),
+                  (route) => false, // Reinicia l'aplicació des de l'AuthGuard
                 );
               },
             ),
