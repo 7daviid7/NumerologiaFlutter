@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/data_model.dart';
-import '../services/print_service.dart';
+import '../services/pdf/pdf_service.dart';
 import 'results_page.dart';
 import 'spiritual_figure_page.dart';
 import 'life_cycles_page.dart';
