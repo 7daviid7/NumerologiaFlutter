@@ -5,6 +5,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';
 import '../services/history_service.dart';
+import '../services/pdf/pdf_service.dart';
+import '../utils/text_utils.dart';
 
 class FeedbackDetailPage extends StatefulWidget {
   final Map<String, dynamic> data;
@@ -221,6 +223,18 @@ class _FeedbackDetailPageState extends State<FeedbackDetailPage> {
                 Row(
                   children: [
                     IconButton(
+                        icon: Icon(Icons.print,
+                            color: Theme.of(context).colorScheme.primary),
+                        onPressed: () async {
+                          final pdfService = PrintService();
+                          await pdfService.printAiInterpretationPdfSimple(
+                            name: fullName,
+                            date: birthDate,
+                            interpretation: interpretation,
+                          );
+                        },
+                        tooltip: 'Imprimir Informe'),
+                    IconButton(
                       icon: Icon(Icons.share,
                           color: Theme.of(context).colorScheme.primary),
                       onPressed: () => _shareLink(interpretation),
@@ -229,7 +243,8 @@ class _FeedbackDetailPageState extends State<FeedbackDetailPage> {
                     IconButton(
                       icon: Icon(Icons.copy,
                           color: Theme.of(context).colorScheme.primary),
-                      onPressed: () => _copyToClipboard(interpretation),
+                      onPressed: () =>
+                          _copyToClipboard(stripMarkdown(interpretation)),
                       tooltip: 'Copiar text',
                     ),
                   ],

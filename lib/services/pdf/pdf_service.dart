@@ -361,10 +361,7 @@ class PrintService {
                         color: PdfColors.deepPurple)),
               ),
               pw.SizedBox(height: 20),
-              pw.Paragraph(
-                text: data.aiInterpretation!,
-                style: const pw.TextStyle(fontSize: 12, lineSpacing: 1.5),
-              ),
+              ..._buildMarkdownContent(data.aiInterpretation!),
             ],
             footer: (pw.Context context) {
               return pw.Container(
@@ -383,6 +380,182 @@ class PrintService {
     } catch (e) {
       print("Error generating AI Interpretation PDF: $e");
     }
+  }
+
+  Future<void> printAiInterpretationPdfSimple({
+    required String name,
+    required String date,
+    required String interpretation,
+  }) async {
+    final pdf = pw.Document();
+
+    try {
+      if (interpretation.isEmpty) {
+        pdf.addPage(
+          pw.Page(
+            pageFormat: PdfPageFormat.a4,
+            build: (pw.Context context) {
+              return pw.Center(
+                child: pw.Text("No s'ha generat cap interpretació encara.",
+                    style: pw.TextStyle(fontSize: 20)),
+              );
+            },
+          ),
+        );
+      } else {
+        // Parse Markdown for rich text PDF
+        final contentWidgets = _buildMarkdownContent(interpretation);
+
+        pdf.addPage(
+          pw.MultiPage(
+            pageFormat: PdfPageFormat.a4,
+            header: (pw.Context context) => _buildHeader(name, date),
+            build: (pw.Context context) => [
+              pw.Header(
+                level: 0,
+                child: pw.Text('Interpretació IA',
+                    style: pw.TextStyle(
+                        fontSize: 24,
+                        fontWeight: pw.FontWeight.bold,
+                        color: PdfColors.deepPurple)),
+              ),
+              pw.SizedBox(height: 20),
+              ...contentWidgets,
+            ],
+            footer: (pw.Context context) {
+              return pw.Container(
+                  alignment: pw.Alignment.centerRight,
+                  margin: const pw.EdgeInsets.only(top: 1.0 * PdfPageFormat.cm),
+                  child: pw.Text(
+                      'Pàgina ${context.pageNumber} de ${context.pagesCount}',
+                      style: const pw.TextStyle(color: PdfColors.grey)));
+            },
+          ),
+        );
+      }
+
+      await Printing.layoutPdf(
+          onLayout: (PdfPageFormat format) async => pdf.save());
+    } catch (e) {
+      print("Error generating AI Interpretation PDF Simple: $e");
+    }
+  }
+
+  List<pw.Widget> _buildMarkdownContent(String text) {
+    final List<pw.Widget> widgets = [];
+    final lines = text.split('\n');
+    final defaultStyle = const pw.TextStyle(fontSize: 12, lineSpacing: 1.5);
+
+    for (var line in lines) {
+      line = line.trim();
+      if (line.isEmpty) {
+        widgets.add(pw.SizedBox(height: 6));
+        continue;
+      }
+
+      // Headers (H1, H2, H3)
+      if (line.startsWith('#')) {
+        int level = 0;
+        if (line.startsWith('###')) {
+          level = 3;
+          line = line.substring(3).trim();
+        } else if (line.startsWith('##')) {
+          level = 2;
+          line = line.substring(2).trim();
+        } else if (line.startsWith('#')) {
+          level = 1;
+          line = line.substring(1).trim();
+        }
+
+        double fontSize = 12;
+        PdfColor color = PdfColors.black;
+
+        switch (level) {
+          case 1:
+            fontSize = 18;
+            color = PdfColors.deepPurple;
+            break;
+          case 2:
+            fontSize = 16;
+            color = PdfColors.grey800;
+            break;
+          case 3:
+            fontSize = 14;
+            break;
+        }
+
+        widgets.add(pw.Padding(
+          padding: const pw.EdgeInsets.only(top: 12, bottom: 6),
+          child: pw.RichText(
+            text: _parseRichText(
+                line,
+                defaultStyle.copyWith(
+                    fontSize: fontSize,
+                    fontWeight: pw.FontWeight.bold,
+                    color: color)),
+          ),
+        ));
+      }
+      // Horizontal Rule
+      else if (line.startsWith('___') ||
+          line.startsWith('---') ||
+          line.startsWith('***')) {
+        widgets.add(pw.Divider());
+      }
+      // Normal Paragraph
+      else {
+        widgets.add(pw.Padding(
+          padding: const pw.EdgeInsets.only(bottom: 4),
+          child: pw.RichText(
+            text: _parseRichText(line, defaultStyle),
+            textAlign: pw.TextAlign.justify,
+          ),
+        ));
+      }
+    }
+    return widgets;
+  }
+
+  pw.TextSpan _parseRichText(String text, pw.TextStyle baseStyle) {
+    final List<pw.InlineSpan> spans = [];
+
+    // Regex matches **bold** or __bold__.
+    // Capturing groups:
+    // 1: ** or __ (opening)
+    // 2: content inside
+    final RegExp exp = RegExp(r'(\*\*|__)(.*?)\1');
+
+    int lastIndex = 0;
+
+    // Iterates through all matches
+    for (final Match match in exp.allMatches(text)) {
+      // Add text before the match
+      if (match.start > lastIndex) {
+        spans.add(pw.TextSpan(
+          text: text.substring(lastIndex, match.start),
+          style: baseStyle,
+        ));
+      }
+
+      // Add the bold text
+      final content = match.group(2) ?? '';
+      spans.add(pw.TextSpan(
+        text: content,
+        style: baseStyle.copyWith(fontWeight: pw.FontWeight.bold),
+      ));
+
+      lastIndex = match.end;
+    }
+
+    // Add remaining text
+    if (lastIndex < text.length) {
+      spans.add(pw.TextSpan(
+        text: text.substring(lastIndex),
+        style: baseStyle,
+      ));
+    }
+
+    return pw.TextSpan(children: spans);
   }
 
   pw.Widget _buildHeader(String name, String date) {

@@ -1,9 +1,6 @@
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import '../pdf_helper.dart'; // Ensure PdfHelper is accessible
-import 'pdf_personality_section.dart'; // Reusing _buildSquare logic (but it is private there)
-// Actually I should duplicate the square builder or make it public in Helper.
-// Let's make a local helper for now or just duplicate code to avoid tight coupling for small UI bits.
+import '../pdf_helper.dart';
 
 class PdfLifePathSection {
   static pw.Widget build(Map<String, int> values, String date) {

@@ -38,34 +38,67 @@ class PdfResultsTableSection {
       ];
 
       cells.addAll(rowValues.map((valueList) {
-        String cellContent = valueList.isEmpty
-            ? 'Sun'
-            : valueList.map((value) {
-                if (rowTitle == 'Puentes') {
-                  if (value == 0) {
-                    return '-';
-                  } else if (value > 9) {
-                    int reducedValue = reduceToSingleDigitResult(value);
-                    return '$value / $reducedValue';
-                  } else {
-                    return value.toString();
-                  }
-                } else {
-                  if (value == 0) {
-                    return 'Sun';
-                  } else if (value > 9) {
-                    int reducedValue = reduceToSingleDigitResult(value);
-                    return '$value / $reducedValue';
-                  } else {
-                    return value.toString();
-                  }
-                }
-              }).join(', ');
+        List<pw.Widget> children = [];
 
-        if (cellContent == 'Sun') cellContent = '(*)';
+        if (valueList.isEmpty) {
+          children.add(pw.Container(
+            width: 8,
+            height: 8,
+            decoration: const pw.BoxDecoration(
+              color: PdfColors.orange,
+              shape: pw.BoxShape.circle,
+            ),
+          ));
+        } else {
+          for (int i = 0; i < valueList.length; i++) {
+            int value = valueList[i];
+
+            if (value == 0) {
+              if (rowTitle != 'Puentes') {
+                children.add(pw.Container(
+                  width: 8,
+                  height: 8,
+                  decoration: const pw.BoxDecoration(
+                    color: PdfColors.orange,
+                    shape: pw.BoxShape.circle,
+                  ),
+                ));
+              } else {
+                children.add(pw.Text('-', style: pw.TextStyle(fontSize: 10)));
+              }
+            } else {
+              String text;
+              if (rowTitle == 'Puentes') {
+                if (value > 9) {
+                  int reduced = reduceToSingleDigitResult(value);
+                  text = '$value / $reduced';
+                } else {
+                  text = value.toString();
+                }
+              } else {
+                if (value > 9) {
+                  int reduced = reduceToSingleDigitResult(value);
+                  text = '$value / $reduced';
+                } else {
+                  text = value.toString();
+                }
+              }
+              children.add(pw.Text(text, style: pw.TextStyle(fontSize: 10)));
+            }
+
+            if (i < valueList.length - 1) {
+              children.add(pw.Text(', ', style: pw.TextStyle(fontSize: 10)));
+            }
+          }
+        }
 
         return pw.Center(
-            child: pw.Text(cellContent, style: pw.TextStyle(fontSize: 10)));
+            child: pw.Wrap(
+          children: children,
+          crossAxisAlignment: pw.WrapCrossAlignment.center,
+          alignment: pw.WrapAlignment.center,
+          runAlignment: pw.WrapAlignment.center,
+        ));
       }));
 
       while (cells.length < maxColumns + 1) {

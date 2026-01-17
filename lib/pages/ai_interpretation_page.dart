@@ -6,6 +6,7 @@ import '../models/data_model.dart';
 import '../services/gemini_service.dart';
 
 import '../services/history_service.dart';
+import '../utils/text_utils.dart';
 
 class AIInterpretationPage extends StatefulWidget {
   @override
@@ -493,7 +494,7 @@ class _AIInterpretationPageState extends State<AIInterpretationPage> {
 
   void _copyToClipboard() {
     if (_interpretation != null) {
-      Clipboard.setData(ClipboardData(text: _interpretation!));
+      Clipboard.setData(ClipboardData(text: stripMarkdown(_interpretation!)));
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Text copiat al porta-retalls'),

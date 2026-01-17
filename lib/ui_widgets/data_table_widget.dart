@@ -119,29 +119,45 @@ class _DataTableWidgetState extends State<DataTableWidget> {
       List<DataCell> cells = [DataCell(Text(rowTitle, style: textStyle))];
 
       cells.addAll(rowValues.map((valueList) {
-        String cellContent = valueList.isEmpty
-            ? '☀'
-            : valueList.map((value) {
-                if (rowTitle == 'Puentes') {
-                  if (value == 0) {
-                    return '-';
-                  } else if (value > 9) {
-                    int reducedValue = reduceToSingleDigitResult(value);
-                    return '$value / $reducedValue';
-                  } else {
-                    return value.toString();
-                  }
+        List<Widget> children = [];
+
+        if (valueList.isEmpty) {
+          children.add(Text('☀', style: darkNumberTextStyle));
+        } else {
+          for (int i = 0; i < valueList.length; i++) {
+            int value = valueList[i];
+
+            if (value == 0) {
+              if (rowTitle != 'Puentes') {
+                children.add(Text('☀', style: darkNumberTextStyle));
+              } else {
+                children.add(Text('-', style: darkNumberTextStyle));
+              }
+            } else {
+              String text;
+              if (rowTitle == 'Puentes') {
+                if (value > 9) {
+                  int reduced = reduceToSingleDigitResult(value);
+                  text = '$value / $reduced';
                 } else {
-                  if (value == 0) {
-                    return '☀';
-                  } else if (value > 9) {
-                    int reducedValue = reduceToSingleDigitResult(value);
-                    return '$value / $reducedValue';
-                  } else {
-                    return value.toString();
-                  }
+                  text = value.toString();
                 }
-              }).join(', ');
+              } else {
+                if (value > 9) {
+                  int reduced = reduceToSingleDigitResult(value);
+                  text = '$value / $reduced';
+                } else {
+                  text = value.toString();
+                }
+              }
+              children.add(Text(text, style: darkNumberTextStyle));
+            }
+
+            if (i < valueList.length - 1) {
+              children.add(Text(', ', style: darkNumberTextStyle));
+            }
+          }
+        }
 
         return DataCell(
           Container(
@@ -150,16 +166,11 @@ class _DataTableWidgetState extends State<DataTableWidget> {
               horizontal: textStyle.fontSize! * 0.5,
             ),
             alignment: Alignment.center,
-            child: Align(
-              alignment: Alignment.center,
-              child: Text(
-                cellContent,
-                style: darkNumberTextStyle.copyWith(
-                  fontSize: (cellContent.contains('☀')
-                      ? sunSymbolStyle.fontSize
-                      : darkNumberTextStyle.fontSize),
-                ),
-              ),
+            child: Wrap(
+              crossAxisAlignment: WrapCrossAlignment.center,
+              alignment: WrapAlignment.center,
+              runAlignment: WrapAlignment.center,
+              children: children,
             ),
           ),
         );
